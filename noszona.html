@@ -3,853 +3,1672 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOSZONA Smart - Smart City</title>
-
+<title>NOSZONA Smart — Smart City Cabo Verde</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
-  --primary: #062b4f;
-  --primary-light: #0b4f88;
-  --accent: #00a8c8;
-  --gold: #f6c247;
-  --bg: #f4f7fb;
-  --card: #ffffff;
-  --text: #122033;
-  --muted: #6b7280;
-  --border: #dbe4ef;
-  --success: #0f9f6e;
-  --danger: #c62828;
-  --shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+  --navy: #061827;
+  --navy-mid: #0b2e4a;
+  --blue: #0a6fa8;
+  --cyan: #00c3e3;
+  --gold: #f4b942;
+  --gold-light: #ffd580;
+  --white: #ffffff;
+  --off: #f0f5fa;
+  --muted: #7b8fa3;
+  --border: rgba(255,255,255,0.10);
+  --border-dark: #d4dee9;
+  --text: #0f1f2e;
+  --success: #0ea472;
+  --card-bg: #ffffff;
+  --section-bg: #f5f8fc;
+  --rad: 20px;
+  --rad-lg: 28px;
+  --shadow: 0 24px 64px rgba(6,24,39,0.13);
+  --shadow-sm: 0 8px 24px rgba(6,24,39,0.08);
 }
-
-* {
-  box-sizing: border-box;
-}
-
+ 
+* { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+html { scroll-behavior: smooth; }
+ 
 body {
-  margin: 0;
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: var(--bg);
+  font-family: 'DM Sans', sans-serif;
   color: var(--text);
+  background: var(--white);
+  overflow-x: hidden;
 }
-
+ 
+/* ============ HEADER ============ */
 header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(6, 43, 79, 0.96);
-  backdrop-filter: blur(12px);
-  color: white;
-  padding: 14px 7%;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  padding: 0 6%;
+  height: 72px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.15);
+  background: rgba(6,24,39,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s ease;
 }
-
-.logo {
+ 
+.logo-text {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.5px;
+}
+ 
+.logo-text span { color: var(--cyan); }
+ 
+.nav-links {
   display: flex;
-  align-items: center;
+  gap: 32px;
+  list-style: none;
 }
-
-.logo img {
-  height: 58px;
-  width: auto;
-  object-fit: contain;
-  display: block;
+ 
+.nav-links a {
+  color: rgba(255,255,255,0.72);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  transition: color 0.2s;
 }
-
-.nav-actions {
+ 
+.nav-links a:hover { color: var(--white); }
+ 
+.nav-ctas {
   display: flex;
   gap: 10px;
-  align-items: center;
 }
-
-button {
-  font-family: inherit;
-}
-
+ 
 .btn {
+  font-family: 'DM Sans', sans-serif;
   border: none;
-  padding: 12px 18px;
-  border-radius: 12px;
   cursor: pointer;
-  font-weight: 700;
-  transition: all 0.25s ease;
+  font-weight: 500;
+  border-radius: 12px;
+  transition: all 0.22s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  letter-spacing: 0.1px;
 }
-
+ 
+.btn-ghost {
+  background: rgba(255,255,255,0.09);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: var(--white);
+  padding: 10px 18px;
+}
+ 
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.16);
+  transform: translateY(-1px);
+}
+ 
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent), var(--primary-light));
-  color: white;
-  box-shadow: 0 8px 18px rgba(0,168,200,0.25);
+  background: linear-gradient(135deg, var(--cyan) 0%, #0288d1 100%);
+  color: var(--navy);
+  padding: 10px 20px;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(0,195,227,0.35);
 }
-
-.btn-secondary {
-  background: rgba(255,255,255,0.14);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.25);
-}
-
-.btn:hover {
+ 
+.btn-primary:hover {
   transform: translateY(-2px);
-  opacity: 0.95;
+  box-shadow: 0 10px 28px rgba(0,195,227,0.45);
 }
-
+ 
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold) 0%, #e8931a 100%);
+  color: var(--navy);
+  padding: 14px 28px;
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(244,185,66,0.40);
+  border-radius: 14px;
+}
+ 
+.btn-gold:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgba(244,185,66,0.50);
+}
+ 
+.btn-outline-white {
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.30);
+  color: var(--white);
+  padding: 14px 26px;
+  font-size: 15px;
+  border-radius: 14px;
+}
+ 
+.btn-outline-white:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-2px);
+}
+ 
+/* ============ HERO ============ */
 .hero {
-  padding: 80px 7% 55px;
-  background:
-    radial-gradient(circle at top left, rgba(0,168,200,0.20), transparent 35%),
-    linear-gradient(135deg, #062b4f 0%, #0b4f88 55%, #0b8ea8 100%);
-  color: white;
+  min-height: 100vh;
+  background: var(--navy);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px 6% 80px;
 }
-
-.hero-grid {
-  max-width: 1180px;
+ 
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 80% 50%, rgba(0,195,227,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 20% 80%, rgba(10,111,168,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 40% at 60% 10%, rgba(244,185,66,0.08) 0%, transparent 50%);
+}
+ 
+.hero-grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,195,227,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,195,227,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.5) 0%, transparent 75%);
+}
+ 
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
   margin: auto;
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 35px;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 60px;
   align-items: center;
 }
-
-.badge {
+ 
+.hero-tag {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.25);
-  padding: 9px 14px;
+  background: rgba(0,195,227,0.12);
+  border: 1px solid rgba(0,195,227,0.28);
+  padding: 8px 16px;
   border-radius: 999px;
-  font-size: 14px;
-  margin-bottom: 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cyan);
+  letter-spacing: 0.5px;
+  margin-bottom: 28px;
+  animation: fadeUp 0.6s ease both;
 }
-
+ 
+.hero-tag::before {
+  content: '';
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--cyan);
+  animation: pulse 2s infinite;
+}
+ 
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.7); }
+}
+ 
 .hero h1 {
-  font-size: clamp(38px, 6vw, 68px);
-  line-height: 1.02;
-  margin: 0 0 18px;
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(44px, 6vw, 76px);
+  font-weight: 700;
+  line-height: 1.00;
+  color: var(--white);
+  letter-spacing: -2px;
+  margin-bottom: 24px;
+  animation: fadeUp 0.6s 0.1s ease both;
 }
-
+ 
+.hero h1 .accent {
+  background: linear-gradient(135deg, var(--cyan), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+ 
 .hero p {
   font-size: 18px;
-  line-height: 1.7;
-  opacity: 0.92;
-  max-width: 720px;
+  line-height: 1.72;
+  color: rgba(255,255,255,0.68);
+  max-width: 560px;
+  margin-bottom: 36px;
+  font-weight: 300;
+  animation: fadeUp 0.6s 0.2s ease both;
 }
-
+ 
 .hero-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 28px;
+  gap: 14px;
   flex-wrap: wrap;
+  animation: fadeUp 0.6s 0.3s ease both;
 }
-
-.hero-panel {
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.22);
-  border-radius: 28px;
-  padding: 26px;
-  box-shadow: var(--shadow);
+ 
+.hero-stats {
+  display: flex;
+  gap: 28px;
+  margin-top: 52px;
+  animation: fadeUp 0.6s 0.4s ease both;
 }
-
-.metric {
-  background: rgba(255,255,255,0.13);
-  border-radius: 20px;
-  padding: 18px;
-  margin-bottom: 14px;
+ 
+.hero-stat {
+  border-left: 2px solid rgba(0,195,227,0.30);
+  padding-left: 16px;
 }
-
-.metric strong {
+ 
+.hero-stat strong {
   display: block;
-  font-size: 30px;
+  font-family: 'Clash Display', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+ 
+.hero-stat span {
+  font-size: 13px;
+  color: rgba(255,255,255,0.48);
+  font-weight: 400;
+  margin-top: 4px;
+  display: block;
+}
+ 
+/* Hero visual panel */
+.hero-visual {
+  animation: fadeUp 0.7s 0.2s ease both;
+}
+ 
+.card-3d {
+  background: linear-gradient(135deg, #0b3a5a 0%, #062640 50%, #041820 100%);
+  border: 1px solid rgba(0,195,227,0.22);
+  border-radius: 26px;
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+  transform: perspective(1000px) rotateY(-4deg) rotateX(3deg);
+  transition: transform 0.4s ease;
+}
+ 
+.card-3d:hover {
+  transform: perspective(1000px) rotateY(-1deg) rotateX(1deg);
+}
+ 
+.card-3d::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -20%;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,195,227,0.12) 0%, transparent 65%);
+}
+ 
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,195,227,0.15);
+  border: 1px solid rgba(0,195,227,0.25);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cyan);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+ 
+.feature-rows { display: flex; flex-direction: column; gap: 14px; }
+ 
+.feature-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 16px 18px;
+  transition: background 0.2s;
+}
+ 
+.feature-row:hover { background: rgba(0,195,227,0.08); }
+ 
+.feature-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 20px;
+}
+ 
+.fi-cyan { background: rgba(0,195,227,0.15); }
+.fi-gold { background: rgba(244,185,66,0.15); }
+.fi-green { background: rgba(14,164,114,0.15); }
+ 
+.feature-row-text strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+ 
+.feature-row-text span {
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  font-weight: 300;
+}
+ 
+.hero-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,195,227,0.3), transparent);
+  margin: 24px 0;
+}
+ 
+.qr-preview {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  background: rgba(244,185,66,0.08);
+  border: 1px solid rgba(244,185,66,0.20);
+  border-radius: 14px;
+}
+ 
+.qr-box {
+  width: 52px; height: 52px;
+  background: white;
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 2px;
+  padding: 5px;
+  flex-shrink: 0;
+}
+ 
+.qr-dot {
+  border-radius: 1px;
+  background: var(--navy);
+}
+ 
+.qr-preview-text strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--gold);
 }
-
-.section {
-  padding: 55px 7%;
+ 
+.qr-preview-text span {
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
 }
-
-.section-title {
-  max-width: 1180px;
-  margin: 0 auto 28px;
+ 
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-.section-title h2 {
-  font-size: 34px;
-  margin: 0 0 8px;
-  color: var(--primary);
+ 
+/* ============ HOW IT WORKS ============ */
+.section { padding: 90px 6%; }
+ 
+.section-header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 60px;
 }
-
-.section-title p {
+ 
+.eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 14px;
+}
+ 
+.section-header h2 {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(30px, 4vw, 44px);
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -1px;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+ 
+.section-header p {
+  font-size: 17px;
   color: var(--muted);
-  margin: 0;
-  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 300;
 }
-
-.pacotes {
-  max-width: 1180px;
+ 
+.bg-off { background: var(--section-bg); }
+.bg-navy { background: var(--navy); }
+ 
+.steps {
+  max-width: 1100px;
   margin: auto;
   display: grid;
-  grid-template-columns: repeat(3, minmax(230px, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
 }
-
-.card {
-  background: var(--card);
+ 
+.step-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--rad-lg);
+  padding: 36px 30px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+ 
+.step-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+  border-color: rgba(0,195,227,0.3);
+}
+ 
+.step-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--cyan), var(--blue));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+ 
+.step-card:hover::after { opacity: 1; }
+ 
+.step-number {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 72px;
+  font-weight: 700;
+  color: var(--off);
+  line-height: 1;
+  margin-bottom: 18px;
+  letter-spacing: -3px;
+  background: linear-gradient(135deg, #e8f0f8, #d0dcea);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+ 
+.step-card h3 {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 10px;
+  letter-spacing: -0.3px;
+}
+ 
+.step-card p {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.65;
+  font-weight: 300;
+}
+ 
+.step-icon-wrap {
+  width: 50px; height: 50px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(0,195,227,0.12), rgba(10,111,168,0.10));
+  border: 1px solid rgba(0,195,227,0.20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+ 
+/* ============ PACKAGES ============ */
+.packages-grid {
+  max-width: 1100px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  align-items: end;
+}
+ 
+.pkg-card {
+  background: var(--card-bg);
+  border: 1.5px solid var(--border-dark);
+  border-radius: var(--rad-lg);
+  padding: 36px 30px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+ 
+.pkg-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow);
+}
+ 
+.pkg-card.featured {
+  background: var(--navy);
+  border: 2px solid rgba(0,195,227,0.40);
+  transform: translateY(-12px);
+  box-shadow: 0 30px 70px rgba(6,24,39,0.22);
+}
+ 
+.pkg-card.featured:hover {
+  transform: translateY(-18px);
+}
+ 
+.popular-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, var(--cyan), #0288d1);
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+}
+ 
+.pkg-label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+ 
+.pkg-card.featured .pkg-label { color: rgba(255,255,255,0.5); }
+ 
+.pkg-name {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+}
+ 
+.pkg-card.featured .pkg-name { color: var(--white); }
+ 
+.pkg-price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 22px 0;
+}
+ 
+.pkg-price .amount {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -2px;
+  line-height: 1;
+}
+ 
+.pkg-card.featured .amount { color: var(--gold); }
+ 
+.pkg-price .currency {
+  font-size: 16px;
+  color: var(--muted);
+  font-weight: 500;
+}
+ 
+.pkg-card.featured .currency { color: rgba(255,255,255,0.5); }
+ 
+.pkg-divider {
+  height: 1px;
+  background: var(--border-dark);
+  margin: 24px 0;
+}
+ 
+.pkg-card.featured .pkg-divider { background: rgba(255,255,255,0.10); }
+ 
+.pkg-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+ 
+.pkg-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: #3d4f62;
+  line-height: 1.5;
+  font-weight: 400;
+}
+ 
+.pkg-card.featured .pkg-features li { color: rgba(255,255,255,0.78); }
+ 
+.pkg-check {
+  width: 20px; height: 20px;
+  border-radius: 6px;
+  background: rgba(14,164,114,0.12);
+  border: 1px solid rgba(14,164,114,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+ 
+.pkg-check::before {
+  content: '✓';
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--success);
+}
+ 
+.pkg-card.featured .pkg-check {
+  background: rgba(0,195,227,0.15);
+  border-color: rgba(0,195,227,0.3);
+}
+ 
+.pkg-card.featured .pkg-check::before { color: var(--cyan); }
+ 
+.btn-pkg {
+  width: 100%;
+  padding: 15px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.25s ease;
+  letter-spacing: 0.2px;
+}
+ 
+.btn-pkg-default {
+  background: var(--off);
+  color: var(--text);
+  border: 1.5px solid var(--border-dark);
+}
+ 
+.btn-pkg-default:hover {
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
+  transform: translateY(-2px);
+}
+ 
+.btn-pkg-featured {
+  background: linear-gradient(135deg, var(--cyan), #0097c7);
+  color: var(--navy);
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0,195,227,0.40);
+}
+ 
+.btn-pkg-featured:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(0,195,227,0.50);
+}
+ 
+/* ============ TRUST STRIP ============ */
+.trust-section {
+  background: var(--navy);
+  padding: 56px 6%;
+}
+ 
+.trust-inner {
+  max-width: 1100px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+ 
+.trust-item {
+  text-align: center;
   padding: 28px;
-  border-radius: 24px;
-  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
-  border: 1px solid var(--border);
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+ 
+.trust-item:last-child { border-right: none; }
+ 
+.trust-value {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -1.5px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+ 
+.trust-value span { color: var(--cyan); }
+ 
+.trust-label {
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  font-weight: 300;
+  letter-spacing: 0.2px;
+}
+ 
+/* ============ CTA BANNER ============ */
+.cta-banner {
+  padding: 100px 6%;
+  background: linear-gradient(135deg, var(--navy) 0%, #0b3558 50%, #062b50 100%);
+  text-align: center;
   position: relative;
   overflow: hidden;
 }
-
-.card::before {
-  content: "";
+ 
+.cta-banner::before {
+  content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  height: 5px;
-  width: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--gold));
+  top: -30%; left: 50%;
+  transform: translateX(-50%);
+  width: 700px; height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,195,227,0.10) 0%, transparent 65%);
+  pointer-events: none;
 }
-
-.card.featured {
-  transform: translateY(-8px);
-  border: 2px solid rgba(0,168,200,0.45);
-}
-
-.package-label {
-  display: inline-block;
-  padding: 7px 12px;
-  background: #eef9fc;
-  color: var(--primary-light);
-  border-radius: 999px;
-  font-size: 13px;
+ 
+.cta-banner h2 {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(34px, 5vw, 58px);
   font-weight: 700;
-  margin-bottom: 12px;
+  color: var(--white);
+  letter-spacing: -1.5px;
+  line-height: 1.05;
+  margin-bottom: 18px;
+  position: relative;
 }
-
-.card h2 {
-  color: var(--primary);
-  margin: 8px 0 10px;
+ 
+.cta-banner p {
+  font-size: 18px;
+  color: rgba(255,255,255,0.60);
+  margin-bottom: 40px;
+  font-weight: 300;
+  line-height: 1.6;
+  position: relative;
 }
-
-.card ul {
-  padding: 0;
-  list-style: none;
-  margin: 18px 0;
+ 
+.cta-actions {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
 }
-
-.card li {
-  padding: 9px 0;
-  border-bottom: 1px solid #eef2f7;
-  color: #334155;
-}
-
-.card li::before {
-  content: "✓";
-  color: var(--success);
-  font-weight: 900;
-  margin-right: 8px;
-}
-
-.preco {
-  font-size: 30px;
-  font-weight: 900;
-  color: var(--primary);
-  margin: 20px 0;
-}
-
-.preco small {
-  font-size: 14px;
-  color: var(--muted);
-  font-weight: 600;
-}
-
-.formulario, .dashboard {
+ 
+/* ============ FORMS ============ */
+.form-section {
   display: none;
-  max-width: 1050px;
-  margin: 35px auto;
-  padding: 0;
+  padding: 80px 6%;
+  background: var(--section-bg);
 }
-
-.panel {
-  background: white;
-  border-radius: 28px;
+ 
+.form-panel {
+  max-width: 780px;
+  margin: auto;
+  background: var(--white);
+  border-radius: var(--rad-lg);
   box-shadow: var(--shadow);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-dark);
   overflow: hidden;
 }
-
-.panel-header {
-  padding: 26px 30px;
-  background: linear-gradient(135deg, #ffffff, #eef8fb);
-  border-bottom: 1px solid var(--border);
+ 
+.form-panel-top {
+  padding: 36px 40px 28px;
+  border-bottom: 1px solid var(--border-dark);
+  background: linear-gradient(to right, #f7fbff, #edf5fc);
 }
-
-.panel-header h2 {
-  margin: 0;
-  color: var(--primary);
+ 
+.form-panel-top h2 {
+  font-family: 'Clash Display', sans-serif;
   font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
 }
-
-.panel-header p {
-  margin: 8px 0 0;
-  color: var(--muted);
-}
-
-.panel-body {
-  padding: 30px;
-}
-
+ 
+.form-panel-top p { font-size: 15px; color: var(--muted); font-weight: 300; }
+ 
+.form-body { padding: 36px 40px; }
+ 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
 }
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group.full {
-  grid-column: 1 / -1;
-}
-
+ 
+.form-group { display: flex; flex-direction: column; }
+.form-group.full { grid-column: 1 / -1; }
+ 
 label {
   font-size: 13px;
-  font-weight: 800;
-  color: #334155;
-  margin-bottom: 7px;
+  font-weight: 600;
+  color: #2d3f52;
+  margin-bottom: 8px;
+  letter-spacing: 0.1px;
 }
-
+ 
 input, select {
+  font-family: 'DM Sans', sans-serif;
   width: 100%;
-  padding: 14px 14px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  font-size: 15px;
+  padding: 13px 16px;
+  border: 1.5px solid #dde6f0;
+  border-radius: 12px;
+  font-size: 14px;
+  color: var(--text);
   background: #fbfdff;
   outline: none;
-  transition: 0.2s;
+  transition: all 0.2s ease;
+  appearance: none;
 }
-
+ 
 input:focus, select:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(0,168,200,0.12);
-  background: white;
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 4px rgba(0,195,227,0.10);
+  background: var(--white);
 }
-
-.helper {
+ 
+input::placeholder { color: #9db0c3; }
+ 
+.payment-box {
+  background: #f0f8fc;
+  border: 1.5px solid rgba(0,195,227,0.22);
+  border-radius: 16px;
+  padding: 26px;
+  margin: 24px 0;
+}
+ 
+.payment-box-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+ 
+.payment-box-title span { font-size: 18px; }
+ 
+.payment-note {
   font-size: 13px;
   color: var(--muted);
-  margin-top: 6px;
+  margin-bottom: 20px;
+  font-weight: 300;
 }
-
-.payment-area, .qr-area, .info-card {
-  background: #f8fbff;
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  padding: 22px;
-  margin: 22px 0;
+ 
+.form-submit {
+  width: 100%;
+  padding: 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+  color: var(--white);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  letter-spacing: 0.2px;
+  margin-top: 8px;
+  box-shadow: 0 8px 20px rgba(6,24,39,0.18);
 }
-
-.payment-area {
-  border-left: 5px solid var(--accent);
+ 
+.form-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(6,24,39,0.25);
 }
-
-.payment-area h3, .qr-area h3 {
-  margin-top: 0;
-  color: var(--primary);
+ 
+/* ============ DASHBOARD ============ */
+#dashboard {
+  display: none;
+  padding: 80px 6%;
+  background: var(--section-bg);
 }
-
-.small-note {
-  font-size: 14px;
-  color: var(--muted);
-  line-height: 1.5;
+ 
+.dash-panel {
+  max-width: 1050px;
+  margin: auto;
+  background: var(--white);
+  border-radius: var(--rad-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-dark);
+  overflow: hidden;
 }
-
-.dashboard-grid {
+ 
+.dash-header {
+  padding: 28px 36px;
+  background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+ 
+.dash-header h2 {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.3px;
+}
+ 
+.dash-header p { font-size: 14px; color: rgba(255,255,255,0.50); margin-top: 3px; }
+ 
+.dash-body { padding: 32px 36px; }
+ 
+.dash-grid {
   display: grid;
-  grid-template-columns: 1fr 0.85fr;
-  gap: 22px;
+  grid-template-columns: 1fr 340px;
+  gap: 28px;
 }
-
-.account-summary {
+ 
+.stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 14px;
+  margin-bottom: 24px;
 }
-
-.summary-box {
-  padding: 18px;
-  border-radius: 18px;
-  background: white;
-  border: 1px solid var(--border);
+ 
+.stat-box {
+  background: var(--section-bg);
+  border: 1px solid var(--border-dark);
+  border-radius: 16px;
+  padding: 20px;
 }
-
-.summary-box span {
-  display: block;
-  font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
-
-.summary-box strong {
-  color: var(--primary);
-  font-size: 20px;
-}
-
-.status-chip {
-  display: inline-block;
-  padding: 7px 12px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 800;
-  background: #e9fff6;
+ 
+.stat-box span { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; display: block; margin-bottom: 6px; }
+.stat-box strong { font-family: 'Clash Display', sans-serif; font-size: 22px; color: var(--text); font-weight: 700; letter-spacing: -0.5px; }
+ 
+.chip-active {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(14,164,114,0.10);
+  border: 1px solid rgba(14,164,114,0.25);
   color: var(--success);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 999px;
+  margin-top: 4px;
 }
-
-#qrCode {
-  display: flex;
-  justify-content: center;
-  margin: 18px 0;
+ 
+.chip-active::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+ 
+.recharge-box {
+  background: var(--section-bg);
+  border: 1px solid var(--border-dark);
+  border-radius: 16px;
+  padding: 22px;
 }
-
-.qr-area {
-  text-align: center;
+ 
+.recharge-box h3 {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+  letter-spacing: -0.2px;
 }
-
-.footer {
-  text-align: center;
+ 
+.recharge-btn {
+  width: 100%;
+  padding: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--cyan), #0288d1);
+  color: var(--navy);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 14px;
+  box-shadow: 0 6px 16px rgba(0,195,227,0.30);
+}
+ 
+.recharge-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,195,227,0.40); }
+ 
+.qr-card {
+  background: var(--navy);
+  border-radius: 20px;
   padding: 28px;
-  color: var(--muted);
+  text-align: center;
+  margin-bottom: 16px;
 }
-
-.loading {
-  opacity: 0.7;
-  pointer-events: none;
+ 
+.qr-card h3 {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 18px;
+  letter-spacing: -0.2px;
 }
-
-@media (max-width: 900px) {
-  header {
-    padding: 12px 5%;
-  }
-
-  .logo img {
-    height: 46px;
-  }
-
-  .hero-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .pacotes {
-    grid-template-columns: 1fr;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .account-summary {
-    grid-template-columns: 1fr;
-  }
-
-  .hero {
-    padding: 60px 5% 40px;
-  }
-
-  .section {
-    padding: 40px 5%;
-  }
+ 
+#qrCode { display: flex; justify-content: center; margin-bottom: 14px; }
+ 
+.qr-note { font-size: 13px; color: rgba(255,255,255,0.45); font-weight: 300; line-height: 1.5; }
+ 
+.card-req-box {
+  background: rgba(244,185,66,0.07);
+  border: 1.5px solid rgba(244,185,66,0.22);
+  border-radius: 16px;
+  padding: 22px;
+  text-align: center;
 }
-
-@media (max-width: 560px) {
-  header {
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .nav-actions {
-    width: 100%;
-  }
-
-  .nav-actions button {
-    flex: 1;
-  }
-
-  .hero h1 {
-    font-size: 40px;
-  }
-
-  .panel-body {
-    padding: 22px;
-  }
-
-  .logo img {
-    height: 42px;
-  }
+ 
+.card-req-box h3 {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+ 
+.card-req-box p { font-size: 13px; color: var(--muted); margin-bottom: 16px; font-weight: 300; }
+ 
+.btn-card-req {
+  width: 100%;
+  padding: 13px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--gold), #e8931a);
+  color: var(--navy);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 6px 16px rgba(244,185,66,0.35);
+}
+ 
+.btn-card-req:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(244,185,66,0.45); }
+ 
+/* ============ POPUP ============ */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6,18,30,0.70);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.2s ease;
+}
+ 
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+ 
+.popup-box {
+  background: var(--white);
+  max-width: 440px;
+  width: 90%;
+  padding: 44px 36px;
+  border-radius: 28px;
+  text-align: center;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.25);
+  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+ 
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.85) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+ 
+.popup-icon { font-size: 60px; margin-bottom: 18px; display: block; }
+ 
+.popup-box h2 {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+ 
+.popup-box p { font-size: 15px; color: var(--muted); line-height: 1.65; margin-bottom: 24px; font-weight: 300; }
+ 
+.popup-btn {
+  background: var(--navy);
+  color: var(--white);
+  border: none;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+ 
+.popup-btn:hover { background: var(--blue); transform: translateY(-1px); }
+ 
+.loading * { pointer-events: none; opacity: 0.7; }
+ 
+/* ============ FOOTER ============ */
+footer {
+  background: var(--navy);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 40px 6%;
+  text-align: center;
+}
+ 
+footer p { font-size: 14px; color: rgba(255,255,255,0.35); font-weight: 300; }
+footer p strong { color: rgba(255,255,255,0.60); font-weight: 500; }
+ 
+/* ============ RESPONSIVE ============ */
+@media (max-width: 980px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+  .packages-grid { grid-template-columns: 1fr; max-width: 480px; }
+  .pkg-card.featured { transform: none; }
+  .steps { grid-template-columns: 1fr; max-width: 500px; }
+  .trust-inner { grid-template-columns: repeat(2,1fr); }
+  .trust-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .trust-item:nth-child(2n) { border-right: none; }
+  .dash-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+ 
+@media (max-width: 600px) {
+  header { padding: 0 5%; }
+  .form-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .form-body, .form-panel-top { padding: 24px 22px; }
+  .hero-stats { gap: 16px; }
+  .hero-stat strong { font-size: 22px; }
+  .trust-inner { grid-template-columns: 1fr; }
+  .dash-body { padding: 22px; }
+  .dash-header { padding: 22px 22px; }
 }
 </style>
 </head>
-
 <body>
-
+ 
+<!-- HEADER -->
 <header>
-  <div class="logo">
-    <img src="noszona-logo.jpg" alt="NOSZONA Smart City Cabo Verde">
-  </div>
-
-  <div class="nav-actions">
-    <button class="btn btn-secondary" onclick="mostrarLogin()">Login</button>
-    <button class="btn btn-primary" onclick="mostrarRegisto('inativo')">Criar conta</button>
+  <div class="logo-text">NOSZONA<span>Smart</span></div>
+  <ul class="nav-links">
+    <li><a href="#como-funciona">Como funciona</a></li>
+    <li><a href="#pacotes">Pacotes</a></li>
+  </ul>
+  <div class="nav-ctas">
+    <button class="btn btn-ghost" onclick="mostrarLogin()">Login</button>
+    <button class="btn btn-primary" onclick="mostrarRegisto('Pacote 2')">Criar conta</button>
   </div>
 </header>
-
+ 
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-grid">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+ 
+  <div class="hero-inner">
     <div>
-      <div class="badge">🌍 Smart City Cabo Verde</div>
-      <h1>O teu cartão virtual para a cidade inteligente.</h1>
+      <div class="hero-tag">🌍 Smart City Cabo Verde</div>
+ 
+      <h1>
+        O teu cartão<br>
+        para a <span class="accent">cidade inteligente.</span>
+      </h1>
+ 
       <p>
-        Regista-te, escolhe um pacote, recebe um QR permanente, gere saldo, swipes,
-        eventos e solicita o teu cartão físico NOSZONA Smart.
+        Uma identidade digital completa — QR permanente, carteira virtual,
+        swipes na cantina e acesso exclusivo a todos os eventos Smart City.
       </p>
-
+ 
       <div class="hero-actions">
-        <button class="btn btn-primary" onclick="mostrarRegisto('Pacote 2')">Começar agora</button>
-        <button class="btn btn-secondary" onclick="mostrarLogin()">Já tenho conta</button>
+        <button class="btn btn-gold" onclick="mostrarRegisto('Pacote 2')">Começar agora →</button>
+        <button class="btn btn-outline-white" onclick="mostrarLogin()">Já tenho conta</button>
+      </div>
+ 
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <strong>QR</strong>
+          <span>Acesso digital permanente</span>
+        </div>
+        <div class="hero-stat">
+          <strong>RFID</strong>
+          <span>Cartão físico opcional</span>
+        </div>
+        <div class="hero-stat">
+          <strong>CVE</strong>
+          <span>Saldo na carteira</span>
+        </div>
       </div>
     </div>
-
-    <div class="hero-panel">
-      <div class="metric">
-        <strong>QR</strong>
-        Acesso digital permanente para eventos Smart City.
-      </div>
-      <div class="metric">
-        <strong>RFID</strong>
-        Cartão físico opcional para integração com leitores.
-      </div>
-      <div class="metric">
-        <strong>Saldo</strong>
-        Carteira para recargas, swipes e serviços.
+ 
+    <div class="hero-visual">
+      <div class="card-3d">
+        <div class="card-badge">✦ NOSZONA Smart City</div>
+ 
+        <div class="feature-rows">
+          <div class="feature-row">
+            <div class="feature-icon fi-cyan">📱</div>
+            <div class="feature-row-text">
+              <strong>QR Permanente</strong>
+              <span>Identificação digital para todos os eventos</span>
+            </div>
+          </div>
+ 
+          <div class="feature-row">
+            <div class="feature-icon fi-gold">💳</div>
+            <div class="feature-row-text">
+              <strong>Carteira Virtual</strong>
+              <span>Recarrega saldo e swipes a qualquer momento</span>
+            </div>
+          </div>
+ 
+          <div class="feature-row">
+            <div class="feature-icon fi-green">🏙️</div>
+            <div class="feature-row-text">
+              <strong>Smart City Integrado</strong>
+              <span>Acesso a serviços, eventos e infraestrutura</span>
+            </div>
+          </div>
+        </div>
+ 
+        <div class="hero-divider"></div>
+ 
+        <div class="qr-preview">
+          <div class="qr-box">
+            <div class="qr-dot"></div><div class="qr-dot"></div><div class="qr-dot"></div><div></div><div class="qr-dot"></div>
+            <div class="qr-dot"></div><div></div><div class="qr-dot"></div><div class="qr-dot"></div><div></div>
+            <div></div><div class="qr-dot"></div><div></div><div class="qr-dot"></div><div class="qr-dot"></div>
+            <div class="qr-dot"></div><div></div><div class="qr-dot"></div><div></div><div class="qr-dot"></div>
+            <div class="qr-dot"></div><div class="qr-dot"></div><div></div><div class="qr-dot"></div><div class="qr-dot"></div>
+          </div>
+          <div class="qr-preview-text">
+            <strong>QR Permanente</strong>
+            <span>Sem prazo de expiração</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
-
-<section class="section">
-  <div class="section-title">
-    <h2>Escolhe o teu pacote</h2>
-    <p>Planos simples, diretos e preparados para integração com QR, RFID e serviços Smart City.</p>
+ 
+<!-- TRUST STRIP -->
+<div class="trust-section">
+  <div class="trust-inner">
+    <div class="trust-item">
+      <div class="trust-value">3<span>+</span></div>
+      <div class="trust-label">Pacotes disponíveis</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-value">100<span>%</span></div>
+      <div class="trust-label">Digital e sem papel</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-value">RFID</div>
+      <div class="trust-label">Integração com leitores físicos</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-value">∞</div>
+      <div class="trust-label">QR sem prazo de validade</div>
+    </div>
   </div>
-
-  <div class="pacotes">
-    <div class="card">
-      <span class="package-label">Entrada</span>
-      <h2>Pacote 1</h2>
-      <ul>
-        <li>Acesso a eventos Smart City</li>
-        <li>QR permanente</li>
-        <li>Conta virtual NOSZONA</li>
-      </ul>
-      <p class="preco">Eventos</p>
-      <button class="btn btn-primary" onclick="mostrarRegisto('Pacote 1')">Escolher Pacote 1</button>
+</div>
+ 
+<!-- HOW IT WORKS -->
+<section class="section bg-off" id="como-funciona">
+  <div class="section-header">
+    <span class="eyebrow">Como funciona</span>
+    <h2>Três passos para a cidade inteligente</h2>
+    <p>Do registo ao acesso, tudo integrado numa experiência simples e moderna.</p>
+  </div>
+ 
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-icon-wrap">👤</div>
+      <div class="step-number">01</div>
+      <h3>Regista-te</h3>
+      <p>Preenche os teus dados, escolhe um pacote e completa o pagamento seguro. Leva menos de 3 minutos.</p>
     </div>
-
-    <div class="card featured">
-      <span class="package-label">Mais popular</span>
-      <h2>Pacote 2</h2>
-      <ul>
-        <li>20.000 CVE de saldo</li>
-        <li>50 swipes na cantina</li>
-        <li>Entrada em todos os eventos</li>
-        <li>QR permanente</li>
-      </ul>
-      <p class="preco">30.000 <small>CVE</small></p>
-      <button class="btn btn-primary" onclick="mostrarRegisto('Pacote 2')">Escolher Pacote 2</button>
+ 
+    <div class="step-card">
+      <div class="step-icon-wrap">📲</div>
+      <div class="step-number">02</div>
+      <h3>Recebe o teu QR</h3>
+      <p>Após o registo, o teu QR permanente é gerado automaticamente. Acede a qualquer momento via login.</p>
     </div>
-
-    <div class="card">
-      <span class="package-label">Premium</span>
-      <h2>Pacote 3</h2>
-      <ul>
-        <li>40.000 CVE de saldo</li>
-        <li>80 swipes na cantina</li>
-        <li>Entrada em todos os eventos</li>
-        <li>Free parking</li>
-      </ul>
-      <p class="preco">50.000 <small>CVE</small></p>
-      <button class="btn btn-primary" onclick="mostrarRegisto('Pacote 3')">Escolher Pacote 3</button>
+ 
+    <div class="step-card">
+      <div class="step-icon-wrap">🏙️</div>
+      <div class="step-number">03</div>
+      <h3>Usa na cidade</h3>
+      <p>Apresenta o QR em eventos, usa saldo nos serviços e solicita o cartão físico RFID quando quiseres.</p>
     </div>
   </div>
 </section>
-
-<section id="registo" class="formulario section">
-  <div class="panel">
-    <div class="panel-header">
+ 
+<!-- PACKAGES -->
+<section class="section" id="pacotes">
+  <div class="section-header">
+    <span class="eyebrow">Pacotes</span>
+    <h2>Escolhe o plano certo para ti</h2>
+    <p>Planos pensados para diferentes necessidades, todos com QR permanente incluído.</p>
+  </div>
+ 
+  <div class="packages-grid">
+    <!-- Pacote 1 -->
+    <div class="pkg-card">
+      <div class="pkg-label">Entrada</div>
+      <div class="pkg-name">Pacote 1</div>
+      <div class="pkg-price">
+        <div class="amount">Eventos</div>
+      </div>
+      <div class="pkg-divider"></div>
+      <ul class="pkg-features">
+        <li><div class="pkg-check"></div> Acesso a eventos Smart City</li>
+        <li><div class="pkg-check"></div> QR permanente incluído</li>
+        <li><div class="pkg-check"></div> Conta virtual NOSZONA</li>
+      </ul>
+      <button class="btn-pkg btn-pkg-default" onclick="mostrarRegisto('Pacote 1')">Escolher Pacote 1</button>
+    </div>
+ 
+    <!-- Pacote 2 -->
+    <div class="pkg-card featured">
+      <div class="popular-badge">⚡ Mais popular</div>
+      <div class="pkg-label">Completo</div>
+      <div class="pkg-name">Pacote 2</div>
+      <div class="pkg-price">
+        <div class="amount">30.000</div>
+        <div class="currency">CVE</div>
+      </div>
+      <div class="pkg-divider"></div>
+      <ul class="pkg-features">
+        <li><div class="pkg-check"></div> 20.000 CVE de saldo na carteira</li>
+        <li><div class="pkg-check"></div> 50 swipes na cantina</li>
+        <li><div class="pkg-check"></div> Entrada em todos os eventos</li>
+        <li><div class="pkg-check"></div> QR permanente incluído</li>
+      </ul>
+      <button class="btn-pkg btn-pkg-featured" onclick="mostrarRegisto('Pacote 2')">Escolher Pacote 2</button>
+    </div>
+ 
+    <!-- Pacote 3 -->
+    <div class="pkg-card">
+      <div class="pkg-label">Premium</div>
+      <div class="pkg-name">Pacote 3</div>
+      <div class="pkg-price">
+        <div class="amount">50.000</div>
+        <div class="currency">CVE</div>
+      </div>
+      <div class="pkg-divider"></div>
+      <ul class="pkg-features">
+        <li><div class="pkg-check"></div> 40.000 CVE de saldo na carteira</li>
+        <li><div class="pkg-check"></div> 80 swipes na cantina</li>
+        <li><div class="pkg-check"></div> Entrada em todos os eventos</li>
+        <li><div class="pkg-check"></div> Free parking incluído</li>
+      </ul>
+      <button class="btn-pkg btn-pkg-default" onclick="mostrarRegisto('Pacote 3')">Escolher Pacote 3</button>
+    </div>
+  </div>
+</section>
+ 
+<!-- CTA BANNER -->
+<div class="cta-banner">
+  <h2>Junta-te à Smart City<br>de Cabo Verde.</h2>
+  <p>O teu cartão digital está a um registo de distância.</p>
+  <div class="cta-actions">
+    <button class="btn btn-gold" onclick="mostrarRegisto('Pacote 2')">Criar conta agora →</button>
+    <button class="btn btn-outline-white" onclick="mostrarLogin()">Já tenho conta</button>
+  </div>
+</div>
+ 
+<!-- REGISTO -->
+<section id="registo" class="form-section">
+  <div class="form-panel">
+    <div class="form-panel-top">
       <h2>Registo de Residente</h2>
-      <p>Preenche os dados para criar a tua conta NOSZONA Smart.</p>
+      <p>Preenche os teus dados para criar a conta NOSZONA Smart.</p>
     </div>
-
-    <div class="panel-body">
+    <div class="form-body">
       <div class="form-grid">
         <div class="form-group">
           <label>Nome completo</label>
           <input id="nome" placeholder="Ex: Ryan Lopes">
         </div>
-
         <div class="form-group">
           <label>Data de nascimento</label>
           <input id="dataNascimento" type="date">
         </div>
-
         <div class="form-group">
           <label>Nacionalidade</label>
           <input id="nacionalidade" placeholder="Ex: Cabo-verdiana">
         </div>
-
         <div class="form-group">
           <label>Nº BI / CNI / Passaporte</label>
           <input id="documento" placeholder="Documento de identificação">
         </div>
-
         <div class="form-group">
           <label>Telefone</label>
-          <input id="telefone" placeholder="Ex: +238 999 99 99">
+          <input id="telefone" placeholder="+238 999 99 99">
         </div>
-
         <div class="form-group">
           <label>Email</label>
           <input id="email" type="email" placeholder="email@exemplo.com">
         </div>
-
         <div class="form-group">
           <label>Morada</label>
           <input id="morada" placeholder="Morada atual">
         </div>
-
         <div class="form-group">
           <label>Município</label>
           <input id="municipio" placeholder="Ex: Praia">
         </div>
-
         <div class="form-group">
           <label>Username</label>
           <input id="username" placeholder="Nome de utilizador">
         </div>
-
         <div class="form-group">
           <label>Password</label>
-          <input id="password" type="password" placeholder="Palavra-passe">
+          <input id="password" type="password" placeholder="Palavra-passe segura">
         </div>
-
         <div class="form-group full">
-          <label>Pacote</label>
+          <label>Pacote escolhido</label>
           <select id="pacote">
             <option value="inativo">Sem pacote</option>
-            <option value="Pacote 1">Pacote 1</option>
-            <option value="Pacote 2">Pacote 2</option>
-            <option value="Pacote 3">Pacote 3</option>
+            <option value="Pacote 1">Pacote 1 — Acesso a eventos</option>
+            <option value="Pacote 2">Pacote 2 — 30.000 CVE</option>
+            <option value="Pacote 3">Pacote 3 — 50.000 CVE (Premium)</option>
           </select>
-          <span class="helper">Ao escolher um pacote, o sistema solicita pagamento simulado nesta fase MVP.</span>
         </div>
       </div>
-
-      <div class="payment-area">
-        <h3>Pagamento do Pacote</h3>
-        <p class="small-note">
-          Para o MVP, o pagamento é simulado. Não guardamos o número completo do cartão nem o CVV no backend.
-        </p>
-
+ 
+      <div class="payment-box">
+        <div class="payment-box-title"><span>💳</span> Pagamento do Pacote</div>
+        <p class="payment-note">MVP simulado — não guardamos dados sensíveis do cartão no backend.</p>
         <div class="form-grid">
           <div class="form-group">
             <label>Nome no cartão</label>
             <input id="cardNome" placeholder="Nome como aparece no cartão">
           </div>
-
           <div class="form-group">
             <label>Número do cartão</label>
             <input id="cardNumero" placeholder="0000 0000 0000 0000">
           </div>
-
           <div class="form-group">
             <label>Validade</label>
             <input id="cardValidade" placeholder="MM/AA">
           </div>
-
           <div class="form-group">
             <label>CVV</label>
-            <input id="cardCVV" type="password" placeholder="***">
+            <input id="cardCVV" type="password" placeholder="•••">
           </div>
         </div>
       </div>
-
-      <button class="btn btn-primary" onclick="registar()">Registar residente</button>
+ 
+      <button class="form-submit" onclick="registar()">Criar conta NOSZONA Smart →</button>
     </div>
   </div>
 </section>
-
-<section id="login" class="formulario section">
-  <div class="panel">
-    <div class="panel-header">
-      <h2>Login do Residente</h2>
-      <p>Acede à tua conta, QR permanente, saldo, swipes e pedido de cartão.</p>
+ 
+<!-- LOGIN -->
+<section id="login" class="form-section">
+  <div class="form-panel">
+    <div class="form-panel-top">
+      <h2>Entrar na conta</h2>
+      <p>Acede ao teu QR permanente, saldo e serviços NOSZONA Smart.</p>
     </div>
-
-    <div class="panel-body">
+    <div class="form-body">
       <div class="form-grid">
         <div class="form-group">
           <label>Username</label>
-          <input id="loginUsername" placeholder="Username">
+          <input id="loginUsername" placeholder="Nome de utilizador">
         </div>
-
         <div class="form-group">
           <label>Password</label>
-          <input id="loginPassword" type="password" placeholder="Password">
+          <input id="loginPassword" type="password" placeholder="Palavra-passe">
         </div>
       </div>
-
-      <button class="btn btn-primary" onclick="login()">Entrar na conta</button>
+      <button class="form-submit" onclick="login()" style="margin-top:24px;">Entrar na conta →</button>
     </div>
   </div>
 </section>
-
-<section id="dashboard" class="dashboard section">
-  <div class="panel">
-    <div class="panel-header">
-      <h2>Minha Conta NOSZONA Smart</h2>
-      <p>Consulta o teu saldo, QR permanente, swipes e serviços disponíveis.</p>
+ 
+<!-- DASHBOARD -->
+<section id="dashboard">
+  <div class="dash-panel">
+    <div class="dash-header">
+      <div>
+        <h2>Minha Conta NOSZONA Smart</h2>
+        <p>Consulta o teu saldo, QR permanente e serviços</p>
+      </div>
     </div>
-
-    <div class="panel-body">
-      <div class="dashboard-grid">
+ 
+    <div class="dash-body">
+      <div class="dash-grid">
         <div>
-          <div id="dadosConta" class="info-card"></div>
-
-          <div class="payment-area">
-            <h3>Recarregar Conta</h3>
-
+          <div class="stats-grid" id="dadosConta"></div>
+ 
+          <div class="recharge-box">
+            <h3>Recarregar conta</h3>
             <div class="form-grid">
               <div class="form-group">
                 <label>Tipo de recarga</label>
                 <select id="tipoRecarga">
-                  <option value="saldo">Recarregar saldo</option>
+                  <option value="saldo">Recarregar saldo (CVE)</option>
                   <option value="swipe">Recarregar swipes</option>
                 </select>
               </div>
-
               <div class="form-group">
                 <label>Valor ou quantidade</label>
-                <input id="valorRecarga" type="number" placeholder="Ex: 5000 ou 10 swipes">
+                <input id="valorRecarga" type="number" placeholder="Ex: 5000">
               </div>
-
               <div class="form-group">
                 <label>Nome no cartão</label>
-                <input id="recargaCardNome" placeholder="Nome como aparece no cartão">
+                <input id="recargaCardNome" placeholder="Nome no cartão">
               </div>
-
               <div class="form-group">
                 <label>Número do cartão</label>
                 <input id="recargaCardNumero" placeholder="0000 0000 0000 0000">
               </div>
-
               <div class="form-group">
                 <label>Validade</label>
                 <input id="recargaCardValidade" placeholder="MM/AA">
               </div>
-
               <div class="form-group">
                 <label>CVV</label>
-                <input id="recargaCardCVV" type="password" placeholder="***">
+                <input id="recargaCardCVV" type="password" placeholder="•••">
               </div>
             </div>
-
-            <button class="btn btn-primary" onclick="recarregar()">Confirmar recarga</button>
+            <button class="recharge-btn" onclick="recarregar()">Confirmar recarga →</button>
           </div>
         </div>
-
+ 
         <div>
-          <div class="qr-area">
-            <h3>Código QR permanente</h3>
+          <div class="qr-card">
+            <h3>QR Permanente</h3>
             <div id="qrCode"></div>
-            <p>Usa este QR para entrar nos eventos Smart City.</p>
-            <p><b>Validade:</b> QR permanente, sem prazo de expiração.</p>
+            <p class="qr-note">Usa este código para aceder a eventos e serviços Smart City. Sem prazo de expiração.</p>
           </div>
-
-          <div class="qr-area">
-            <h3>Cartão físico NOSZONA Smart</h3>
-            <p>Também podes solicitar um cartão físico RFID para usar no sistema.</p>
-            <button class="btn btn-primary" onclick="solicitarCartao()">Solicitar cartão físico</button>
+ 
+          <div class="card-req-box">
+            <h3>Cartão Físico RFID</h3>
+            <p>Solicita o teu cartão físico NOSZONA Smart para integração com leitores.</p>
+            <button class="btn-card-req" onclick="solicitarCartao()">Solicitar cartão físico</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-<footer class="footer">
-  <p>Smart City Cabo Verde · NOSZONA Smart</p>
+ 
+<footer>
+  <p><strong>NOSZONA Smart</strong> · Smart City Cabo Verde</p>
 </footer>
-
+ 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
 <script>
 let residenteLogado = null;
-
+ 
 function mostrarRegisto(pacote) {
   document.getElementById("registo").style.display = "block";
   document.getElementById("login").style.display = "none";
   document.getElementById("dashboard").style.display = "none";
-  document.getElementById("pacote").value = pacote;
+  if (pacote) document.getElementById("pacote").value = pacote;
   document.getElementById("registo").scrollIntoView({ behavior: "smooth" });
 }
-
+ 
 function mostrarLogin() {
   document.getElementById("login").style.display = "block";
   document.getElementById("registo").style.display = "none";
   document.getElementById("dashboard").style.display = "none";
   document.getElementById("login").scrollIntoView({ behavior: "smooth" });
 }
-
+ 
 function popup(tipo, titulo, texto) {
   const icone = tipo === "sucesso" ? "✅" : "⚠️";
-  const box = document.createElement("div");
-
-  box.style.position = "fixed";
-  box.style.top = "0";
-  box.style.left = "0";
-  box.style.width = "100%";
-  box.style.height = "100%";
-  box.style.background = "rgba(0,0,0,0.58)";
-  box.style.display = "flex";
-  box.style.alignItems = "center";
-  box.style.justifyContent = "center";
-  box.style.zIndex = "9999";
-
-  box.innerHTML = `
-    <div style="background:white;max-width:460px;width:90%;padding:34px;border-radius:24px;text-align:center;font-family:Segoe UI,Arial;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
-      <div style="font-size:72px;">${icone}</div>
-      <h2 style="color:#062b4f;margin-bottom:8px;">${titulo}</h2>
-      <p style="font-size:16px;color:#475569;line-height:1.6;">${texto}</p>
-      <button onclick="this.parentElement.parentElement.remove()" style="background:#062b4f;color:white;border:none;padding:13px 28px;border-radius:12px;font-weight:700;cursor:pointer;">OK</button>
+  const el = document.createElement("div");
+  el.className = "popup-overlay";
+  el.innerHTML = `
+    <div class="popup-box">
+      <span class="popup-icon">${icone}</span>
+      <h2>${titulo}</h2>
+      <p>${texto}</p>
+      <button class="popup-btn" onclick="this.closest('.popup-overlay').remove()">OK</button>
     </div>
   `;
-
-  document.body.appendChild(box);
+  document.body.appendChild(el);
 }
-
-function setLoading(isLoading) {
-  document.body.classList.toggle("loading", isLoading);
-}
-
+ 
+function setLoading(v) { document.body.classList.toggle("loading", v); }
+ 
 async function registar() {
   const residente = {
     nome: document.getElementById("nome").value,
@@ -870,114 +1689,86 @@ async function registar() {
       cvv: document.getElementById("cardCVV").value
     }
   };
-
   try {
     setLoading(true);
-
-    const resposta = await fetch("/api/residentes/registar", {
+    const r = await fetch("/api/residentes/registar", {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(residente)
     });
-
-    const dados = await resposta.json();
-
-    if (dados.sucesso) {
-      popup("sucesso", "Registo bem-sucedido!", dados.mensagem || "A tua conta foi criada. Já podes fazer login para ver o QR permanente.");
+    const d = await r.json();
+    if (d.sucesso) {
+      popup("sucesso", "Conta criada!", d.mensagem || "A tua conta foi criada. Já podes fazer login.");
       mostrarLogin();
     } else {
-      popup("erro", "Erro no registo", dados.mensagem || "Verifica os dados.");
+      popup("erro", "Erro no registo", d.mensagem || "Verifica os dados e tenta novamente.");
     }
-  } catch (erro) {
-    popup("erro", "Erro de ligação", "Não foi possível comunicar com o Node-RED.");
+  } catch (e) {
+    popup("erro", "Erro de ligação", "Não foi possível comunicar com o servidor.");
   } finally {
     setLoading(false);
   }
 }
-
+ 
 async function login() {
-  const dadosLogin = {
-    username: document.getElementById("loginUsername").value,
-    password: document.getElementById("loginPassword").value
-  };
-
   try {
     setLoading(true);
-
-    const resposta = await fetch("/api/residentes/login", {
+    const r = await fetch("/api/residentes/login", {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(dadosLogin)
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: document.getElementById("loginUsername").value,
+        password: document.getElementById("loginPassword").value
+      })
     });
-
-    const dados = await resposta.json();
-
-    if (!dados.sucesso) {
-      popup("erro", "Login não reconhecido", "Tenta novamente ou faz o teu registo.");
+    const d = await r.json();
+    if (!d.sucesso) {
+      popup("erro", "Login não reconhecido", "Verifica os dados ou cria uma conta nova.");
       return;
     }
-
-    residenteLogado = dados.residente;
+    residenteLogado = d.residente;
     mostrarDashboard();
-
-  } catch (erro) {
-    popup("erro", "Erro de ligação", "Não foi possível comunicar com o Node-RED.");
+  } catch (e) {
+    popup("erro", "Erro de ligação", "Não foi possível comunicar com o servidor.");
   } finally {
     setLoading(false);
   }
 }
-
+ 
 function mostrarDashboard() {
   document.getElementById("login").style.display = "none";
   document.getElementById("registo").style.display = "none";
   document.getElementById("dashboard").style.display = "block";
-
+ 
+  const r = residenteLogado;
   document.getElementById("dadosConta").innerHTML = `
-    <div class="account-summary">
-      <div class="summary-box"><span>Nome</span><strong>${residenteLogado.nome}</strong></div>
-      <div class="summary-box"><span>Pacote</span><strong>${residenteLogado.pacote}</strong></div>
-      <div class="summary-box"><span>Saldo</span><strong>${residenteLogado.saldo} CVE</strong></div>
-      <div class="summary-box"><span>Swipes</span><strong>${residenteLogado.swipes}</strong></div>
-      <div class="summary-box"><span>Estado</span><strong><span class="status-chip">${residenteLogado.estado}</span></strong></div>
-      <div class="summary-box"><span>UID do cartão</span><strong>${residenteLogado.uid || "Ainda não gerado"}</strong></div>
-      <div class="summary-box"><span>Pedido de cartão</span><strong>${residenteLogado.pedidoCartao ? "Solicitado" : "Não solicitado"}</strong></div>
-      <div class="summary-box"><span>Pagamento</span><strong>${residenteLogado.pagamentoStatus || "Sem informação"}</strong></div>
-      <div class="summary-box"><span>Últimos 4 dígitos</span><strong>${residenteLogado.ultimos4Cartao || "N/A"}</strong></div>
-      <div class="summary-box"><span>Último pagamento</span><strong>${
-        residenteLogado.ultimoPagamento
-          ? residenteLogado.ultimoPagamento.tipo + " - " + residenteLogado.ultimoPagamento.valor
-          : "N/A"
-      }</strong></div>
-    </div>
-
-    <p class="small-note" style="margin-top:18px;">
-      <b>QR Token:</b> ${residenteLogado.qrToken}
-    </p>
+    <div class="stat-box"><span>Nome</span><strong>${r.nome}</strong></div>
+    <div class="stat-box"><span>Pacote</span><strong>${r.pacote}</strong></div>
+    <div class="stat-box"><span>Saldo</span><strong>${r.saldo} CVE</strong></div>
+    <div class="stat-box"><span>Swipes</span><strong>${r.swipes}</strong></div>
+    <div class="stat-box"><span>Estado</span><strong><span class="chip-active">${r.estado}</span></strong></div>
+    <div class="stat-box"><span>UID Cartão</span><strong>${r.uid || "Não gerado"}</strong></div>
+    <div class="stat-box"><span>Cartão físico</span><strong>${r.pedidoCartao ? "Solicitado" : "Não solicitado"}</strong></div>
+    <div class="stat-box"><span>Pagamento</span><strong>${r.pagamentoStatus || "—"}</strong></div>
   `;
-
+ 
   document.getElementById("qrCode").innerHTML = "";
-
   new QRCode(document.getElementById("qrCode"), {
-    text: residenteLogado.qrToken,
-    width: 210,
-    height: 210
+    text: r.qrToken,
+    width: 200,
+    height: 200
   });
-
+ 
   document.getElementById("dashboard").scrollIntoView({ behavior: "smooth" });
 }
-
+ 
 async function recarregar() {
-  if (!residenteLogado) {
-    popup("erro", "Login necessário", "Faz login antes de recarregar a conta.");
-    return;
-  }
-
+  if (!residenteLogado) { popup("erro", "Login necessário", "Faz login antes de recarregar."); return; }
   try {
     setLoading(true);
-
-    const resposta = await fetch("/api/residentes/recarregar", {
+    const r = await fetch("/api/residentes/recarregar", {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         id: residenteLogado.id,
         tipo: document.getElementById("tipoRecarga").value,
@@ -990,56 +1781,44 @@ async function recarregar() {
         }
       })
     });
-
-    const dados = await resposta.json();
-
-    if (dados.sucesso) {
-      residenteLogado = dados.residente;
+    const d = await r.json();
+    if (d.sucesso) {
+      residenteLogado = d.residente;
       mostrarDashboard();
-      popup("sucesso", "Conta recarregada!", dados.mensagem || "A tua conta foi atualizada com sucesso.");
+      popup("sucesso", "Conta recarregada!", d.mensagem || "Saldo atualizado com sucesso.");
     } else {
-      popup("erro", "Erro na recarga", dados.mensagem || "Tenta novamente.");
+      popup("erro", "Erro na recarga", d.mensagem || "Tenta novamente.");
     }
-
-  } catch (erro) {
-    popup("erro", "Erro de ligação", "Não foi possível comunicar com o Node-RED.");
+  } catch (e) {
+    popup("erro", "Erro de ligação", "Não foi possível comunicar com o servidor.");
   } finally {
     setLoading(false);
   }
 }
-
+ 
 async function solicitarCartao() {
-  if (!residenteLogado) {
-    popup("erro", "Login necessário", "Faz login antes de solicitar o cartão.");
-    return;
-  }
-
+  if (!residenteLogado) { popup("erro", "Login necessário", "Faz login primeiro."); return; }
   try {
     setLoading(true);
-
-    const resposta = await fetch("/api/residentes/solicitar-cartao", {
+    const r = await fetch("/api/residentes/solicitar-cartao", {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: residenteLogado.id })
     });
-
-    const dados = await resposta.json();
-
-    if (dados.sucesso) {
-      residenteLogado = dados.residente;
+    const d = await r.json();
+    if (d.sucesso) {
+      residenteLogado = d.residente;
       mostrarDashboard();
-      popup("sucesso", "Pedido enviado!", "O teu pedido de Cartão NOSZONA Smart foi enviado para a administração.");
+      popup("sucesso", "Pedido enviado!", "O teu cartão físico NOSZONA Smart foi solicitado à administração.");
     } else {
-      popup("erro", "Erro", dados.mensagem || "Não foi possível solicitar o cartão.");
+      popup("erro", "Erro", d.mensagem || "Não foi possível solicitar o cartão.");
     }
-
-  } catch (erro) {
-    popup("erro", "Erro de ligação", "Não foi possível comunicar com o Node-RED.");
+  } catch (e) {
+    popup("erro", "Erro de ligação", "Não foi possível comunicar com o servidor.");
   } finally {
     setLoading(false);
   }
 }
 </script>
-
 </body>
 </html>
