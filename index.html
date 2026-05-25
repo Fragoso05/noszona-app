@@ -1691,7 +1691,7 @@ async function registar() {
   };
   try {
     setLoading(true);
-    const r = await fetch("http://127.0.0.1:3000/api/residentes/registar", {
+    const r = await fetch("https://violet-beaver-178312.hostingersite.com/api/residentes/registar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(residente)
@@ -1713,7 +1713,7 @@ async function registar() {
 async function login() {
   try {
     setLoading(true);
-    const r = await fetch("http://127.0.0.1:3000/api/residentes/login", {
+    const r = await fetch("https://violet-beaver-178312.hostingersite.com/api/residentes/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -1766,7 +1766,7 @@ async function recarregar() {
   if (!residenteLogado) { popup("erro", "Login necessário", "Faz login antes de recarregar."); return; }
   try {
     setLoading(true);
-    const r = await fetch("http://127.0.0.1:3000/api/residentes/recarregar", {
+    const r = await fetch("https://violet-beaver-178312.hostingersite.com/api/residentes/recarregar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -1800,7 +1800,7 @@ async function solicitarCartao() {
   if (!residenteLogado) { popup("erro", "Login necessário", "Faz login primeiro."); return; }
   try {
     setLoading(true);
-    const r = await fetch("http://127.0.0.1:3000/api/residentes/solicitar-cartao", {
+    const r = await fetch("https://violet-beaver-178312.hostingersite.com/api/residentes/solicitar-cartao", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: residenteLogado.id })
