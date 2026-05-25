@@ -13,6 +13,21 @@
     <!-- Outros meta tags (opcional mas recomendado) -->
     <meta name="description" content="NOSZONA - Identidade Digital da Smart City Cabo Verde">
 <style>
+
+  .logo-img {
+    height: 50px;           /* Ajusta o tamanho conforme quiseres */
+    width: auto;
+    max-width: 180px;
+    object-fit: contain;
+    cursor: pointer;
+}
+
+/* Para mobile */
+@media (max-width: 768px) {
+    .logo-img {
+        height: 40px;
+    }
+}
 :root {
   --navy: #061827;
   --navy-mid: #0b2e4a;
@@ -1223,12 +1238,15 @@ footer p strong { color: rgba(255,255,255,0.60); font-weight: 500; }
   .dash-header { padding: 22px 22px; }
 }
 </style>
+
 </head>
 <body>
  
 <!-- HEADER -->
 <header>
-  <div class="logo-text">NOSZONA<span>Smart</span></div>
+  <div class="logo">
+    <img src="assets/images/noszona-logo.jpg" alt="NOSZONA Smart" class="logo-img">
+</div>
   <ul class="nav-links">
     <li><a href="#como-funciona">Como funciona</a></li>
     <li><a href="#pacotes">Pacotes</a></li>
