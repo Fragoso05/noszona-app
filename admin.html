@@ -4,900 +4,1072 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin NOSZONA Smart</title>
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --primary: #062b4f;
-  --primary-light: #0b4f88;
-  --accent: #00a8c8;
-  --gold: #f6c247;
-  --bg: #f4f7fb;
-  --card: #ffffff;
-  --text: #122033;
-  --muted: #6b7280;
-  --border: #dbe4ef;
-  --success: #0f9f6e;
-  --warning: #f59e0b;
-  --danger: #c62828;
-  --shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+  --navy:       #07243d;
+  --navy-mid:   #0d3a5e;
+  --navy-soft:  #1a4f78;
+  --cyan:       #00b4d8;
+  --cyan-dim:   #0096b4;
+  --gold:       #e9a92a;
+  --gold-dim:   #c78f20;
+  --bg:         #f0f4f8;
+  --surface:    #ffffff;
+  --surface-2:  #f7f9fc;
+  --border:     #dce6f0;
+  --border-strong: #bdd0e4;
+  --text:       #07243d;
+  --text-mid:   #3a5470;
+  --text-muted: #7a93aa;
+  --green:      #0b9b6a;
+  --green-bg:   #e4f7ef;
+  --green-border:#8fd5bb;
+  --amber:      #d4850a;
+  --amber-bg:   #fef4e0;
+  --amber-border:#f2cc7a;
+  --red:        #c0392b;
+  --red-bg:     #fdf0ee;
+  --red-border: #e8b0a8;
+  --shadow-sm:  0 1px 4px rgba(7,36,61,0.06);
+  --shadow-md:  0 4px 16px rgba(7,36,61,0.09);
+  --shadow-lg:  0 8px 32px rgba(7,36,61,0.12);
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  18px;
+  --radius-xl:  24px;
 }
 
-* {
-  box-sizing: border-box;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  margin: 0;
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family: 'DM Sans', sans-serif;
   background: var(--bg);
   color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
 }
 
+/* ── HEADER ─────────────────────────────────────────────── */
 header {
-  background:
-    radial-gradient(circle at top left, rgba(0,168,200,0.25), transparent 35%),
-    linear-gradient(135deg, #062b4f 0%, #0b4f88 70%, #0b8ea8 100%);
-  color: white;
-  padding: 28px 7%;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+  background: var(--navy);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.header-content {
-  max-width: 1250px;
+.header-inner {
+  max-width: 1320px;
   margin: auto;
+  padding: 0 32px;
+  height: 64px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 20px;
-  align-items: center;
-  flex-wrap: wrap;
 }
 
-.logo-area {
+.brand {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
-.logo-mark {
-  width: 50px;
-  height: 50px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, var(--accent), var(--gold));
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--cyan), var(--gold));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 900;
-  font-size: 20px;
-  color: white;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-}
-
-.logo-area h1 {
-  margin: 0;
-  font-size: 26px;
-}
-
-.logo-area p {
-  margin: 4px 0 0;
-  color: rgba(255,255,255,0.82);
+  font-weight: 700;
   font-size: 14px;
+  color: var(--navy);
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
 }
 
-.header-actions {
+.brand-text strong {
+  display: block;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.brand-text span {
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  font-weight: 400;
+}
+
+.header-right {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.container {
-  max-width: 1250px;
-  margin: auto;
-  padding: 35px 7%;
-}
-
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
   align-items: center;
-  margin-bottom: 25px;
-  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.topbar h2 {
-  margin: 0;
-  color: var(--primary);
-  font-size: 30px;
+.status-dot {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  padding: 0 12px;
 }
 
-.topbar p {
-  color: var(--muted);
-  margin: 6px 0 0;
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 2px rgba(11,155,106,0.25);
+  animation: pulse 2s ease infinite;
 }
 
-button {
-  font-family: inherit;
-  border: none;
-  cursor: pointer;
-  font-weight: 800;
-  transition: 0.25s ease;
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
+/* ── BUTTONS ─────────────────────────────────────────────── */
 .btn {
-  padding: 12px 18px;
-  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.btn-ghost {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.75);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.14);
+  color: #fff;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent), var(--primary-light));
-  color: white;
-  box-shadow: 0 8px 18px rgba(0,168,200,0.25);
+  background: var(--cyan);
+  color: var(--navy);
 }
+.btn-primary:hover { background: #00caf0; transform: translateY(-1px); }
+
+.btn-success {
+  background: var(--green);
+  color: #fff;
+}
+.btn-success:hover { background: #0aae77; transform: translateY(-1px); }
 
 .btn-outline {
-  background: white;
-  color: var(--primary);
-  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-mid);
+  border: 1px solid var(--border-strong);
+}
+.btn-outline:hover {
+  background: var(--surface-2);
+  border-color: var(--cyan);
+  color: var(--cyan-dim);
 }
 
 .btn-danger {
-  background: var(--danger);
-  color: white;
+  background: var(--red-bg);
+  color: var(--red);
+  border: 1px solid var(--red-border);
+}
+.btn-danger:hover {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+  transform: translateY(-1px);
 }
 
-.btn-success {
-  background: var(--success);
-  color: white;
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-icon { padding: 8px; }
+
+.btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+/* ── MAIN LAYOUT ─────────────────────────────────────────── */
+.main {
+  max-width: 1320px;
+  margin: auto;
+  padding: 28px 32px 48px;
 }
 
-.btn-warning {
-  background: var(--warning);
-  color: white;
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-  opacity: 0.95;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-  margin-bottom: 28px;
-}
-
-.stat-card {
-  background: white;
-  border-radius: 22px;
-  padding: 22px;
-  border: 1px solid var(--border);
-  box-shadow: 0 12px 35px rgba(15,23,42,0.08);
-}
-
-.stat-card span {
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.stat-card strong {
-  display: block;
-  margin-top: 8px;
-  font-size: 30px;
-  color: var(--primary);
-}
-
-.tools {
-  background: white;
-  border-radius: 22px;
-  padding: 18px;
-  border: 1px solid var(--border);
-  box-shadow: 0 12px 35px rgba(15,23,42,0.08);
-  margin-bottom: 25px;
-  display: grid;
-  grid-template-columns: 1fr 220px;
-  gap: 14px;
-}
-
-input, select {
-  width: 100%;
-  padding: 13px 14px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  font-size: 15px;
-  background: #fbfdff;
-  outline: none;
-}
-
-input:focus, select:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(0,168,200,0.12);
-}
-
-#lista {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 22px;
-}
-
-.card {
-  background: var(--card);
-  border-radius: 26px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-}
-
-.card-header {
-  padding: 22px 26px;
-  background: linear-gradient(135deg, #ffffff, #eef8fb);
-  border-bottom: 1px solid var(--border);
+/* ── PAGE TITLE ──────────────────────────────────────────── */
+.page-title {
   display: flex;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 18px;
-  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
-.resident-title {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+.page-title h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
 }
 
-.avatar {
-  width: 54px;
-  height: 54px;
-  border-radius: 18px;
-  background: linear-gradient(135deg, var(--primary-light), var(--accent));
-  color: white;
+.page-title p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── STATS ──────────────────────────────────────────────── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: box-shadow 0.2s;
+}
+.stat-card:hover { box-shadow: var(--shadow-md); }
+
+.stat-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 900;
-  font-size: 20px;
+  flex-shrink: 0;
 }
 
-.card-header h3 {
-  margin: 0;
-  font-size: 22px;
-  color: var(--primary);
+.stat-icon svg { width: 22px; height: 22px; }
+
+.stat-icon.blue   { background: #e3f4fb; color: #0a7fa0; }
+.stat-icon.green  { background: var(--green-bg); color: var(--green); }
+.stat-icon.amber  { background: var(--amber-bg); color: var(--amber); }
+.stat-icon.navy   { background: #e8eef5; color: var(--navy-soft); }
+
+.stat-info { flex: 1; min-width: 0; }
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
 }
 
-.card-header p {
-  margin: 4px 0 0;
-  color: var(--muted);
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+
+/* ── TOOLBAR ─────────────────────────────────────────────── */
+.toolbar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.search-wrap {
+  flex: 1;
+  min-width: 220px;
+  position: relative;
+}
+
+.search-wrap svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.search-wrap input {
+  width: 100%;
+  padding: 10px 14px 10px 38px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  font-family: inherit;
   font-size: 14px;
+  color: var(--text);
+  background: var(--surface-2);
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+.search-wrap input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(0,180,216,0.14);
+  background: var(--surface);
+}
+.search-wrap input::placeholder { color: var(--text-muted); }
+
+.filter-select {
+  padding: 10px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text-mid);
+  background: var(--surface-2);
+  outline: none;
+  min-width: 180px;
+  cursor: pointer;
+  transition: border-color 0.18s;
+}
+.filter-select:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(0,180,216,0.14);
 }
 
-.card-body {
-  padding: 26px;
+.result-count {
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ── RESIDENT CARDS ──────────────────────────────────────── */
+#lista {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.res-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.res-card:hover { box-shadow: var(--shadow-md); }
+
+/* Card top row */
+.res-card-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--navy);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  flex-shrink: 0;
+  letter-spacing: -1px;
+}
+
+.res-meta { flex: 1; min-width: 0; }
+.res-meta h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.res-meta-sub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 3px;
+}
+.res-meta-sub span {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.meta-sep { color: var(--border-strong) !important; }
+
+.top-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Status badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  border: 1px solid transparent;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.badge-ativo    { background: var(--green-bg);  color: var(--green);  border-color: var(--green-border); }
+.badge-pendente { background: var(--amber-bg);  color: var(--amber);  border-color: var(--amber-border); }
+.badge-inativo  { background: var(--surface-2); color: var(--text-muted); border-color: var(--border); }
+.badge-rfid     { background: #e9f3fd; color: #1565c0; border-color: #b8d3f0; }
+.badge-warning  { background: var(--amber-bg);  color: var(--amber);  border-color: var(--amber-border); }
+.badge-danger   { background: var(--red-bg);    color: var(--red);    border-color: var(--red-border); }
+
+/* Card alert banner */
+.card-alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  background: var(--amber-bg);
+  border-bottom: 1px solid var(--amber-border);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--amber);
+}
+.card-alert svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* Card body */
+.res-card-body {
+  padding: 24px;
+}
+
+/* Info sections */
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
 }
 
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+  margin-bottom: 22px;
 }
 
-.info-box {
-  background: #f8fbff;
+.info-tile {
+  background: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 15px;
-  min-height: 78px;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  transition: border-color 0.18s;
+}
+.info-tile:hover { border-color: var(--border-strong); }
+
+.info-tile-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 5px;
 }
 
-.info-box span {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 6px;
-  font-weight: 700;
-}
-
-.info-box strong {
-  color: var(--primary);
-  font-size: 15px;
+.info-tile-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
   word-break: break-word;
+  line-height: 1.4;
 }
 
-.status-chip {
-  display: inline-flex;
-  padding: 8px 13px;
-  border-radius: 999px;
+.info-tile-value.mono {
+  font-family: 'DM Mono', monospace;
   font-size: 13px;
-  font-weight: 900;
+  color: var(--navy-soft);
 }
 
-.status-pendente {
-  background: #fff7e6;
-  color: var(--warning);
-}
+.info-tile-value.na { color: var(--text-muted); font-weight: 400; }
 
-.status-ativo {
-  background: #e9fff6;
-  color: var(--success);
+/* Payment/access highlight tiles */
+.info-tile.highlight-yes {
+  background: var(--green-bg);
+  border-color: var(--green-border);
 }
+.info-tile.highlight-yes .info-tile-value { color: var(--green); }
 
-.status-inativo {
-  background: #f3f4f6;
-  color: var(--muted);
+.info-tile.highlight-warn {
+  background: var(--amber-bg);
+  border-color: var(--amber-border);
 }
+.info-tile.highlight-warn .info-tile-value { color: var(--amber); }
 
-.pedido-alerta {
-  margin-top: 20px;
-  padding: 16px;
-  border-radius: 18px;
-  background: #fff7e6;
-  border: 1px solid #ffd890;
-  color: #7c4a03;
-  font-weight: 700;
+.info-tile.highlight-key {
+  background: #edf4fd;
+  border-color: #b8d3f0;
 }
+.info-tile.highlight-key .info-tile-value { color: #1565c0; }
 
-.admin-actions {
-  margin-top: 24px;
+/* Divider */
+.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+/* Action panel */
+.action-panel {
   display: grid;
   grid-template-columns: 1fr auto auto auto;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
 }
 
-.uid-input {
-  margin: 0;
+.rfid-input-wrap {
+  position: relative;
 }
 
-.empty-state {
-  background: white;
-  border-radius: 24px;
-  padding: 45px;
-  text-align: center;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-}
-
-.empty-state h3 {
-  color: var(--primary);
-  margin-bottom: 8px;
-}
-
-.empty-state p {
-  color: var(--muted);
-}
-
-.footer {
-  text-align: center;
-  color: var(--muted);
-  padding: 25px;
-}
-
-.loading {
-  opacity: 0.6;
+.rfid-input-wrap svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  color: var(--text-muted);
   pointer-events: none;
 }
 
+.rfid-input {
+  width: 100%;
+  padding: 10px 14px 10px 36px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--surface-2);
+  outline: none;
+  transition: all 0.18s;
+}
+.rfid-input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(0,180,216,0.14);
+  background: var(--surface);
+}
+.rfid-input::placeholder { color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 13px; }
+
+/* Danger zone */
 .danger-zone {
-  margin-top: 20px;
-  padding: 18px;
-  background: #fff5f5;
-  border: 1px solid #ffd2d2;
-  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+  border-radius: var(--radius-md);
+  margin-top: 16px;
+  flex-wrap: wrap;
 }
 
-.danger-zone h4 {
-  margin: 0 0 8px;
-  color: var(--danger);
+.danger-zone-text { flex: 1; min-width: 200px; }
+.danger-zone-text strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--red);
+  margin-bottom: 2px;
+}
+.danger-zone-text p {
+  font-size: 12px;
+  color: #8b3a31;
+  line-height: 1.4;
 }
 
-.danger-zone p {
-  margin: 0 0 12px;
-  color: #7f1d1d;
-  font-size: 14px;
+/* ── EMPTY / ERROR STATES ────────────────────────────────── */
+.state-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 56px 32px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+.state-box svg { width: 48px; height: 48px; color: var(--border-strong); margin-bottom: 16px; }
+.state-box h3 { font-size: 18px; color: var(--text); margin-bottom: 6px; }
+.state-box p  { font-size: 14px; color: var(--text-muted); }
+
+/* ── LOADING ─────────────────────────────────────────────── */
+body.loading { cursor: progress; }
+body.loading .res-card { opacity: 0.5; pointer-events: none; }
+
+/* ── FOOTER ──────────────────────────────────────────────── */
+footer {
+  text-align: center;
+  padding: 24px;
+  font-size: 12px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
 }
 
-@media (max-width: 1050px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .info-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .admin-actions {
-    grid-template-columns: 1fr;
-  }
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 1000px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .action-panel { grid-template-columns: 1fr 1fr; }
+  .action-panel .rfid-input-wrap { grid-column: 1 / -1; }
 }
 
-@media (max-width: 650px) {
-  header {
-    padding: 22px 5%;
-  }
-
-  .container {
-    padding: 28px 5%;
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .tools {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 640px) {
+  .header-inner { padding: 0 18px; }
+  .main { padding: 20px 18px 40px; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .action-panel { grid-template-columns: 1fr; }
+  .res-card-top { padding: 16px 18px; }
+  .res-card-body { padding: 18px; }
+  .info-grid { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
-
 <body>
 
+<!-- ── HEADER ─────────────────────────────────────────────── -->
 <header>
-  <div class="header-content">
-    <div class="logo-area">
-      <div class="logo-mark">NZ</div>
-      <div>
-        <h1>Painel de Administração</h1>
-        <p>NOSZONA Smart · Gestão de Residentes, QR e RFID</p>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-icon">NZ</div>
+      <div class="brand-text">
+        <strong>NOSZONA Smart</strong>
+        <span>Painel de Administração</span>
       </div>
     </div>
-
-    <div class="header-actions">
-      <button class="btn btn-outline" onclick="carregarResidentes()">Atualizar</button>
+    <div class="header-right">
+      <div class="status-dot">
+        <div class="dot"></div>
+        Sistema operacional
+      </div>
+      <button class="btn btn-ghost" onclick="carregarResidentes()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+        Atualizar
+      </button>
     </div>
   </div>
 </header>
 
-<main class="container">
+<!-- ── MAIN ───────────────────────────────────────────────── -->
+<main class="main">
 
-  <div class="topbar">
+  <div class="page-title">
     <div>
-      <h2>Residentes registados</h2>
-      <p>Gestão completa de contas, pacotes, QR permanente e cartões RFID.</p>
+      <h1>Gestão de Residentes</h1>
+      <p>Monitoramento de contas, QR permanente e cartões RFID</p>
     </div>
   </div>
 
-  <section class="stats-grid">
+  <!-- Stats -->
+  <div class="stats-row">
     <div class="stat-card">
-      <span>Total de residentes</span>
-      <strong id="statTotal">0</strong>
+      <div class="stat-icon blue">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-label">Total Residentes</div>
+        <div class="stat-value" id="statTotal">—</div>
+      </div>
     </div>
 
     <div class="stat-card">
-      <span>Cartões ativos</span>
-      <strong id="statAtivos">0</strong>
+      <div class="stat-icon green">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-label">Cartões Ativos</div>
+        <div class="stat-value" id="statAtivos">—</div>
+      </div>
     </div>
 
     <div class="stat-card">
-      <span>Pedidos de cartão</span>
-      <strong id="statPedidos">0</strong>
+      <div class="stat-icon amber">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-label">Pedidos de Cartão</div>
+        <div class="stat-value" id="statPedidos">—</div>
+      </div>
     </div>
 
     <div class="stat-card">
-      <span>Total de swipes</span>
-      <strong id="statSwipes">0</strong>
+      <div class="stat-icon navy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-label">Total de Swipes</div>
+        <div class="stat-value" id="statSwipes">—</div>
+      </div>
     </div>
-  </section>
+  </div>
 
-  <section class="tools">
-    <input id="pesquisa" placeholder="Pesquisar por nome, username, documento, pacote ou UID..." oninput="filtrarResidentes()">
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="pesquisa" type="text" placeholder="Pesquisar por nome, username, documento, UID…" oninput="filtrarResidentes()">
+    </div>
 
-    <select id="filtroEstado" onchange="filtrarResidentes()">
+    <select id="filtroEstado" class="filter-select" onchange="filtrarResidentes()">
       <option value="todos">Todos os estados</option>
       <option value="ativo">Ativos</option>
       <option value="pendente">Pendentes</option>
-      <option value="cartao">Com cartão gerado</option>
-      <option value="pedido">Com pedido de cartão</option>
+      <option value="cartao">Com cartão RFID</option>
+      <option value="pedido">Com pedido pendente</option>
     </select>
-  </section>
 
+    <span class="result-count" id="resultCount"></span>
+  </div>
+
+  <!-- List -->
   <div id="lista"></div>
 
 </main>
 
-<footer class="footer">
-  <p>Smart City Cabo Verde · NOSZONA Smart Admin</p>
+<footer>
+  Smart City Cabo Verde · NOSZONA Smart Admin · Painel de Controlo
 </footer>
 
 <script>
+/* ─────────────────────────────────────────────────────────
+   LÓGICA ORIGINAL PRESERVADA — só a camada de exibição foi
+   redesenhada.
+───────────────────────────────────────────────────────── */
 let residentesCache = [];
 
-function setLoading(isLoading) {
-  document.body.classList.toggle("loading", isLoading);
-}
+function setLoading(v) { document.body.classList.toggle("loading", v); }
 
-function formatarValor(valor, vazio = "N/A") {
-  if (valor === undefined || valor === null || valor === "") {
-    return vazio;
-  }
-  return valor;
+function formatarValor(v, vazio = "N/A") {
+  return (v === undefined || v === null || v === "") ? vazio : v;
 }
 
 function getIniciais(nome) {
   if (!nome) return "NZ";
-
-  return nome
-    .split(" ")
-    .map(p => p[0])
-    .join("")
-    .substring(0, 2)
-    .toUpperCase();
+  return nome.split(" ").map(p => p[0]).join("").substring(0, 2).toUpperCase();
 }
 
-function normalizarBoolean(valor) {
-  return valor === true || valor === 1 || valor === "1";
-}
-
-function getStatusClass(estado) {
-  if (estado === "ativo") return "status-ativo";
-  if (estado === "pendente") return "status-pendente";
-  return "status-inativo";
+function normalizarBoolean(v) {
+  return v === true || v === 1 || v === "1";
 }
 
 async function carregarResidentes() {
   try {
     setLoading(true);
-
-    const resposta = await fetch("/api/admin/residentes");
-    const residentes = await resposta.json();
-
-    residentesCache = Array.isArray(residentes) ? residentes : [];
-
+    const resp = await fetch("/api/admin/residentes");
+    const dados = await resp.json();
+    residentesCache = Array.isArray(dados) ? dados : [];
     atualizarEstatisticas(residentesCache);
     renderizarResidentes(residentesCache);
-
-  } catch (erro) {
-    document.getElementById("lista").innerHTML = `
-      <div class="empty-state">
-        <h3>Erro de ligação</h3>
-        <p>Não foi possível comunicar com o Node-RED.</p>
-      </div>
-    `;
+  } catch (e) {
+    document.getElementById("lista").innerHTML = erroHTML("Erro de ligação", "Não foi possível comunicar com o Node-RED. Verifique a conexão e tente de novo.");
   } finally {
     setLoading(false);
   }
 }
 
-function atualizarEstatisticas(residentes) {
-  const total = residentes.length;
-
-  const ativos = residentes.filter(r => r.estado === "ativo").length;
-
-  const pedidos = residentes.filter(r =>
-    normalizarBoolean(r.pedidoCartao) ||
-    r.estadoPedidoCartao === "pendente"
-  ).length;
-
-  const swipes = residentes.reduce((acc, r) => acc + Number(r.swipes || 0), 0);
-
-  document.getElementById("statTotal").innerText = total;
-  document.getElementById("statAtivos").innerText = ativos;
-  document.getElementById("statPedidos").innerText = pedidos;
-  document.getElementById("statSwipes").innerText = swipes;
+function atualizarEstatisticas(res) {
+  document.getElementById("statTotal").textContent  = res.length;
+  document.getElementById("statAtivos").textContent  = res.filter(r => r.estado === "ativo").length;
+  document.getElementById("statPedidos").textContent = res.filter(r => normalizarBoolean(r.pedidoCartao) || r.estadoPedidoCartao === "pendente").length;
+  document.getElementById("statSwipes").textContent  = res.reduce((a, r) => a + Number(r.swipes || 0), 0);
 }
 
 function filtrarResidentes() {
-  const termo = document.getElementById("pesquisa").value.toLowerCase();
+  const termo  = document.getElementById("pesquisa").value.toLowerCase();
   const filtro = document.getElementById("filtroEstado").value;
 
-  let filtrados = residentesCache.filter(r => {
-    const texto = `
-      ${r.nome || ""}
-      ${r.username || ""}
-      ${r.documento || ""}
-      ${r.pacote || ""}
-      ${r.uid || ""}
-      ${r.email || ""}
-      ${r.telefone || ""}
-      ${r.estadoPedidoCartao || ""}
-    `.toLowerCase();
-
-    const combinaPesquisa = texto.includes(termo);
-    let combinaFiltro = true;
-
-    if (filtro === "ativo") {
-      combinaFiltro = r.estado === "ativo";
-    }
-
-    if (filtro === "pendente") {
-      combinaFiltro = r.estado === "pendente";
-    }
-
-    if (filtro === "cartao") {
-      combinaFiltro = normalizarBoolean(r.cartaoGerado) || !!r.uid;
-    }
-
-    if (filtro === "pedido") {
-      combinaFiltro = normalizarBoolean(r.pedidoCartao) || r.estadoPedidoCartao === "pendente";
-    }
-
-    return combinaPesquisa && combinaFiltro;
+  const filtrados = residentesCache.filter(r => {
+    const txt = `${r.nome||""} ${r.username||""} ${r.documento||""} ${r.pacote||""} ${r.uid||""} ${r.email||""} ${r.telefone||""} ${r.estadoPedidoCartao||""}`.toLowerCase();
+    if (!txt.includes(termo)) return false;
+    if (filtro === "ativo")    return r.estado === "ativo";
+    if (filtro === "pendente") return r.estado === "pendente";
+    if (filtro === "cartao")   return normalizarBoolean(r.cartaoGerado) || !!r.uid;
+    if (filtro === "pedido")   return normalizarBoolean(r.pedidoCartao) || r.estadoPedidoCartao === "pendente";
+    return true;
   });
 
+  document.getElementById("resultCount").textContent = filtrados.length + " residente" + (filtrados.length !== 1 ? "s" : "");
   renderizarResidentes(filtrados);
 }
 
-function renderizarResidentes(residentes) {
+function renderizarResidentes(res) {
   const lista = document.getElementById("lista");
   lista.innerHTML = "";
 
-  if (residentes.length === 0) {
-    lista.innerHTML = `
-      <div class="empty-state">
-        <h3>Nenhum residente encontrado</h3>
-        <p>Ainda não existem residentes registados ou o filtro não encontrou resultados.</p>
-      </div>
-    `;
+  if (!res.length) {
+    lista.innerHTML = erroHTML("Nenhum residente encontrado", "Não há residentes registados ou o filtro não encontrou resultados.");
     return;
   }
 
-  residentes.forEach(r => {
+  document.getElementById("resultCount").textContent = res.length + " residente" + (res.length !== 1 ? "s" : "");
+
+  res.forEach(r => {
     const pedidoPendente = normalizarBoolean(r.pedidoCartao) || r.estadoPedidoCartao === "pendente";
-    const temCartao = normalizarBoolean(r.cartaoGerado) || !!r.uid;
+    const temCartao      = normalizarBoolean(r.cartaoGerado) || !!r.uid;
+    const iniciais       = getIniciais(r.nome);
+
+    const statusClass = r.estado === "ativo" ? "badge-ativo" : r.estado === "pendente" ? "badge-pendente" : "badge-inativo";
+    const statusLabel = formatarValor(r.estado, "sem estado");
+
+    const tile = (label, value, cssClass = "") => {
+      const isNA = (value === "N/A" || value === "" || value === null || value === undefined);
+      return `
+        <div class="info-tile${cssClass ? " " + cssClass : ""}">
+          <div class="info-tile-label">${label}</div>
+          <div class="info-tile-value${isNA ? " na" : ""}">${isNA ? "Não disponível" : value}</div>
+        </div>`;
+    };
+
+    const tileMono = (label, value) => {
+      const isNA = !value || value === "N/A";
+      return `
+        <div class="info-tile${isNA ? "" : " highlight-key"}">
+          <div class="info-tile-label">${label}</div>
+          <div class="info-tile-value${isNA ? " na" : " mono"}">${isNA ? "Não atribuído" : value}</div>
+        </div>`;
+    };
 
     lista.innerHTML += `
-      <div class="card">
-        <div class="card-header">
-          <div class="resident-title">
-            <div class="avatar">${getIniciais(r.nome)}</div>
-            <div>
-              <h3>${formatarValor(r.nome, "Sem nome")}</h3>
-              <p>${formatarValor(r.username, "Sem username")} · ${formatarValor(r.pacote, "Sem pacote")}</p>
+      <div class="res-card">
+
+        <!-- TOP ROW -->
+        <div class="res-card-top">
+          <div class="avatar">${iniciais}</div>
+          <div class="res-meta">
+            <h2>${formatarValor(r.nome, "Sem nome")}</h2>
+            <div class="res-meta-sub">
+              <span>${formatarValor(r.username, "sem username")}</span>
+              <span class="meta-sep">·</span>
+              <span>${formatarValor(r.pacote, "sem pacote")}</span>
+              ${r.municipio ? `<span class="meta-sep">·</span><span>${r.municipio}</span>` : ""}
             </div>
           </div>
-
-          <span class="status-chip ${getStatusClass(r.estado)}">
-            ${formatarValor(r.estado, "sem estado")}
-          </span>
+          <div class="top-badges">
+            <span class="badge ${statusClass}">
+              <span class="badge-dot" style="background:currentColor;opacity:.7"></span>
+              ${statusLabel}
+            </span>
+            ${temCartao ? `<span class="badge badge-rfid"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="5" width="20" height="14" rx="2"/></svg> RFID</span>` : ""}
+            ${pedidoPendente ? `<span class="badge badge-warning"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Pedido pendente</span>` : ""}
+          </div>
         </div>
 
-        <div class="card-body">
+        <!-- ALERT BANNER -->
+        ${pedidoPendente ? `
+          <div class="card-alert">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Cartão físico solicitado — estado do pedido:
+            <strong style="margin-left:4px">${formatarValor(r.estadoPedidoCartao, "Pendente de análise")}</strong>
+          </div>
+        ` : ""}
 
-          ${pedidoPendente ? `
-            <div class="pedido-alerta">
-              🎫 Este residente solicitou cartão físico. Estado do pedido: ${formatarValor(r.estadoPedidoCartao, "pendente")}
-            </div>
-          ` : ""}
+        <!-- BODY -->
+        <div class="res-card-body">
 
+          <!-- Secção: Dados pessoais -->
+          <div class="section-label">Dados pessoais e contacto</div>
           <div class="info-grid">
-            <div class="info-box">
-              <span>Data de nascimento</span>
-              <strong>${formatarValor(r.dataNascimento)}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Nacionalidade</span>
-              <strong>${formatarValor(r.nacionalidade)}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Documento</span>
-              <strong>${formatarValor(r.documento)}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Telefone</span>
-              <strong>${formatarValor(r.telefone)}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Email</span>
-              <strong>${formatarValor(r.email)}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Morada</span>
-              <strong>${formatarValor(r.morada)}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Município</span>
-              <strong>${formatarValor(r.municipio)}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Pacote</span>
-              <strong>${formatarValor(r.pacote)}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Saldo</span>
-              <strong>${Number(r.saldo || 0)} CVE</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Swipes</span>
-              <strong>${Number(r.swipes || 0)}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Parking</span>
-              <strong>${normalizarBoolean(r.parking) ? "Sim" : "Não"}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Eventos</span>
-              <strong>${normalizarBoolean(r.eventos) ? "Sim" : "Não"}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Pedido de cartão</span>
-              <strong>${pedidoPendente ? "Sim" : "Não solicitado"}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Estado do pedido</span>
-              <strong>${formatarValor(r.estadoPedidoCartao, "não solicitado")}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>UID RFID</span>
-              <strong>${formatarValor(r.uid, "Ainda sem cartão")}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>QR Token</span>
-              <strong>${formatarValor(r.qrToken, "Sem QR")}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Pagamento</span>
-              <strong>${formatarValor(r.pagamentoStatus, "sem informação")}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Valor pago</span>
-              <strong>${Number(r.valorPago || 0)} CVE</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Cartão pagamento</span>
-              <strong>${r.ultimos4Cartao ? "**** " + r.ultimos4Cartao : "N/A"}</strong>
-            </div>
-
-            <div class="info-box">
-              <span>Cartão RFID</span>
-              <strong>${temCartao ? "Gerado" : "Ainda não gerado"}</strong>
-            </div>
+            ${tile("Data de nascimento", formatarValor(r.dataNascimento))}
+            ${tile("Nacionalidade",      formatarValor(r.nacionalidade))}
+            ${tile("Documento / NIF",   formatarValor(r.documento))}
+            ${tile("Telefone",          formatarValor(r.telefone))}
+            ${tile("Email",             formatarValor(r.email))}
+            ${tile("Morada",            formatarValor(r.morada))}
+            ${tile("Município",         formatarValor(r.municipio))}
           </div>
 
-          <div class="admin-actions">
-            <input class="uid-input" id="uid_${r.id}" placeholder="Digite o UID do cartão RFID">
+          <!-- Secção: Serviços e Acesso -->
+          <div class="section-label">Serviços e permissões de acesso</div>
+          <div class="info-grid">
+            ${tile("Pacote contratado", formatarValor(r.pacote))}
+            ${tile("Parking",  normalizarBoolean(r.parking)  ? "✓ Incluído"  : "Não incluído", normalizarBoolean(r.parking)  ? "highlight-yes" : "")}
+            ${tile("Eventos",  normalizarBoolean(r.eventos)  ? "✓ Incluído"  : "Não incluído", normalizarBoolean(r.eventos)  ? "highlight-yes" : "")}
+            ${tile("Saldo atual",   Number(r.saldo  || 0) + " CVE")}
+            ${tile("Total de swipes", Number(r.swipes || 0))}
+          </div>
 
+          <!-- Secção: Pagamento -->
+          <div class="section-label">Informação de pagamento</div>
+          <div class="info-grid">
+            ${tile("Estado pagamento",  formatarValor(r.pagamentoStatus, "Sem informação"), r.pagamentoStatus === "pago" ? "highlight-yes" : r.pagamentoStatus ? "highlight-warn" : "")}
+            ${tile("Valor pago",       Number(r.valorPago || 0) + " CVE")}
+            ${tile("Cartão pagamento", r.ultimos4Cartao ? "**** **** **** " + r.ultimos4Cartao : "N/A")}
+          </div>
+
+          <!-- Secção: Cartão e QR -->
+          <div class="section-label">Cartão RFID e QR Token</div>
+          <div class="info-grid">
+            ${tileMono("UID RFID",   formatarValor(r.uid, ""))}
+            ${tileMono("QR Token",   formatarValor(r.qrToken, ""))}
+            ${tile("Cartão RFID",   temCartao ? "✓ Gerado"      : "Ainda não gerado",     temCartao ? "highlight-yes" : "")}
+            ${tile("Pedido cartão", pedidoPendente ? "Sim — pendente" : "Não solicitado", pedidoPendente ? "highlight-warn" : "")}
+            ${tile("Estado pedido", formatarValor(r.estadoPedidoCartao, "Não aplicável"))}
+          </div>
+
+          <hr class="divider">
+
+          <!-- Painel de ações: RFID -->
+          <div class="section-label">Atribuir cartão RFID</div>
+          <div class="action-panel">
+            <div class="rfid-input-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              <input class="rfid-input" id="uid_${r.id}" placeholder="UID do cartão RFID (manual ou via leitor)…">
+            </div>
             <button class="btn btn-outline" onclick="buscarUIDAutomatico('${r.id}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16"/><path d="M16 6v16"/></svg>
               Ler RFID
             </button>
-
             <button class="btn btn-success" onclick="gerarCartao('${r.id}', '${String(r.nome || "").replace(/'/g, "\\'")}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
               ${temCartao ? "Atualizar Cartão" : "Gerar Cartão"}
             </button>
-
             <button class="btn btn-outline" onclick="copiarQR('${r.qrToken || ""}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
               Copiar QR
             </button>
           </div>
 
+          <!-- Danger zone -->
           <div class="danger-zone">
-            <h4>Zona de risco</h4>
-            <p>Esta ação elimina definitivamente o residente e todas as suas informações do sistema.</p>
-            <button class="btn btn-danger" onclick="eliminarResidente('${r.id}')">
-              Eliminar Cliente e Todos os Dados
+            <div class="danger-zone-text">
+              <strong>Zona de risco — eliminação de conta</strong>
+              <p>Esta ação remove o residente e todos os seus dados de forma permanente e irreversível.</p>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="eliminarResidente('${r.id}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              Eliminar Residente
             </button>
           </div>
+
         </div>
       </div>
     `;
   });
 }
 
+/* ── Helpers HTML ─────────────────────────────────────────── */
+function erroHTML(titulo, msg) {
+  return `
+    <div class="state-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <h3>${titulo}</h3>
+      <p>${msg}</p>
+    </div>`;
+}
+
+/* ── Lógica original preservada ──────────────────────────── */
 async function buscarUIDAutomatico(id) {
   try {
-    const resposta = await fetch("/api/rfid/ultimo-uid");
-    const dados = await resposta.json();
-
-    if (!dados.sucesso) {
-      alert(dados.mensagem || "Nenhum UID encontrado. Aproxima o cartão no leitor RFID.");
-      return;
-    }
-
+    const resp  = await fetch("/api/rfid/ultimo-uid");
+    const dados = await resp.json();
+    if (!dados.sucesso) { alert(dados.mensagem || "Nenhum UID encontrado. Aproxima o cartão no leitor RFID."); return; }
     document.getElementById("uid_" + id).value = dados.uid;
-
     alert("UID lido automaticamente: " + dados.uid);
-
-  } catch (erro) {
+  } catch (e) {
     alert("Erro ao buscar UID do leitor RFID.");
   }
 }
 
 async function gerarCartao(id, nome) {
   const input = document.getElementById("uid_" + id);
-  const uid = input.value.trim();
-
-  if (!uid) {
-    alert("Digite o UID manualmente ou clique em Ler RFID.");
-    return;
-  }
-
+  const uid   = input.value.trim();
+  if (!uid) { alert("Digite o UID manualmente ou clique em Ler RFID."); return; }
   try {
-    const resposta = await fetch("/api/admin/gerar-cartao", {
+    const resp  = await fetch("/api/admin/gerar-cartao", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ id, uid })
     });
-
-    const dados = await resposta.json();
-
+    const dados = await resp.json();
     if (dados.sucesso) {
       alert(dados.mensagem || ("Cartão do cliente " + nome + " gerado com sucesso!"));
-
       input.value = "";
-
       await limparUIDRFID();
-
     } else {
       alert(dados.mensagem || "Erro ao gerar cartão.");
     }
-
     carregarResidentes();
-
-  } catch (erro) {
-    alert("Erro ao comunicar com o Node-RED.");
-  }
+  } catch (e) { alert("Erro ao comunicar com o Node-RED."); }
 }
 
 async function limparUIDRFID() {
   try {
-    await fetch("/api/rfid/limpar-uid", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"}
-    });
-  } catch (erro) {
-    console.log("UID já foi limpo na Resposta Gerar Cartão ou endpoint limpar-uid não existe.");
-  }
+    await fetch("/api/rfid/limpar-uid", { method: "POST", headers: {"Content-Type": "application/json"} });
+  } catch (e) { console.log("UID limpo ou endpoint não existe."); }
 }
 
 async function eliminarResidente(id) {
-  if (!confirm("Tens certeza que queres eliminar este cliente e todas as informações do sistema?")) {
-    return;
-  }
-
-  if (!confirm("Confirmação final: esta ação não pode ser desfeita. Queres continuar?")) {
-    return;
-  }
-
+  if (!confirm("Tens certeza que queres eliminar este cliente e todas as informações do sistema?")) return;
+  if (!confirm("Confirmação final: esta ação não pode ser desfeita. Queres continuar?")) return;
   try {
-    const resposta = await fetch("/api/admin/eliminar-residente", {
+    const resp  = await fetch("/api/admin/eliminar-residente", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ id })
     });
-
-    const dados = await resposta.json();
+    const dados = await resp.json();
     alert(dados.mensagem);
-
     carregarResidentes();
-
-  } catch (erro) {
-    alert("Erro ao comunicar com o Node-RED.");
-  }
+  } catch (e) { alert("Erro ao comunicar com o Node-RED."); }
 }
 
 function copiarQR(qrToken) {
-  if (!qrToken) {
-    alert("Este residente não tem QR Token.");
-    return;
-  }
-
+  if (!qrToken) { alert("Este residente não tem QR Token."); return; }
   navigator.clipboard.writeText(qrToken)
     .then(() => alert("QR Token copiado com sucesso."))
     .catch(() => alert("Não foi possível copiar o QR Token."));
 }
 
+/* ── Boot ─────────────────────────────────────────────────── */
 carregarResidentes();
 </script>
-
 </body>
 </html>
