@@ -1310,11 +1310,13 @@ footer p strong { color: rgba(255,255,255,0.60); font-weight: 500; }
       <p>Preenche os teus dados para criar a conta NOSZONA Smart.</p>
     </div>
     <div class="form-body">
+
       <form id="formRegisto" novalidate onsubmit="registar(event)">
         <div class="form-grid">
+
           <div class="form-group">
             <label for="nome">Nome completo *</label>
-            <input id="nome" required minlength="3" placeholder="Ex: Ryan Lopes">
+            <input id="nome" required minlength="3" placeholder="Ex: Maria Silva">
             <span class="field-error" id="erro-nome"></span>
           </div>
           <div class="form-group">
@@ -1422,6 +1424,12 @@ footer p strong { color: rgba(255,255,255,0.60); font-weight: 500; }
           </div>
         </div>
         <button type="submit" class="form-submit" style="margin-top:24px;">Entrar →</button>
+
+<!-- Botão Google -->
+<button onclick="loginWithGoogle()" class="btn-google" style="margin-top: 16px; width: 100%;">
+  <img src="https://www.google.com/favicon.ico" alt="Google" width="20" height="20" style="margin-right: 10px;">
+  Entrar com Google
+</button>
 
         <p class="form-switch">
           <a href="#" onclick="mostrarRecuperar(); return false;">Esqueci-me da password</a>
