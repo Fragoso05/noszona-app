@@ -32,6 +32,65 @@
 <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 
 <style>
+
+  .steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.step-card {
+  background: white;
+  border-radius: 24px;
+  padding: 32px 28px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.step-visual {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.step-number {
+  font-size: 72px;
+  font-weight: 800;
+  color: #e0e7ff;
+  line-height: 1;
+  font-family: 'Clash Display', sans-serif;
+  flex-shrink: 0;
+}
+
+.step-illustration {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 16px;
+}
+
+.step-card h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 12px;
+}
+
+.step-card p {
+  font-size: 15px;
+  color: #64748b;
+  line-height: 1.7;
+}
+  
 .logo-img {
     height: 55px;
     width: auto;
@@ -1133,27 +1192,39 @@ footer p strong { color: rgba(255,255,255,0.60); font-weight: 500; }
   </div>
 
   <div class="steps">
-    <div class="step-card">
-      <div class="step-icon-wrap">👤</div>
+
+  <!-- PASSO 1 -->
+  <div class="step-card">
+    <div class="step-visual">
       <div class="step-number">01</div>
-      <h3>Regista-te</h3>
-      <p>Preenche os teus dados, confirma o teu email e escolhe um pacote. Leva menos de 3 minutos.</p>
+      <img src="inscrever.png" alt="Regista-te" class="step-illustration">
     </div>
-
-    <div class="step-card">
-      <div class="step-icon-wrap">💳</div>
-      <div class="step-number">02</div>
-      <h3>Paga em segurança</h3>
-      <p>Pagamento via portal seguro Vinti4. Os teus dados de cartão nunca passam pelos nossos servidores.</p>
-    </div>
-
-    <div class="step-card">
-      <div class="step-icon-wrap">🏙️</div>
-      <div class="step-number">03</div>
-      <h3>Usa na cidade</h3>
-      <p>Apresenta o QR em eventos, usa saldo nos serviços e solicita o cartão físico RFID quando quiseres.</p>
-    </div>
+    <h3>Regista-te</h3>
+    <p>Preenche os teus dados, confirma o teu email e escolhe um pacote. Leva menos de 3 minutos.</p>
   </div>
+
+  <!-- PASSO 2 -->
+  <div class="step-card">
+    <div class="step-visual">
+      <div class="step-number">02</div>
+      <img src="QRcode.png" alt="Paga em segurança" class="step-illustration">
+    </div>
+    <h3>Paga em segurança</h3>
+    <p>Pagamento via portal seguro Vinti4. Os teus dados de cartão nunca passam pelos nossos servidores.</p>
+  </div>
+
+  <!-- PASSO 3 -->
+  <div class="step-card">
+    <div class="step-visual">
+      <div class="step-number">03</div>
+      <img src="pagamento.png" alt="Usa na cidade" class="step-illustration">
+    </div>
+    <h3>Usa na cidade</h3>
+    <p>Apresenta o QR em eventos, usa saldo nos serviços e solicita o cartão físico RFID quando quiseres.</p>
+  </div>
+
+
+ 
 </section>
 
 <!-- PACKAGES -->
