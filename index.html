@@ -1886,7 +1886,7 @@ async function recuperarPassword(e) {
 
   try {
     setLoading(true);
-    await fetch(API_BASE + "https://violet-beaver-178312.hostingersite.com/red/api/residentes/recuperar-password", {
+    await fetch("https://violet-beaver-178312.hostingersite.com/red/api/residentes/recuperar-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: email.toLowerCase() })
