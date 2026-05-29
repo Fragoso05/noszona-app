@@ -1425,14 +1425,14 @@ footer p strong { color: rgba(255,255,255,0.60); font-weight: 500; }
         </div>
         <button type="submit" class="form-submit" style="margin-top:24px;">Entrar →</button>
 
-<!-- Botão Google -->
-<button onclick="loginWithGoogle()" class="btn-google" style="margin-top: 16px; width: 100%;">
-  <img src="https://www.google.com/favicon.ico" alt="Google" width="20" height="20" style="margin-right: 10px;">
-  Entrar com Google
-</button>
+       <!-- Botão Google -->
+       <button onclick="loginWithGoogle()" class="btn-google" style="margin-top: 16px; width: 100%;">
+       <img src="https://www.google.com/favicon.ico" alt="Google" width="20" height="20" style="margin-right: 10px;">
+        Entrar com Google
+        </button>
 
         <p class="form-switch">
-          <a href="#" onclick="mostrarRecuperar(); return false;">Esqueci-me da password</a>
+         <a href="#" onclick="mostrarRecuperar(); return false;">Esqueci-me da password</a>
           &nbsp;·&nbsp;
           <a href="#" onclick="mostrarRegisto('Pacote 2'); return false;">Criar conta nova</a>
         </p>
@@ -1838,6 +1838,39 @@ async function registar(e) {
     popup("erro", "Erro de ligação", "Não foi possível comunicar com o servidor.");
   } finally {
     setLoading(false);
+  }
+}
+
+// =====================================================
+// LOGIN COM GOOGLE (placeholder - vamos integrar depois)
+// =====================================================
+function loginWithGoogle() {
+  // Por enquanto redireciona para o Node-RED
+  // Depois vamos usar Google Identity Services ou Firebase
+  window.location.href = "https://violet-beaver-178312.hostingersite.com/google-login";
+}
+
+// =====================================================
+// ENVIAR RECUPERAÇÃO DE PASSWORD (já existe o form)
+// =====================================================
+async function enviarRecuperacao() {
+  const email = document.getElementById("recuperarEmail").value.trim();
+  if (!email) {
+    alert("Por favor introduz o teu email");
+    return;
+  }
+
+  try {
+    const response = await fetch(API_BASE + "/residentes/recuperar-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.toLowerCase() })
+    });
+    const data = await response.json();
+    popup("sucesso", "Verifica o teu email", "Se a conta existir, recebes em breve um link para redefinir a password.");
+    document.getElementById("recuperar").style.display = "none";
+  } catch (e) {
+    popup("erro", "Erro", "Não foi possível enviar agora. Tenta mais tarde.");
   }
 }
 
