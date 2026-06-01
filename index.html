@@ -1787,18 +1787,13 @@ function validarLogin() {
 }
 
 // =====================================================
-// REGISTO (sem dados de cartão!)
+// REGISTO (suporte a Google + verificação de email)
 // =====================================================
 
 async function registar(e) {
   if (e) e.preventDefault();
   if (!validarRegisto()) return;
 
-  /* SEGURANÇA:
-   * NÃO enviamos dados de cartão. O backend deve criar a conta com
-   * estado "pendente_pagamento" e devolver "paymentUrl" — o link do
-   * portal Vinti4. Redirecionamos o utilizador para lá.
-   */
   const residente = {
     nome: document.getElementById("nome").value.trim(),
     dataNascimento: document.getElementById("dataNascimento").value,
@@ -1810,29 +1805,32 @@ async function registar(e) {
     municipio: document.getElementById("municipio").value.trim(),
     username: document.getElementById("username").value.trim(),
     password: document.getElementById("password").value,
-    pacote: document.getElementById("pacote").value
+    pacote: document.getElementById("pacote").value,
+    provedor: "local"          // "local" ou "google"
   };
 
   try {
     setLoading(true);
-    const r = await fetch(API_BASE + "/residentes/registar", {
+
+    const response = await fetch(API_BASE + "/residentes/registar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(residente)
     });
-    const d = await r.json();
-    if (d.sucesso) {
-      if (d.paymentUrl) {
-        popup("info", "A redirecionar...", "Vais ser levado ao portal seguro Vinti4 para concluir o pagamento.");
-        setTimeout(() => window.location.href = d.paymentUrl, 1500);
+
+    const data = await response.json();
+
+    if (data.sucesso) {
+      if (residente.provedor === "google") {
+        popup("sucesso", "Conta Google criada!", 
+          "Verifica o teu email para confirmar a conta e poder fazer login.");
       } else {
-        popup("sucesso", "Conta criada!",
-          (d.mensagem || "Conta criada com sucesso.") +
-          " Confirma o teu email e faz login para continuar.");
-        mostrarLogin();
+        popup("sucesso", "Conta criada com sucesso!", 
+          "Verifica o teu email para ativar a conta antes de fazer login.");
       }
+      mostrarLogin();   // volta para a tela de login
     } else {
-      popup("erro", "Erro no registo", d.mensagem || "Verifica os dados e tenta novamente.");
+      popup("erro", "Erro no registo", data.mensagem || "Verifica os dados e tenta novamente.");
     }
   } catch (e) {
     popup("erro", "Erro de ligação", "Não foi possível comunicar com o servidor.");
@@ -1844,6 +1842,11 @@ async function registar(e) {
 // =====================================================
 // LOGIN
 // =====================================================
+
+function loginWithGoogle() {
+  // Redireciona para o endpoint do Node-RED
+  window.location.href = API_BASE + "/residentes/google-login";
+}
 
 async function login(e) {
   if (e) e.preventDefault();
