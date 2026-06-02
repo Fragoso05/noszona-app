@@ -1425,14 +1425,14 @@ footer p strong { color: rgba(255,255,255,0.60); font-weight: 500; }
         </div>
         <button type="submit" class="form-submit" style="margin-top:24px;">Entrar →</button>
 
-       <!-- Botão Google -->
-       <button onclick="loginWithGoogle()" class="btn-google" style="margin-top: 16px; width: 100%;">
-       <img src="https://www.google.com/favicon.ico" alt="Google" width="20" height="20" style="margin-right: 10px;">
-        Entrar com Google
-        </button>
+<!-- Botão Google -->
+<button onclick="loginWithGoogle()" class="btn-google" style="margin-top: 16px; width: 100%;">
+  <img src="https://www.google.com/favicon.ico" alt="Google" width="20" height="20" style="margin-right: 10px;">
+  Entrar com Google
+</button>
 
         <p class="form-switch">
-         <a href="#" onclick="mostrarRecuperar(); return false;">Esqueci-me da password</a>
+          <a href="#" onclick="mostrarRecuperar(); return false;">Esqueci-me da password</a>
           &nbsp;·&nbsp;
           <a href="#" onclick="mostrarRegisto('Pacote 2'); return false;">Criar conta nova</a>
         </p>
@@ -1610,7 +1610,7 @@ function clearAllErrors(form) {
 // =====================================================
 
 function esconderTudo() {
-  ["registo", "login", "recuperar", "dashboard"].forEach(id => {
+  ["registo", "login", "recuperar", "reset-password", "dashboard"].forEach(id => {
     document.getElementById(id).style.display = "none";
   });
 }
@@ -1787,18 +1787,13 @@ function validarLogin() {
 }
 
 // =====================================================
-// REGISTO (sem dados de cartão!)
+// REGISTO (suporte a Google + verificação de email)
 // =====================================================
 
 async function registar(e) {
   if (e) e.preventDefault();
   if (!validarRegisto()) return;
 
-  /* SEGURANÇA:
-   * NÃO enviamos dados de cartão. O backend deve criar a conta com
-   * estado "pendente_pagamento" e devolver "paymentUrl" — o link do
-   * portal Vinti4. Redirecionamos o utilizador para lá.
-   */
   const residente = {
     nome: document.getElementById("nome").value.trim(),
     dataNascimento: document.getElementById("dataNascimento").value,
@@ -1810,29 +1805,32 @@ async function registar(e) {
     municipio: document.getElementById("municipio").value.trim(),
     username: document.getElementById("username").value.trim(),
     password: document.getElementById("password").value,
-    pacote: document.getElementById("pacote").value
+    pacote: document.getElementById("pacote").value,
+    provedor: "local"          // "local" ou "google"
   };
 
   try {
     setLoading(true);
-    const r = await fetch(API_BASE + "/residentes/registar", {
+
+    const response = await fetch(API_BASE + "/residentes/registar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(residente)
     });
-    const d = await r.json();
-    if (d.sucesso) {
-      if (d.paymentUrl) {
-        popup("info", "A redirecionar...", "Vais ser levado ao portal seguro Vinti4 para concluir o pagamento.");
-        setTimeout(() => window.location.href = d.paymentUrl, 1500);
+
+    const data = await response.json();
+
+    if (data.sucesso) {
+      if (residente.provedor === "google") {
+        popup("sucesso", "Conta Google criada!", 
+          "Verifica o teu email para confirmar a conta e poder fazer login.");
       } else {
-        popup("sucesso", "Conta criada!",
-          (d.mensagem || "Conta criada com sucesso.") +
-          " Confirma o teu email e faz login para continuar.");
-        mostrarLogin();
+        popup("sucesso", "Conta criada com sucesso!", 
+          "Verifica o teu email para ativar a conta antes de fazer login.");
       }
+      mostrarLogin();   // volta para a tela de login
     } else {
-      popup("erro", "Erro no registo", d.mensagem || "Verifica os dados e tenta novamente.");
+      popup("erro", "Erro no registo", data.mensagem || "Verifica os dados e tenta novamente.");
     }
   } catch (e) {
     popup("erro", "Erro de ligação", "Não foi possível comunicar com o servidor.");
@@ -1842,41 +1840,13 @@ async function registar(e) {
 }
 
 // =====================================================
-// LOGIN COM GOOGLE (placeholder - vamos integrar depois)
-// =====================================================
-function loginWithGoogle() {
-  // Por enquanto redireciona para o Node-RED
-  // Depois vamos usar Google Identity Services ou Firebase
-  window.location.href = "https://violet-beaver-178312.hostingersite.com/google-login";
-}
-
-// =====================================================
-// ENVIAR RECUPERAÇÃO DE PASSWORD (já existe o form)
-// =====================================================
-async function enviarRecuperacao() {
-  const email = document.getElementById("recuperarEmail").value.trim();
-  if (!email) {
-    alert("Por favor introduz o teu email");
-    return;
-  }
-
-  try {
-    const response = await fetch(API_BASE + "/residentes/recuperar-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email.toLowerCase() })
-    });
-    const data = await response.json();
-    popup("sucesso", "Verifica o teu email", "Se a conta existir, recebes em breve um link para redefinir a password.");
-    document.getElementById("recuperar").style.display = "none";
-  } catch (e) {
-    popup("erro", "Erro", "Não foi possível enviar agora. Tenta mais tarde.");
-  }
-}
-
-// =====================================================
 // LOGIN
 // =====================================================
+
+function loginWithGoogle() {
+  // Redireciona para o endpoint do Node-RED
+  window.location.href = API_BASE + "/residentes/google-login";
+}
 
 async function login(e) {
   if (e) e.preventDefault();
@@ -2125,6 +2095,147 @@ async function solicitarCartao() {
 }
 
 
+
+// =====================================================
+// REDEFINIR PASSWORD PELO LINK DO EMAIL
+// =====================================================
+
+let resetTokenAtual = null;
+
+function esconderResetPassword() {
+  const sec = document.getElementById("reset-password");
+  if (sec) sec.style.display = "none";
+}
+
+// Mantém o código existente e apenas acrescenta o comportamento
+// para esconder o formulário de nova password quando o utilizador muda de ecrã.
+const mostrarLoginOriginal = mostrarLogin;
+mostrarLogin = function() {
+  mostrarLoginOriginal();
+  esconderResetPassword();
+};
+
+const mostrarRegistoOriginal = mostrarRegisto;
+mostrarRegisto = function(pacote) {
+  mostrarRegistoOriginal(pacote);
+  esconderResetPassword();
+};
+
+const mostrarRecuperarOriginal = mostrarRecuperar;
+mostrarRecuperar = function() {
+  mostrarRecuperarOriginal();
+  esconderResetPassword();
+};
+
+const mostrarDashboardOriginal = mostrarDashboard;
+mostrarDashboard = function() {
+  mostrarDashboardOriginal();
+  esconderResetPassword();
+};
+
+function mostrarResetPassword(token) {
+  esconderTudo();
+  resetTokenAtual = token;
+
+  const sec = document.getElementById("reset-password");
+  if (!sec) return;
+
+  sec.style.display = "block";
+  sec.scrollIntoView({ behavior: "smooth" });
+}
+
+function verificarRotaResetPassword() {
+  const hash = window.location.hash || "";
+
+  if (!hash.startsWith("#reset-password")) return;
+
+  const queryString = hash.includes("?") ? hash.split("?")[1] : "";
+  const params = new URLSearchParams(queryString);
+  const token = params.get("token");
+
+  if (!token) {
+    popup("erro", "Link inválido", "O link de recuperação não tem token.");
+    mostrarLogin();
+    return;
+  }
+
+  mostrarResetPassword(token);
+}
+
+async function redefinirPassword(e) {
+  if (e) e.preventDefault();
+
+  const form = document.getElementById("formResetPassword");
+  clearAllErrors(form);
+
+  const novaPassword = document.getElementById("novaPassword").value.trim();
+  const confirmarNovaPassword = document.getElementById("confirmarNovaPassword").value.trim();
+
+  if (!novaPassword) {
+    setFieldError("novaPassword", "Nova password obrigatória");
+    return;
+  }
+
+  if (novaPassword.length < 8) {
+    setFieldError("novaPassword", "A password deve ter pelo menos 8 caracteres");
+    return;
+  }
+
+  if (novaPassword !== confirmarNovaPassword) {
+    setFieldError("confirmarNovaPassword", "As passwords não coincidem");
+    return;
+  }
+
+  if (!resetTokenAtual) {
+    popup("erro", "Token inválido", "O link de recuperação não é válido.");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const resposta = await fetch("https://violet-beaver-178312.hostingersite.com/red/api/residentes/reset-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        token: resetTokenAtual,
+        password: novaPassword
+      })
+    });
+
+    const texto = await resposta.text();
+    let dados;
+
+    try {
+      dados = JSON.parse(texto);
+    } catch (erroJson) {
+      throw new Error("Resposta inválida do servidor: " + texto);
+    }
+
+    if (!dados.sucesso) {
+      popup("erro", "Erro", dados.mensagem || "Não foi possível alterar a password.");
+      return;
+    }
+
+    popup("sucesso", "Password alterada", "A tua password foi atualizada com sucesso. Já podes fazer login.");
+    form.reset();
+    resetTokenAtual = null;
+    window.location.hash = "";
+    mostrarLogin();
+
+  } catch (erro) {
+    console.error("Erro ao redefinir password:", erro);
+    popup("erro", "Erro de ligação", "Não foi possível comunicar com o servidor.");
+  } finally {
+    setLoading(false);
+  }
+}
+
+window.addEventListener("hashchange", verificarRotaResetPassword);
+window.addEventListener("load", verificarRotaResetPassword);
+
 // =====================================================
 // INICIALIZAÇÃO
 // =====================================================
@@ -2142,7 +2253,83 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Restaura sessão se existir
   carregarSessao();
+
+  // Verifica se o link aberto é de redefinição de password
+  verificarRotaResetPassword();
 });
+
+// =====================================================
+// PATCH EXTRA: abrir automaticamente o formulario de reset-password
+// =====================================================
+// Este bloco apenas reforca a abertura do formulario quando o link vem do email.
+// Nao altera as funcoes antigas; so garante que #reset-password?token=... mostra o formulario correto.
+(function () {
+  function abrirFormularioResetPorHash() {
+    const hash = window.location.hash || "";
+
+    if (!hash.startsWith("#reset-password")) {
+      return false;
+    }
+
+    const queryString = hash.includes("?") ? hash.split("?")[1] : "";
+    const params = new URLSearchParams(queryString);
+    const token = params.get("token");
+
+    if (!token) {
+      if (typeof popup === "function") {
+        popup("erro", "Link inválido", "O link de recuperação não tem token.");
+      }
+      return false;
+    }
+
+    // Guarda o token para a funcao redefinirPassword(event)
+    try {
+      resetTokenAtual = token;
+    } catch (e) {
+      window.resetTokenAtual = token;
+    }
+
+    // Esconde os outros paineis sem mexer no resto da pagina
+    ["registo", "login", "recuperar", "dashboard"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = "none";
+    });
+
+    const secaoReset = document.getElementById("reset-password");
+
+    if (!secaoReset) {
+      if (typeof popup === "function") {
+        popup("erro", "Erro", "A secção de nova password não foi encontrada no HTML.");
+      }
+      return false;
+    }
+
+    secaoReset.style.display = "block";
+
+    setTimeout(() => {
+      secaoReset.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+
+    return true;
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    abrirFormularioResetPorHash();
+    setTimeout(abrirFormularioResetPorHash, 300);
+    setTimeout(abrirFormularioResetPorHash, 900);
+  });
+
+  window.addEventListener("load", () => {
+    abrirFormularioResetPorHash();
+    setTimeout(abrirFormularioResetPorHash, 300);
+  });
+
+  window.addEventListener("hashchange", abrirFormularioResetPorHash);
+
+  // Caso o script seja carregado com a pagina ja pronta
+  setTimeout(abrirFormularioResetPorHash, 300);
+})();
+
 </script>
 </body>
 </html>
