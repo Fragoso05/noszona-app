@@ -1840,13 +1840,33 @@ async function registar(e) {
 }
 
 // =====================================================
+// ENVIAR RECUPERAÇÃO DE PASSWORD (já existe o form)
+// =====================================================
+async function enviarRecuperacao() {
+  const email = document.getElementById("recuperarEmail").value.trim();
+  if (!email) {
+    alert("Por favor introduz o teu email");
+    return;
+  }
+
+  try {
+    const response = await fetch(API_BASE + "/residentes/recuperar-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.toLowerCase() })
+    });
+    const data = await response.json();
+    popup("sucesso", "Verifica o teu email", "Se a conta existir, recebes em breve um link para redefinir a password.");
+    document.getElementById("recuperar").style.display = "none";
+  } catch (e) {
+    popup("erro", "Erro", "Não foi possível enviar agora. Tenta mais tarde.");
+  }
+  
+}
+
+// =====================================================
 // LOGIN
 // =====================================================
-
-function loginWithGoogle() {
-  // Redireciona para o endpoint do Node-RED
-  window.location.href = API_BASE + "/residentes/google-login";
-}
 
 async function login(e) {
   if (e) e.preventDefault();
