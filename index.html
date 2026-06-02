@@ -1423,13 +1423,13 @@ footer p strong { color: rgba(255,255,255,0.60); font-weight: 500; }
             </label>
           </div>
         </div>
-        <button type="submit" class="form-submit" style="margin-top:24px;">Entrar →</button>
+                <button type="submit" class="form-submit" style="margin-top:24px;">Entrar →</button>
 
-<!-- Botão Google -->
-<button onclick="loginWithGoogle()" class="btn-google" style="margin-top: 16px; width: 100%;">
-  <img src="https://www.google.com/favicon.ico" alt="Google" width="20" height="20" style="margin-right: 10px;">
-  Entrar com Google
-</button>
+        <!-- Botão Google -->
+        <button onclick="loginWithGoogle()" class="btn-google" style="margin-top: 16px; width: 100%;">
+          <img src="https://www.google.com/favicon.ico" alt="Google" width="20" height="20" style="margin-right: 10px;">
+          Entrar com Google
+        </button>
 
         <p class="form-switch">
           <a href="#" onclick="mostrarRecuperar(); return false;">Esqueci-me da password</a>
@@ -1611,7 +1611,8 @@ function clearAllErrors(form) {
 
 function esconderTudo() {
   ["registo", "login", "recuperar", "reset-password", "dashboard"].forEach(id => {
-    document.getElementById(id).style.display = "none";
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
   });
 }
 
@@ -1889,11 +1890,21 @@ async function login(e) {
     }
     guardarSessao(d.residente, d.token, lembrar);
     mostrarDashboard();
-  } catch (e) {
-    popup("erro", "Erro de ligação", "Não foi possível comunicar com o servidor.");
+   } catch (e) {
+    console.error("Erro no login:", e);
+    popup("erro", "Erro de ligação", "Não foi possível comunicar com o servidor. Verifica tua internet.");
   } finally {
     setLoading(false);
   }
+}
+// =====================================================
+// LOGIN COM GOOGLE
+// =====================================================
+function loginWithGoogle() {
+    popup("info", "Login com Google", "Esta funcionalidade está em desenvolvimento.\n\nEm breve podes entrar com a tua conta Google.");
+    
+    // Futuro: descomenta quando tiveres o backend pronto
+    // window.location.href = API_BASE + "/auth/google";
 }
 
 // =====================================================
