@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOSZONA Smart — Smart City Cabo Verde</title>
+
+<!-- SEO -->
+<meta name="description" content="NOSZONA Smart — Identidade digital, QR seguro e carteira virtual para a Smart City de Cabo Verde. Regista-te, recarrega e usa em eventos e serviços.">
+<meta name="keywords" content="NOSZONA, Smart City, Cabo Verde, identidade digital, QR, carteira virtual, RFID">
+<meta name="author" content="NOSZONA Smart">
+<meta name="theme-color" content="#061827">
+
+<!-- Open Graph (WhatsApp, Facebook, LinkedIn) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="NOSZONA Smart — Smart City Cabo Verde">
+<meta property="og:description" content="O teu cartão para a cidade inteligente. QR seguro, carteira virtual e acesso a eventos Smart City.">
+<meta property="og:image" content="noszona-logo.jpg">
+<meta property="og:locale" content="pt_CV">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NOSZONA Smart — Smart City Cabo Verde">
+<meta name="twitter:description" content="O teu cartão para a cidade inteligente. QR seguro, carteira virtual e acesso a eventos Smart City.">
+<meta name="twitter:image" content="noszona-logo.jpg">
+
+<!-- FAVICON -->
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/favicon.png">
+<link rel="shortcut icon" href="../img/favicon.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/style.css">
+
+</head>
+<body>
+
+<!-- NOSCRIPT -->
+<noscript>
+  <div class="noscript-banner">
+    ⚠️ Este site precisa de JavaScript ativado para funcionar. Ativa-o nas definições do browser.
+  </div>
+</noscript>
+
+<!-- HEADER -->
+<header>
+  <a href="#top" class="logo">
+    <img src="../img/noszona-logo.jpg" alt="NOSZONA Smart" class="logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#como-funciona">Como funciona</a></li>
+    <li><a href="#pacotes">Pacotes</a></li>
+  </ul>
+  <div class="nav-ctas" id="ctasDeslogado">
+    <button class="btn btn-ghost" onclick="mostrarLogin()">Login</button>
+    <button class="btn btn-primary" onclick="mostrarRegisto('Pacote 2')">Criar conta</button>
+  </div>
+  <div class="nav-ctas" id="ctasLogado" style="display:none;">
+    <span class="user-greeting" id="userGreeting"></span>
+    <button class="btn btn-ghost" onclick="mostrarDashboard()">Minha conta</button>
+    <button class="btn btn-ghost" onclick="logout()">Sair</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">Smart City Cabo Verde</div>
+
+      <h1>
+        O teu cartão<br>
+        para a <span class="accent">cidade inteligente.</span>
+      </h1>
+
+      <p>
+        Uma identidade digital completa — QR seguro, carteira virtual,
+        swipes na cantina e acesso exclusivo a todos os eventos Smart City.
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn btn-gold" onclick="mostrarRegisto('Pacote 2')">Começar agora →</button>
+        <button class="btn btn-outline-white" onclick="mostrarLogin()">Já tenho conta</button>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <strong>QR</strong>
+          <span>Acesso digital seguro</span>
+        </div>
+        <div class="hero-stat">
+          <strong>Cartão Fisico</strong>
+          <span>Cartão físico opcional</span>
+        </div>
+        <div class="hero-stat">
+          <strong>CVE</strong>
+          <span>Saldo na carteira</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="card-3d">
+        <div class="card-badge">✦ NOSZONA Smart City</div>
+
+        <div class="feature-rows">
+          <div class="feature-row">
+            <div class="feature-icon fi-cyan">📱</div>
+            <div class="feature-row-text">
+              <strong>QR Dinâmico Seguro</strong>
+              <span>Renovado a cada 30s contra fraude</span>
+            </div>
+          </div>
+
+          <div class="feature-row">
+            <div class="feature-icon fi-gold">💳</div>
+            <div class="feature-row-text">
+              <strong>Carteira Virtual</strong>
+              <span>Recarrega saldo e swipes a qualquer momento</span>
+            </div>
+          </div>
+
+          <div class="feature-row">
+            <div class="feature-icon fi-green">🏙️</div>
+            <div class="feature-row-text">
+              <strong>Smart City Integrado</strong>
+              <span>Acesso a serviços, eventos e infraestrutura</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-divider"></div>
+
+        <div class="qr-preview">
+          <div class="qr-box">
+            <div class="qr-dot"></div><div class="qr-dot"></div><div class="qr-dot"></div><div></div><div class="qr-dot"></div>
+            <div class="qr-dot"></div><div></div><div class="qr-dot"></div><div class="qr-dot"></div><div></div>
+            <div></div><div class="qr-dot"></div><div></div><div class="qr-dot"></div><div class="qr-dot"></div>
+            <div class="qr-dot"></div><div></div><div class="qr-dot"></div><div></div><div class="qr-dot"></div>
+            <div class="qr-dot"></div><div class="qr-dot"></div><div></div><div class="qr-dot"></div><div class="qr-dot"></div>
+          </div>
+          <div class="qr-preview-text">
+            <strong>QR Seguro</strong>
+            <span>Token rotativo anti-fraude</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-section">
+  <div class="trust-inner">
+    <div class="trust-item">
+      <div class="trust-value">3<span>+</span></div>
+      <div class="trust-label">Pacotes disponíveis</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-value">100<span>%</span></div>
+      <div class="trust-label">Digital e sem papel</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-value">Cartão Físico</div>
+      <div class="trust-label">Integração com leitores físicos</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-value">30<span>s</span></div>
+      <div class="trust-label">QR rotativo contra fraude</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section bg-off" id="como-funciona">
+  <div class="section-header">
+    <span class="eyebrow">Como funciona</span>
+    <h2>Três passos para a cidade inteligente</h2>
+    <p>Do registo ao acesso, tudo integrado numa experiência simples e moderna.</p>
+  </div>
+
+  <div class="steps">
+
+  <!-- PASSO 1 -->
+  <div class="step-card">
+    <div class="step-visual">
+      <div class="step-number">01</div>
+      <img src="../img/inscrever.png" alt="Regista-te" class="step-illustration">
+    </div>
+    <h3>Regista-te</h3>
+    <p>Preenche os teus dados, confirma o teu email e escolhe um pacote. Leva menos de 3 minutos.</p>
+  </div>
+
+  <!-- PASSO 2 -->
+  <div class="step-card">
+    <div class="step-visual">
+      <div class="step-number">02</div>
+      <img src="../img/pagamento.png" alt="Paga em segurança" class="step-illustration">
+    </div>
+    <h3>Paga em segurança</h3>
+    <p>Pagamento via portal seguro Vinti4. Os teus dados de cartão nunca passam pelos nossos servidores.</p>
+  </div>
+
+  <!-- PASSO 3 -->
+  <div class="step-card">
+    <div class="step-visual">
+      <div class="step-number">03</div>
+      <img src="../img/QRcode.png" alt="Usa na cidade" class="step-illustration">
+    </div>
+    <h3>Usa na cidade</h3>
+    <p>Apresenta o QR em eventos, usa saldo nos serviços e solicita o cartão físico RFID quando quiseres.</p>
+  </div>
+
+
+ 
+</section>
+
+<!-- PACKAGES -->
+<section class="section" id="pacotes">
+  <div class="section-header">
+    <span class="eyebrow">Pacotes</span>
+    <h2>Escolhe o plano certo para ti</h2>
+    <p>Planos pensados para diferentes necessidades, todos com QR seguro incluído.</p>
+  </div>
+
+  <div class="packages-grid">
+    <!-- Pacote 1 -->
+    <div class="pkg-card">
+      <div class="pkg-label">Entrada</div>
+      <div class="pkg-name">Pacote 1</div>
+      <div class="pkg-price">
+        <div class="amount">0</div>
+        <div class="currency">CVE</div>
+      </div>
+      <div class="pkg-divider"></div>
+      <ul class="pkg-features">
+        <li><div class="pkg-check"></div> Acesso a eventos Smart City</li>
+        <li><div class="pkg-check"></div> QR seguro incluído</li>
+        <li><div class="pkg-check"></div> Conta virtual NOSZONA</li>
+      </ul>
+      <button class="btn-pkg btn-pkg-default" onclick="mostrarRegisto('Pacote 1')">Escolher Pacote 1</button>
+    </div>
+
+    <!-- Pacote 2 -->
+    <div class="pkg-card featured">
+      <div class="popular-badge">⚡ Mais popular</div>
+      <div class="pkg-label">Completo</div>
+      <div class="pkg-name">Pacote 2</div>
+      <div class="pkg-price">
+        <div class="amount">5.000</div>
+        <div class="currency">CVE</div>
+      </div>
+      <div class="pkg-divider"></div>
+      <ul class="pkg-features">
+        <li><div class="pkg-check"></div> 5.000 CVE de saldo na carteira</li>
+        <li><div class="pkg-check"></div> 50 swipes na cantina</li>
+        <li><div class="pkg-check"></div> Entrada em todos os eventos</li>
+        <li><div class="pkg-check"></div> QR seguro incluído</li>
+      </ul>
+      <button class="btn-pkg btn-pkg-featured" onclick="mostrarRegisto('Pacote 2')">Escolher Pacote 2</button>
+    </div>
+
+    <!-- Pacote 3 -->
+    <div class="pkg-card">
+      <div class="pkg-label">Premium</div>
+      <div class="pkg-name">Pacote 3</div>
+      <div class="pkg-price">
+        <div class="amount">10.000</div>
+        <div class="currency">CVE</div>
+      </div>
+      <div class="pkg-divider"></div>
+      <ul class="pkg-features">
+        <li><div class="pkg-check"></div> 10.000 CVE de saldo na carteira</li>
+        <li><div class="pkg-check"></div> 80 swipes na cantina</li>
+        <li><div class="pkg-check"></div> Entrada em todos os eventos</li>
+        <li><div class="pkg-check"></div> Free parking incluído</li>
+      </ul>
+      <button class="btn-pkg btn-pkg-default" onclick="mostrarRegisto('Pacote 3')">Escolher Pacote 3</button>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div class="cta-banner">
+  <h2>Junta-te à Smart City<br>de Cabo Verde.</h2>
+  <p>O teu cartão digital está a um registo de distância.</p>
+  <div class="cta-actions">
+    <button class="btn btn-gold" onclick="mostrarRegisto('Pacote 2')">Criar conta agora →</button>
+    <button class="btn btn-outline-white" onclick="mostrarLogin()">Já tenho conta</button>
+  </div>
+</div>
+
+<!-- REGISTO -->
+<section id="registo" class="form-section">
+  <div class="form-panel">
+    <div class="form-panel-top">
+      <h2>Registo de Residente</h2>
+      <p>Preenche os teus dados para criar a conta NOSZONA Smart.</p>
+    </div>
+    <div class="form-body">
+
+      <form id="formRegisto" novalidate onsubmit="registar(event)">
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label for="nome">Nome completo *</label>
+            <input id="nome" required minlength="3" placeholder="Ex: Maria Silva">
+            <span class="field-error" id="erro-nome"></span>
+          </div>
+          <div class="form-group">
+            <label for="dataNascimento">Data de nascimento *</label>
+            <input id="dataNascimento" type="date" required>
+            <span class="field-error" id="erro-dataNascimento"></span>
+          </div>
+          <div class="form-group">
+            <label for="nacionalidade">Nacionalidade *</label>
+            <input id="nacionalidade" required placeholder="Ex: Cabo-verdiana">
+            <span class="field-error" id="erro-nacionalidade"></span>
+          </div>
+          <div class="form-group">
+            <label for="documento">Nº BI / CNI / Passaporte *</label>
+            <input id="documento" required minlength="5" placeholder="Documento de identificação">
+            <span class="field-error" id="erro-documento"></span>
+          </div>
+          <div class="form-group">
+            <label for="telefone">Telefone *</label>
+            <input id="telefone" type="tel" required placeholder="+238 999 99 99">
+            <span class="field-error" id="erro-telefone"></span>
+          </div>
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input id="email" type="email" required placeholder="email@exemplo.com">
+            <span class="field-error" id="erro-email"></span>
+          </div>
+          <div class="form-group">
+            <label for="morada">Morada *</label>
+            <input id="morada" required placeholder="Morada atual">
+            <span class="field-error" id="erro-morada"></span>
+          </div>
+          <div class="form-group">
+            <label for="municipio">Município *</label>
+            <input id="municipio" required placeholder="Ex: Praia">
+            <span class="field-error" id="erro-municipio"></span>
+          </div>
+          <div class="form-group">
+            <label for="username">Username *</label>
+            <input id="username" required minlength="3" placeholder="Letras, números, . e _">
+            <span class="field-error" id="erro-username"></span>
+          </div>
+          <div class="form-group">
+            <label for="password">Password *</label>
+            <input id="password" type="password" required minlength="8" placeholder="Mínimo 8 caracteres">
+            <span class="field-hint">Mínimo 8 caracteres, com letras e números</span>
+            <span class="field-error" id="erro-password"></span>
+          </div>
+          <div class="form-group full">
+            <label for="pacote">Pacote escolhido *</label>
+            <select id="pacote" required>
+              <option value="">— Seleciona um pacote —</option>
+              <option value="Pacote 1">Pacote 1 — 5.000 CVE</option>
+              <option value="Pacote 2">Pacote 2 — 30.000 CVE</option>
+              <option value="Pacote 3">Pacote 3 — 50.000 CVE (Premium)</option>
+            </select>
+            <span class="field-error" id="erro-pacote"></span>
+          </div>
+        </div>
+
+        <div class="payment-info-box">
+          <div class="payment-box-title"><span>🔒</span> Pagamento seguro via Vinti4</div>
+          <p class="payment-note">
+            Depois de criares a conta, vais ser redirecionado para o portal seguro Vinti4
+            onde introduzes os dados do cartão. <strong>Os teus dados de cartão nunca passam
+            pelos nossos servidores</strong> — cumprindo as normas PCI-DSS.
+          </p>
+        </div>
+
+        <button type="submit" class="form-submit">Continuar para pagamento →</button>
+
+        <p class="form-switch">
+          Já tens conta? <a href="#" onclick="mostrarLogin(); return false;">Entrar</a>
+        </p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- LOGIN -->
+<section id="login" class="form-section">
+  <div class="form-panel form-panel-narrow">
+    <div class="form-panel-top">
+      <h2>Entrar na conta</h2>
+      <p>Acede ao teu QR, saldo e serviços NOSZONA Smart.</p>
+    </div>
+    <div class="form-body">
+      <form id="formLogin" novalidate onsubmit="login(event)">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label for="loginUsername">Username</label>
+            <input id="loginUsername" required placeholder="Nome de utilizador">
+            <span class="field-error" id="erro-loginUsername"></span>
+          </div>
+          <div class="form-group full">
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" type="password" required placeholder="Palavra-passe">
+            <span class="field-error" id="erro-loginPassword"></span>
+          </div>
+          <div class="form-group full form-checkbox">
+            <label class="checkbox-label">
+              <input type="checkbox" id="lembrar">
+              Manter sessão iniciada neste dispositivo
+            </label>
+          </div>
+        </div>
+                <button type="submit" class="form-submit" style="margin-top:24px;">Entrar →</button>
+
+        <!-- Botão Google -->
+        <button onclick="loginWithGoogle()" class="btn-google" style="margin-top: 16px; width: 100%;">
+          <img src="https://www.google.com/favicon.ico" alt="Google" width="20" height="20" style="margin-right: 10px;">
+          Entrar com Google
+        </button>
+
+        <p class="form-switch">
+          <a href="#" onclick="mostrarRecuperar(); return false;">Esqueci-me da password</a>
+          &nbsp;·&nbsp;
+          <a href="#" onclick="mostrarRegisto('Pacote 2'); return false;">Criar conta nova</a>
+        </p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- RECUPERAR PASSWORD -->
+<section id="recuperar" class="form-section">
+  <div class="form-panel form-panel-narrow">
+    <div class="form-panel-top">
+      <h2>Recuperar password</h2>
+      <p>Introduz o teu email para receberes as instruções.</p>
+    </div>
+    <div class="form-body">
+      <form id="formRecuperar" novalidate onsubmit="recuperarPassword(event)">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label for="recuperarEmail">Email da conta</label>
+            <input id="recuperarEmail" type="email" required placeholder="email@exemplo.com">
+            <span class="field-error" id="erro-recuperarEmail"></span>
+          </div>
+        </div>
+        <button type="submit" class="form-submit" style="margin-top:24px;">Enviar instruções →</button>
+
+        <p class="form-switch">
+          <a href="#" onclick="mostrarLogin(); return false;">← Voltar ao login</a>
+        </p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section id="dashboard">
+  <div class="dash-panel">
+    <div class="dash-header">
+      <div>
+        <h2>Minha Conta NOSZONA Smart</h2>
+        <p>Consulta o teu saldo, QR seguro e serviços</p>
+      </div>
+      <button class="btn-logout" onclick="logout()">Sair</button>
+    </div>
+
+    <!-- Banner de email por confirmar -->
+    <div class="alert-banner" id="bannerEmailNaoConfirmado" style="display:none;">
+      ⚠️ O teu email ainda não foi confirmado.
+      <button class="link-btn" onclick="reenviarConfirmacao()">Reenviar email de confirmação</button>
+    </div>
+
+    <div class="dash-body">
+      <div class="dash-grid">
+        <div>
+          <div class="stats-grid" id="dadosConta"></div>
+
+          <div class="recharge-box">
+            <h3>Recarregar conta</h3>
+            <p class="recharge-note">A recarga é processada via Vinti4. Não guardamos dados do teu cartão.</p>
+            <form id="formRecarga" novalidate onsubmit="recarregar(event)">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="tipoRecarga">Tipo de recarga</label>
+                  <select id="tipoRecarga" required>
+                    <option value="saldo">Recarregar saldo (CVE)</option>
+                    <option value="swipe">Recarregar swipes</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="valorRecarga">Valor ou quantidade</label>
+                  <input id="valorRecarga" type="number" min="1" required placeholder="Ex: 5000">
+                  <span class="field-error" id="erro-valorRecarga"></span>
+                </div>
+              </div>
+              <button type="submit" class="recharge-btn">Continuar para pagamento →</button>
+            </form>
+          </div>
+        </div>
+
+        <div>
+          <div class="qr-card">
+            <h3>QR Seguro</h3>
+            <div id="qrCode"></div>
+            <div class="qr-countdown">
+              <span>Renova em <strong id="qrCountdown">30</strong>s</span>
+              <div class="qr-progress"><div class="qr-progress-bar" id="qrProgressBar" style="width:100%"></div></div>
+            </div>
+            <p class="qr-note">Apresenta este código em eventos e serviços Smart City. Renova a cada 30 segundos para proteção contra fraude.</p>
+          </div>
+
+          <div class="card-req-box">
+            <h3>Cartão Físico RFID</h3>
+            <p>Solicita o teu cartão físico NOSZONA Smart para integração com leitores.</p>
+            <button class="btn-card-req" onclick="solicitarCartao()">Solicitar cartão físico</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p><strong>NOSZONA Smart</strong> · Smart City Cabo Verde · © <span id="ano"></span></p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="../js/script.js"></script>
+
+</body>
+</html>
