@@ -4,6 +4,11 @@
 
 console.log("✅ NOSZONA carregado");
 
+// Variáveis globais (declaradas cedo para evitar problemas de timing/TDZ em scripts clássicos)
+let residenteLogado = null;
+let qrTimerId = null;
+let qrCountdownId = null;
+
 // ==================== NAVEGAÇÃO (for classic script / onclick compat) ====================
 window.esconderTudo = function() {
   const ids = ["registo", "login", "recuperar", "dashboard"];
@@ -49,7 +54,7 @@ window.logout = function() {
   if (!confirm("Queres mesmo terminar a sessão?")) return;
 
   // limpa timers do QR
-  if (qrTimerId) { clearInterval(qrTimerId); qrTimerId = null; }
+  if (qrTimerId) { clearTimeout(qrTimerId); qrTimerId = null; }
   if (qrCountdownId) { clearInterval(qrCountdownId); qrCountdownId = null; }
 
   residenteLogado = null;
@@ -124,7 +129,9 @@ window.login = async function(e) {
           pacote: "Pacote 2",
           saldo: 8500,
           swipes: 30,
-          uid: "demo-" + Math.random().toString(36).slice(2, 10)
+          uid: "demo-" + Math.random().toString(36).slice(2, 10),
+          email: (username || "demo") + "@exemplo.com",
+          emailConfirmado: false
         }
       };
     }
@@ -166,7 +173,6 @@ window.login = async function(e) {
 };
 
 // ==================== DASHBOARD ====================
-let residenteLogado = null;
 
 window.mostrarDashboard = function() {
   if (!residenteLogado) {
@@ -195,29 +201,50 @@ window.mostrarDashboard = function() {
 function renderizarDashboard() {
   const r = residenteLogado || {};
 
-  // Preenche os dados
+  // Preenche os dados (inclui info extra se existir)
+  let extra = "";
+  if (r.email) {
+    extra += `<div class="stat-box"><span>Email</span><strong>${escapeHtml(r.email)}</strong></div>`;
+  }
+  if (r.cartaoPedido) {
+    const data = r.cartaoPedidoEm ? new Date(r.cartaoPedidoEm).toLocaleDateString("pt-PT") : "hoje";
+    extra += `<div class="stat-box"><span>Cartão Físico</span><strong style="color:#0ea472">Pedido ${data}</strong></div>`;
+  }
+
   document.getElementById("dadosConta").innerHTML = `
     <div class="stat-box"><span>Nome</span><strong>${escapeHtml(r.nome || "Utilizador")}</strong></div>
     <div class="stat-box"><span>Pacote</span><strong>${escapeHtml(r.pacote || "—")}</strong></div>
     <div class="stat-box"><span>Saldo</span><strong>${r.saldo ?? 0} CVE</strong></div>
     <div class="stat-box"><span>Swipes</span><strong>${r.swipes ?? 0}</strong></div>
     <div class="stat-box"><span>Estado</span><strong><span class="chip-active">Ativo</span></strong></div>
+    ${extra}
   `;
+
+  // controla o banner de email (demo)
+  const banner = document.getElementById("bannerEmailNaoConfirmado");
+  if (banner) {
+    banner.style.display = (r.emailConfirmado === false) ? "block" : "none";
+  }
 
   // Inicia o QR Code
   iniciarQRRotativo();
 }
 
 // ==================== QR CODE ====================
-let qrTimerId = null;
-let qrCountdownId = null;
 
 function iniciarQRRotativo() {
-  if (qrTimerId) clearInterval(qrTimerId);
+  if (qrTimerId) clearTimeout(qrTimerId);
   if (qrCountdownId) clearInterval(qrCountdownId);
 
   atualizarQR();
-  qrTimerId = setInterval(atualizarQR, 30000);
+  // usa timeout recursivo para maior estabilidade nos 30s exatos (evita drift do interval)
+  function scheduleNext() {
+    qrTimerId = setTimeout(() => {
+      atualizarQR();
+      scheduleNext();
+    }, 30000);
+  }
+  scheduleNext();
 
   let restante = 30;
   const tick = () => {
@@ -258,6 +285,19 @@ function atualizarQR() {
   // reset progress bar to full when new QR is generated
   const bar = document.getElementById("qrProgressBar");
   if (bar) bar.style.width = "100%";
+
+  // feedback visual simples (sem depender de CSS extra)
+  const qrCard = container.closest('.qr-card');
+  if (qrCard) {
+    const origBoxShadow = qrCard.style.boxShadow || '';
+    qrCard.style.transition = 'box-shadow 0.25s ease, background 0.25s ease';
+    qrCard.style.boxShadow = '0 0 12px rgba(0, 195, 227, 0.6)';
+    setTimeout(() => {
+      if (qrCard) {
+        qrCard.style.boxShadow = origBoxShadow;
+      }
+    }, 650);
+  }
 }
 
 function escapeHtml(unsafe) {
@@ -269,7 +309,94 @@ function escapeHtml(unsafe) {
 // ==================== STUBS para handlers que ainda não têm impl completa (evita crashes em cliques)
 window.registar = async function(e) {
   if (e) e.preventDefault();
-  popup("info", "Registo", "Fluxo de registo em desenvolvimento. (Use a versão nova modular depois)");
+
+  const form = document.getElementById("formRegisto");
+  if (!form) {
+    popup("erro", "Erro", "Formulário de registo não encontrado.");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    // recolhe dados do form de forma segura
+    const getVal = (id) => {
+      const el = document.getElementById(id);
+      return el ? el.value.trim() : "";
+    };
+
+    const userData = {
+      nome: getVal("nome"),
+      dataNascimento: getVal("dataNascimento"),
+      nacionalidade: getVal("nacionalidade"),
+      documento: getVal("documento"),
+      telefone: getVal("telefone"),
+      email: getVal("email"),
+      morada: getVal("morada"),
+      municipio: getVal("municipio"),
+      username: getVal("username"),
+      // password não guardamos por segurança na simulação
+      pacote: getVal("pacote") || "Pacote 2",
+      // dados para demo/pós-login
+      saldo: 0,
+      swipes: 0,
+      uid: "user-" + Date.now().toString(36),
+      emailConfirmado: false,
+      registadoEm: new Date().toISOString()
+    };
+
+    // validação básica (além do HTML required)
+    const obrigatorios = ["nome", "dataNascimento", "nacionalidade", "documento", "telefone", "email", "morada", "municipio", "username", "pacote"];
+    for (const campo of obrigatorios) {
+      if (!userData[campo]) {
+        popup("erro", "Campos obrigatórios", "Por favor preenche todos os campos assinalados.");
+        setLoading(false);
+        return;
+      }
+    }
+
+    if (userData.username.length < 3) {
+      popup("erro", "Username inválido", "O username deve ter pelo menos 3 caracteres.");
+      setLoading(false);
+      return;
+    }
+
+    // simula "guardar" no "backend" usando localStorage
+    let registered = [];
+    try {
+      registered = JSON.parse(localStorage.getItem("noszona_registered_users") || "[]");
+    } catch (e) { registered = []; }
+
+    // evita duplicados por username
+    registered = registered.filter(u => u.username !== userData.username);
+    registered.push(userData);
+    localStorage.setItem("noszona_registered_users", JSON.stringify(registered));
+
+    // guarda também como sessão atual (simula login após registo)
+    residenteLogado = userData;
+    window.residenteLogado = userData;
+
+    // persiste como sessão (assume "lembrar" para conveniência na sim)
+    try {
+      localStorage.setItem("noszona_session", JSON.stringify({ residente: userData }));
+    } catch (e) {}
+
+    popup("sucesso", "Registo simulado com sucesso!", "Conta criada! Os teus dados foram guardados localmente. A redirecionar para o dashboard...");
+
+    // limpa o form
+    form.reset();
+
+    // vai direto para o dashboard (simula após "pagamento")
+    setTimeout(() => {
+      setLoading(false);
+      mostrarDashboard();
+    }, 1400);
+
+  } catch (err) {
+    console.error(err);
+    popup("erro", "Erro no registo", "Ocorreu um problema ao processar o teu registo (simulação). Tenta novamente.");
+    setLoading(false);
+  }
 };
 
 window.recarregar = async function(e) {
@@ -279,38 +406,53 @@ window.recarregar = async function(e) {
     return mostrarLogin();
   }
 
-  const tipo = document.getElementById("tipoRecarga") ? document.getElementById("tipoRecarga").value : "saldo";
-  const valorEl = document.getElementById("valorRecarga");
-  const valor = parseInt(valorEl ? valorEl.value : "0", 10) || 0;
+  setLoading(true);
 
-  if (valor <= 0) {
-    popup("erro", "Valor inválido", "Introduz um valor positivo.");
-    return;
+  try {
+    const tipo = document.getElementById("tipoRecarga") ? document.getElementById("tipoRecarga").value : "saldo";
+    const valorEl = document.getElementById("valorRecarga");
+    const valor = parseInt(valorEl ? valorEl.value : "0", 10) || 0;
+
+    if (valor <= 0) {
+      popup("erro", "Valor inválido", "Introduz um valor positivo.");
+      setLoading(false);
+      return;
+    }
+
+    if (tipo === "saldo") {
+      residenteLogado.saldo = (residenteLogado.saldo || 0) + valor;
+    } else {
+      residenteLogado.swipes = (residenteLogado.swipes || 0) + valor;
+    }
+
+    // update window copy
+    window.residenteLogado = residenteLogado;
+
+    // persiste a atualização (para refresh com demo)
+    try {
+      localStorage.setItem("noszona_session", JSON.stringify({ residente: residenteLogado }));
+    } catch (e) {}
+
+    // re-render the stats in dashboard
+    const dadosConta = document.getElementById("dadosConta");
+    if (dadosConta) {
+      const r = residenteLogado;
+      dadosConta.innerHTML = `
+        <div class="stat-box"><span>Nome</span><strong>${escapeHtml(r.nome || "Utilizador")}</strong></div>
+        <div class="stat-box"><span>Pacote</span><strong>${escapeHtml(r.pacote || "—")}</strong></div>
+        <div class="stat-box"><span>Saldo</span><strong>${r.saldo ?? 0} CVE</strong></div>
+        <div class="stat-box"><span>Swipes</span><strong>${r.swipes ?? 0}</strong></div>
+        <div class="stat-box"><span>Estado</span><strong><span class="chip-active">Ativo</span></strong></div>
+      `;
+    }
+
+    popup("sucesso", "Recarga simulada", `+${valor} ${tipo === "saldo" ? "CVE de saldo" : "swipes"} adicionados (modo demo).`);
+  } catch (err) {
+    console.error(err);
+    popup("erro", "Erro na recarga", "Não foi possível processar a recarga simulada.");
+  } finally {
+    setLoading(false);
   }
-
-  if (tipo === "saldo") {
-    residenteLogado.saldo = (residenteLogado.saldo || 0) + valor;
-  } else {
-    residenteLogado.swipes = (residenteLogado.swipes || 0) + valor;
-  }
-
-  // update window copy too
-  window.residenteLogado = residenteLogado;
-
-  // re-render the stats in dashboard
-  const dadosConta = document.getElementById("dadosConta");
-  if (dadosConta) {
-    const r = residenteLogado;
-    dadosConta.innerHTML = `
-      <div class="stat-box"><span>Nome</span><strong>${escapeHtml(r.nome || "Utilizador")}</strong></div>
-      <div class="stat-box"><span>Pacote</span><strong>${escapeHtml(r.pacote || "—")}</strong></div>
-      <div class="stat-box"><span>Saldo</span><strong>${r.saldo ?? 0} CVE</strong></div>
-      <div class="stat-box"><span>Swipes</span><strong>${r.swipes ?? 0}</strong></div>
-      <div class="stat-box"><span>Estado</span><strong><span class="chip-active">Ativo</span></strong></div>
-    `;
-  }
-
-  popup("sucesso", "Recarga simulada", `+${valor} ${tipo === "saldo" ? "CVE de saldo" : "swipes"} adicionados (modo demo).`);
 };
 
 window.solicitarCartao = function() {
@@ -318,7 +460,29 @@ window.solicitarCartao = function() {
     popup("erro", "Login necessário", "Faz login primeiro.");
     return mostrarLogin();
   }
-  popup("info", "Cartão físico", "Solicitação de cartão RFID em desenvolvimento.");
+
+  // marca como pedido
+  residenteLogado.cartaoPedido = true;
+  residenteLogado.cartaoPedidoEm = new Date().toISOString();
+
+  window.residenteLogado = residenteLogado;
+
+  // persiste
+  try {
+    localStorage.setItem("noszona_session", JSON.stringify({ residente: residenteLogado }));
+  } catch (e) {}
+
+  // atualiza a UI da secção do cartão no dashboard (se visível)
+  const cardBox = document.querySelector(".card-req-box");
+  if (cardBox) {
+    const data = new Date(residenteLogado.cartaoPedidoEm).toLocaleDateString("pt-PT");
+    cardBox.innerHTML = `
+      <h3>Cartão Físico RFID</h3>
+      <p style="color:#0ea472">✅ Pedido enviado em ${data}. Entraremos em contacto em breve.</p>
+    `;
+  }
+
+  popup("sucesso", "Pedido enviado", "O teu pedido de cartão físico RFID foi registado com sucesso (simulação). Obrigado!");
 };
 
 window.loginWithGoogle = function() {

@@ -125,10 +125,11 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(6,24,39,0.85);
+  background: rgb(16 89 150 / 55%);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 20px rgb(23 94 255 / 47%);
+  transition: all 0.3s cubic-bezier(0.71, 0.18, 0.25, 1); 
 }
 
 .logo { text-decoration: none; }
@@ -143,14 +144,29 @@ header {
 
 .nav-links { display: flex; gap: 32px; list-style: none; }
 .nav-links a {
-  color: rgba(255,255,255,0.72);
+  color: var(--gold);
   text-decoration: none;
   font-size: 14px;
-  font-weight: 400;
-  letter-spacing: 0.2px;
-  transition: color 0.2s;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  transition: color 0.2s cubic-bezier(0.42, 0, 0, 0.39);
 }
-.nav-links a:hover { color: var(--white); }
+.nav-links a:hover {
+  color: var(--white);
+}
+
+/* Diferenciação clara para "Pacotes" (preços) sem parecer botão */
+.nav-links li:last-child a {
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  transition: color 0.2s cubic-bezier(0.42, 0, 0, 0.39);
+}
+.nav-links li:last-child a:hover {
+  color: #fff;
+}
 
 .nav-ctas { display: flex; gap: 10px; align-items: center; }
 
