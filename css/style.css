@@ -689,7 +689,7 @@ label {
   font-size: 13px; font-weight: 600;
   color: #2d3f52; margin-bottom: 8px; letter-spacing: 0.1px;
 }
-input, select {
+input:not([type="checkbox"]):not([type="radio"]), select {
   font-family: 'DM Sans', sans-serif;
   width: 100%; padding: 13px 16px;
   border: 1.5px solid #dde6f0;
@@ -733,12 +733,39 @@ input.field-invalid:focus, select.field-invalid:focus {
 .form-checkbox { margin-top: 4px; }
 .checkbox-label {
   display: flex; align-items: center; gap: 10px;
-  font-size: 14px; font-weight: 400; color: #2d3f52;
+  font-size: 14px; font-weight: 400; color: var(--text);
   cursor: pointer; margin: 0;
+  user-select: none;
 }
 .checkbox-label input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
   width: 18px; height: 18px;
-  margin: 0; accent-color: var(--cyan);
+  margin: 0;
+  border: 1.5px solid #dde6f0;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+  background: var(--cyan);
+  border-color: var(--cyan);
+}
+
+.checkbox-label input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 1;
 }
 
 .form-switch {

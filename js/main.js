@@ -140,12 +140,16 @@ window.login = async function(e) {
       residenteLogado = data.residente;
       window.residenteLogado = residenteLogado;
 
-      // persist session if "lembrar" checked (for demo and real)
-      if (lembrar) {
-        try {
-          localStorage.setItem("noszona_session", JSON.stringify({ residente: residenteLogado }));
-        } catch(e) {}
-      }
+      // persist session:
+      // - always to sessionStorage (current browser session)
+      // - to localStorage only if "lembrar" checked (persist across restarts)
+      try {
+        const sessionData = JSON.stringify({ residente: residenteLogado });
+        sessionStorage.setItem("noszona_session", sessionData);
+        if (lembrar) {
+          localStorage.setItem("noszona_session", sessionData);
+        }
+      } catch(e) {}
 
       // switch header to logged state (post-login fix)
       const ctasDeslogado = document.getElementById("ctasDeslogado");
@@ -361,6 +365,23 @@ window.registar = async function(e) {
       return;
     }
 
+    // check terms and conditions
+    const termos = document.getElementById("termos");
+    const erroTermos = document.getElementById("erro-termos");
+    if (erroTermos) {
+      erroTermos.textContent = "";
+      erroTermos.classList.remove("visible");
+    }
+    if (!termos || !termos.checked) {
+      if (erroTermos) {
+        erroTermos.textContent = "Obrigatório aceitar os Termos e Condições.";
+        erroTermos.classList.add("visible");
+      }
+      popup("erro", "Termos e Condições", "É obrigatório aceitar os Termos e Condições para criar a conta.");
+      setLoading(false);
+      return;
+    }
+
     // simula "guardar" no "backend" usando localStorage
     let registered = [];
     try {
@@ -376,9 +397,11 @@ window.registar = async function(e) {
     residenteLogado = userData;
     window.residenteLogado = userData;
 
-    // persiste como sessão (assume "lembrar" para conveniência na sim)
+    // persiste (sempre sessionStorage + local para conveniência na sim de registo)
     try {
-      localStorage.setItem("noszona_session", JSON.stringify({ residente: userData }));
+      const sessionData = JSON.stringify({ residente: userData });
+      sessionStorage.setItem("noszona_session", sessionData);
+      localStorage.setItem("noszona_session", sessionData);
     } catch (e) {}
 
     popup("sucesso", "Registo simulado com sucesso!", "Conta criada! Os teus dados foram guardados localmente. A redirecionar para o dashboard...");
@@ -508,10 +531,23 @@ window.reenviarConfirmacao = async function() {
   popup("info", "Confirmação", "Reenvio de confirmação em desenvolvimento.");
 };
 
+window.mostrarTermos = function() {
+  popup("info", "Termos e Condições", 
+    "Ao criar uma conta na NOSZONA Smart, você concorda com:\n\n" +
+    "• Fornecimento de dados pessoais verídicos.\n" +
+    "• Uso do QR para acesso a serviços da Smart City.\n" +
+    "• Política de privacidade e proteção de dados (LGPD equivalente).\n" +
+    "• Não compartilhamento de credenciais.\n\n" +
+    "A NOSZONA reserva-se o direito de suspender contas em caso de violação.\n\n" +
+    "Versão 1.0 - Cabo Verde, 2026."
+  );
+};
+
 // ==================== PERSISTÊNCIA SIMPLES (demo + real) ====================
 function carregarSessao() {
   try {
-    const raw = localStorage.getItem("noszona_session");
+    // prefer sessionStorage (current session), fallback to localStorage (persisted)
+    const raw = sessionStorage.getItem("noszona_session") || localStorage.getItem("noszona_session");
     if (!raw) return false;
     const { residente } = JSON.parse(raw);
     if (residente) {
