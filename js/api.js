@@ -1,57 +1,104 @@
 // =====================================================
-// CAMADA DE API - Todas as chamadas fetch
+// CAMADA DE API - Todas as chamadas fetch (confiável, anti-travado)
+// Centraliza toda comunicação com o backend. Sempre async, com tratamento
+// de erros e tokens. Nenhuma chamada fetch deve existir fora deste ficheiro.
 // =====================================================
 
 import { API_BASE } from './core/config.js';
-import { setLoading } from './core/utils.js';
+
+/**
+ * Fetch genérico com token automático (se fornecido), JSON handling e erros consistentes.
+ * Nunca bloqueia a UI (sempre await no caller com loading).
+ */
+async function apiFetch(endpoint, { method = 'GET', body, token, headers = {} } = {}) {
+  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
+
+  const finalHeaders = {
+    'Content-Type': 'application/json',
+    ...headers,
+  };
+
+  if (token) {
+    finalHeaders.Authorization = `Bearer ${token}`;
+  }
+
+  const options = {
+    method,
+    headers: finalHeaders,
+  };
+
+  if (body !== undefined) {
+    options.body = JSON.stringify(body);
+  }
+
+  const response = await fetch(url, options);
+
+  let data;
+  const text = await response.text();
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = { sucesso: response.ok, mensagem: text };
+  }
+
+  if (!response.ok && !data.sucesso) {
+    const err = new Error(data.mensagem || `Erro ${response.status}`);
+    err.status = response.status;
+    err.data = data;
+    throw err;
+  }
+
+  return data;
+}
+
+// ==================== ENDPOINTS ====================
 
 export async function loginAPI(username, password) {
-  const response = await fetch(`${API_BASE}/residentes/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
+  return apiFetch('/residentes/login', {
+    method: 'POST',
+    body: { username, password },
   });
-  return response.json();
 }
 
 export async function registarAPI(dados) {
-  const response = await fetch(`${API_BASE}/residentes/registar`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(dados)
+  return apiFetch('/residentes/registar', {
+    method: 'POST',
+    body: dados,
   });
-  return response.json();
 }
 
 export async function recarregarAPI(dados, token) {
-  const response = await fetch(`${API_BASE}/residentes/recarregar`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { "Authorization": "Bearer " + token } : {})
-    },
-    body: JSON.stringify(dados)
+  return apiFetch('/residentes/recarregar', {
+    method: 'POST',
+    body: dados,
+    token,
   });
-  return response.json();
 }
 
 export async function solicitarCartaoAPI(id, token) {
-  const response = await fetch(`${API_BASE}/residentes/solicitar-cartao`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { "Authorization": "Bearer " + token } : {})
-    },
-    body: JSON.stringify({ id })
+  return apiFetch('/residentes/solicitar-cartao', {
+    method: 'POST',
+    body: { id },
+    token,
   });
-  return response.json();
 }
 
 export async function recuperarPasswordAPI(email) {
-  const response = await fetch(`${API_BASE}/residentes/recuperar-password`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: email.toLowerCase() })
+  return apiFetch('/residentes/recuperar-password', {
+    method: 'POST',
+    body: { email: email.toLowerCase() },
   });
-  return response.json();
+}
+
+export async function reenviarConfirmacaoAPI(email, token) {
+  return apiFetch('/residentes/reenviar-confirmacao', {
+    method: 'POST',
+    body: { email },
+    token,
+  });
+}
+
+// Helper para obter token do session se quiser usar em chamadas manuais
+export function withToken(token) {
+  return { token };
 }
