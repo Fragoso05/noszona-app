@@ -1012,23 +1012,6 @@ input.field-invalid:focus, select.field-invalid:focus {
 }
 .popup-btn:hover { background: var(--blue); transform: translateY(-1px); }
 
-/* Confirm dialog actions (two buttons side-by-side, reusing popup-box) */
-.popup-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-top: 8px;
-}
-.popup-btn.secondary {
-  background: var(--off);
-  color: var(--text);
-  border: 1px solid var(--border-dark);
-}
-.popup-btn.secondary:hover {
-  background: #e2e8f0;
-  transform: translateY(-1px);
-}
-
 .loading * { pointer-events: none; opacity: 0.7; }
 
 /* ============ FOOTER ============ */
