@@ -63,7 +63,7 @@ export function limparSessao() {
 }
 
 export function logout() {
-  if (!confirm("Queres mesmo terminar a sessão?")) return;
+  // Sem qualquer aviso/confirmacao. Se a pessoa clicar "Sair", faz logout imediatamente.
   limparSessao();
   popup("sucesso", "Sessão terminada", "Voltaste a estar deslogado.");
   window.scrollTo({ top: 0, behavior: "smooth" });
