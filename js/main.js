@@ -404,7 +404,15 @@ window.registar = async function(e) {
       localStorage.setItem("noszona_session", sessionData);
     } catch (e) {}
 
-    popup("sucesso", "Registo simulado com sucesso!", "Conta criada! Os teus dados foram guardados localmente. A redirecionar para o dashboard...");
+    // Simula envio de email de boas-vindas (como pedido)
+    setTimeout(() => {
+      popup("sucesso", "Registo simulado com sucesso!", "Conta criada! Um email de boas-vindas foi enviado para " + userData.email);
+
+      // Mostra preview do email enviado (simulação)
+      setTimeout(() => {
+        showWelcomeEmailPreview(userData);
+      }, 1200);
+    }, 600);
 
     // limpa o form
     form.reset();
@@ -413,7 +421,7 @@ window.registar = async function(e) {
     setTimeout(() => {
       setLoading(false);
       mostrarDashboard();
-    }, 1400);
+    }, 2200);
 
   } catch (err) {
     console.error(err);
@@ -509,113 +517,262 @@ window.solicitarCartao = function() {
 };
 
 window.loginWithGoogle = function() {
-  popup("info", "Conectando com Google", "Abrindo janela de autenticação do Google (simulação)...");
+  // Cria um popup que simula o login do Google de forma realista
+  const existing = document.getElementById('google-login-modal');
+  if (existing) existing.remove();
 
-  setTimeout(() => {
-    const googleEmail = prompt("Simulação Google: Insere o email da tua conta Google:", "teuemail@gmail.com");
-    if (!googleEmail || !googleEmail.includes("@")) {
-      popup("erro", "Cancelado", "Login com Google cancelado ou email inválido.");
+  const modal = document.createElement('div');
+  modal.id = 'google-login-modal';
+  modal.style.cssText = `
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
+    z-index: 99999; font-family: 'Roboto', Arial, sans-serif;
+  `;
+
+  modal.innerHTML = `
+    <div style="background: #fff; width: 420px; border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); overflow: hidden;">
+      <!-- Header Google -->
+      <div style="padding: 28px 28px 16px; text-align: center; border-bottom: 1px solid #dadce0;">
+        <div style="display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 12px;">
+          <span style="font-size: 32px; font-weight: 500; color: #4285f4;">G</span>
+          <span style="font-size: 32px; font-weight: 500; color: #ea4335;">o</span>
+          <span style="font-size: 32px; font-weight: 500; color: #fbbc05;">o</span>
+          <span style="font-size: 32px; font-weight: 500; color: #4285f4;">g</span>
+          <span style="font-size: 32px; font-weight: 500; color: #34a853;">l</span>
+          <span style="font-size: 32px; font-weight: 500; color: #ea4335;">e</span>
+        </div>
+        <h2 style="margin: 0; font-size: 22px; font-weight: 400; color: #202124;">Sign in</h2>
+        <p style="margin: 4px 0 0; font-size: 14px; color: #5f6368;">Use your Google Account</p>
+      </div>
+
+      <div style="padding: 24px 28px;">
+        <!-- Step 1: Email -->
+        <div id="google-step-1">
+          <input id="google-email-input" type="email" placeholder="Email or phone" 
+                 style="width: 100%; padding: 12px 14px; border: 1px solid #dadce0; border-radius: 4px; font-size: 16px; outline: none; margin-bottom: 8px;">
+          <div style="font-size: 13px; color: #1a73e8; margin-bottom: 24px;">
+            <a href="#" style="text-decoration: none; color: #1a73e8;">Forgot email?</a>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
+            <a href="#" id="google-create-account" style="color: #1a73e8; text-decoration: none;">Create account</a>
+            <button id="google-next-btn" style="background: #1a73e8; color: white; border: none; padding: 8px 24px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer;">Next</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Password -->
+        <div id="google-step-2" style="display: none;">
+          <div style="margin-bottom: 12px;">
+            <div id="google-email-display" style="font-size: 14px; color: #202124; font-weight: 500;"></div>
+            <a href="#" id="google-back-email" style="font-size: 13px; color: #1a73e8; text-decoration: none;">Not your account?</a>
+          </div>
+          <input id="google-password-input" type="password" placeholder="Enter your password" 
+                 style="width: 100%; padding: 12px 14px; border: 1px solid #dadce0; border-radius: 4px; font-size: 16px; outline: none; margin-bottom: 12px;">
+          <div style="margin-bottom: 20px;">
+            <label style="font-size: 14px; color: #5f6368; display: flex; align-items: center; gap: 8px;">
+              <input type="checkbox" id="google-show-password"> Show password
+            </label>
+          </div>
+          <div style="text-align: right;">
+            <button id="google-signin-btn" style="background: #1a73e8; color: white; border: none; padding: 8px 24px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer;">Sign in</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #f8f9fa; padding: 16px 28px; font-size: 12px; color: #5f6368; border-top: 1px solid #dadce0;">
+        This is a simulation for demonstration purposes only.
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Elements
+  const step1 = modal.querySelector('#google-step-1');
+  const step2 = modal.querySelector('#google-step-2');
+  const emailInput = modal.querySelector('#google-email-input');
+  const nextBtn = modal.querySelector('#google-next-btn');
+  const passwordInput = modal.querySelector('#google-password-input');
+  const signinBtn = modal.querySelector('#google-signin-btn');
+  const emailDisplay = modal.querySelector('#google-email-display');
+  const backLink = modal.querySelector('#google-back-email');
+  const showPassCheckbox = modal.querySelector('#google-show-password');
+  const createAccountLink = modal.querySelector('#google-create-account');
+
+  // "Create account" dentro do popup Google -> fecha e abre o registo MANUAL do site (único caminho para criar conta)
+  if (createAccountLink) {
+    createAccountLink.onclick = (e) => {
+      e.preventDefault();
+      modal.remove();
+      // Abre o formulário normal de registo (que exige termos + todos os campos)
+      // NUNCA usa o fluxo Google para criar conta
+      if (typeof window.mostrarRegisto === "function") {
+        window.mostrarRegisto("Pacote 2");
+      }
+    };
+  }
+
+  // Step 1 → Step 2
+  nextBtn.onclick = () => {
+    const email = emailInput.value.trim();
+    if (!email || !email.includes('@')) {
+      alert('Please enter a valid email');
       return;
     }
+    emailDisplay.textContent = email;
+    step1.style.display = 'none';
+    step2.style.display = 'block';
+    passwordInput.focus();
+  };
 
-    // Carrega usuários registados
-    let registered = [];
-    try {
-      registered = JSON.parse(localStorage.getItem("noszona_registered_users") || "[]");
-    } catch (e) { registered = []; }
+  // Back to email
+  backLink.onclick = (e) => {
+    e.preventDefault();
+    step2.style.display = 'none';
+    step1.style.display = 'block';
+    emailInput.focus();
+  };
 
-    // Procura usuário existente por email
-    let existing = registered.find(u => (u.email || "").toLowerCase() === googleEmail.toLowerCase());
+  // Show/hide password
+  showPassCheckbox.onchange = () => {
+    passwordInput.type = showPassCheckbox.checked ? 'text' : 'password';
+  };
 
-    if (existing) {
-      // Login existente
-      residenteLogado = existing;
-      window.residenteLogado = residenteLogado;
+  // Final Sign in
+  const handleSignIn = () => {
+    const email = emailDisplay.textContent || emailInput.value.trim();
+    if (!email) return;
 
-      try {
-        const sessionData = JSON.stringify({ residente: residenteLogado });
-        sessionStorage.setItem("noszona_session", sessionData);
-        localStorage.setItem("noszona_session", sessionData); // Google lembra por padrão
-      } catch(e) {}
+    modal.remove(); // close Google popup
 
-      // Atualiza header
-      const ctasDeslogado = document.getElementById("ctasDeslogado");
-      const ctasLogado = document.getElementById("ctasLogado");
-      if (ctasDeslogado) ctasDeslogado.style.display = "none";
-      if (ctasLogado) ctasLogado.style.display = "flex";
-      const greetingEl = document.getElementById("userGreeting");
-      if (ctasLogado && greetingEl) {
-        const primeiroNome = (residenteLogado.nome || "").split(" ")[0];
-        greetingEl.textContent = `Olá, ${primeiroNome}`;
-      }
+    // Processa login Google (agora só permite contas já registadas; sem criação, sem validação de registo)
+    processGoogleAuth(email);
+  };
 
-      popup("sucesso", "Login com Google", `Bem-vindo de volta, ${residenteLogado.nome || googleEmail}!`);
-      mostrarDashboard();
-    } else {
-      // Novo usuário - cria conta via Google
-      const nome = prompt("Nome completo (vindo do Google):", googleEmail.split("@")[0]);
-      let username = prompt("Escolhe um username para a NOSZONA:", googleEmail.split("@")[0]);
+  signinBtn.onclick = handleSignIn;
 
-      if (!nome || !username) {
-        popup("erro", "Cancelado", "Registo com Google cancelado.");
-        return;
-      }
+  // Allow Enter key
+  passwordInput.onkeydown = (e) => {
+    if (e.key === 'Enter') handleSignIn();
+  };
 
-      // Garante username único
-      let baseUsername = username;
-      let counter = 1;
-      while (registered.some(u => u.username === username)) {
-        username = baseUsername + counter;
-        counter++;
-      }
+  // Close on outside click (optional)
+  modal.onclick = (e) => {
+    if (e.target === modal) modal.remove();
+  };
 
-      const newUser = {
-        nome: nome,
-        email: googleEmail,
-        username: username,
-        pacote: "Pacote 2",
-        saldo: 0,
-        swipes: 0,
-        uid: "google-" + Date.now(),
-        emailConfirmado: true,
-        registadoEm: new Date().toISOString(),
-        viaGoogle: true
-      };
-
-      registered.push(newUser);
-      localStorage.setItem("noszona_registered_users", JSON.stringify(registered));
-
-      // Login automático
-      residenteLogado = newUser;
-      window.residenteLogado = residenteLogado;
-
-      try {
-        const sessionData = JSON.stringify({ residente: residenteLogado });
-        sessionStorage.setItem("noszona_session", sessionData);
-        localStorage.setItem("noszona_session", sessionData);
-      } catch(e) {}
-
-      // Atualiza header
-      const ctasDeslogado = document.getElementById("ctasDeslogado");
-      const ctasLogado = document.getElementById("ctasLogado");
-      if (ctasDeslogado) ctasDeslogado.style.display = "none";
-      if (ctasLogado) ctasLogado.style.display = "flex";
-      const greetingEl = document.getElementById("userGreeting");
-      if (ctasLogado && greetingEl) {
-        const primeiroNome = (residenteLogado.nome || "").split(" ")[0];
-        greetingEl.textContent = `Olá, ${primeiroNome}`;
-      }
-
-      popup("sucesso", "Registo com Google", `Conta criada com sucesso via Google! Bem-vindo, ${nome}!`);
-      mostrarDashboard();
-    }
-  }, 900);
+  // Auto focus email
+  setTimeout(() => emailInput.focus(), 100);
 };
+
+function processGoogleAuth(googleEmail) {
+  // Carrega usuários registados
+  let registered = [];
+  try {
+    registered = JSON.parse(localStorage.getItem("noszona_registered_users") || "[]");
+  } catch (e) { registered = []; }
+
+  // Procura usuário existente por email
+  // IMPORTANTE: Google login é APENAS para contas já registadas manualmente.
+  // Nunca cria conta aqui, nunca chama registar(), nunca valida "termos" ou "campos obrigatórios".
+  let existing = registered.find(u => (u.email || "").toLowerCase() === googleEmail.toLowerCase());
+
+  if (existing) {
+    // Login existente - fluxo 100% independente do registo manual
+    residenteLogado = existing;
+    window.residenteLogado = residenteLogado;
+
+    try {
+      const sessionData = JSON.stringify({ residente: residenteLogado });
+      sessionStorage.setItem("noszona_session", sessionData);
+      localStorage.setItem("noszona_session", sessionData);
+    } catch(e) {}
+
+    // Atualiza header
+    const ctasDeslogado = document.getElementById("ctasDeslogado");
+    const ctasLogado = document.getElementById("ctasLogado");
+    if (ctasDeslogado) ctasDeslogado.style.display = "none";
+    if (ctasLogado) ctasLogado.style.display = "flex";
+    const greetingEl = document.getElementById("userGreeting");
+    if (ctasLogado && greetingEl) {
+      const primeiroNome = (residenteLogado.nome || "").split(" ")[0];
+      greetingEl.textContent = `Olá, ${primeiroNome}`;
+    }
+
+    popup("sucesso", "Login com Google", `Bem-vindo de volta, ${residenteLogado.nome || googleEmail}!`);
+    mostrarDashboard();
+  } else {
+    // Conta não existe ainda -> aviso claro, sem criar nada, sem prompts, sem registar()
+    popup("erro", "Conta não registrada", "Esta conta Google ainda não está registada no Noszona. Por favor efetua o registo através do formulário normal primeiro.");
+  }
+}
 
 window.registerWithGoogle = function() {
-  // Reutiliza a mesma lógica (Google Sign-In cria conta se não existir)
-  window.loginWithGoogle();
+  // Mantido por compatibilidade: NÃO faz login/registo Google.
+  // Registo com Google não existe mais. O único registo é manual (exige email + checkbox termos).
+  if (typeof window.mostrarRegisto === "function") {
+    window.mostrarRegisto("Pacote 2");
+  }
 };
+
+// Simula o envio de email de boas-vindas após registro
+function showWelcomeEmailPreview(userData) {
+  const existing = document.getElementById('welcome-email-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'welcome-email-modal';
+  modal.style.cssText = `
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;
+    z-index: 99999; font-family: Arial, sans-serif;
+  `;
+
+  const emailHTML = `
+    <div style="background: #fff; width: 520px; max-width: 92%; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow: hidden;">
+      <!-- Email header -->
+      <div style="background: #f2f2f2; padding: 12px 20px; border-bottom: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <strong style="color: #333;">Noszona Smart City</strong><br>
+          <span style="font-size: 12px; color: #666;">no-reply@noszona.cv</span>
+        </div>
+        <div style="text-align: right; font-size: 12px; color: #888;">
+          Para: ${userData.email}<br>
+          ${new Date().toLocaleDateString('pt-PT')}
+        </div>
+      </div>
+
+      <div style="padding: 28px 32px; line-height: 1.6; color: #333;">
+        <h3 style="margin-top: 0; color: #061827;">Bem-vindo à família NOSZONA!</h3>
+        
+        <p>Olá <strong>${userData.nome}</strong>,</p>
+        
+        <p>É com grande prazer que te damos as boas-vindas ao <strong>site Noszona</strong>.</p>
+        
+        <p>A partir de agora, fazes parte da <strong>família Fundação Smart City</strong>.</p>
+        
+        <p>Com a tua conta ativa, podes usufruir de todas as vantagens da Smart City de Cabo Verde: QR seguro, carteira virtual, acesso a eventos e muito mais.</p>
+        
+        <p>Obrigado por te juntares a nós. Juntos construímos uma cidade mais inteligente!</p>
+        
+        <p style="margin-top: 24px;">Com carinho,<br>
+        <strong>Equipe NOSZONA</strong><br>
+        Fundação Smart City</p>
+      </div>
+
+      <div style="background: #f8f9fa; padding: 14px 20px; text-align: center; border-top: 1px solid #eee;">
+        <button id="close-email-preview" style="background: #061827; color: white; border: none; padding: 8px 22px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+          Fechar
+        </button>
+      </div>
+    </div>
+  `;
+
+  modal.innerHTML = emailHTML;
+  document.body.appendChild(modal);
+
+  modal.querySelector('#close-email-preview').onclick = () => modal.remove();
+  modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+}
 
 window.recuperarPassword = async function(e) {
   if (e) e.preventDefault();
