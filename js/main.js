@@ -50,30 +50,28 @@ window.mostrarRecuperar = function() {
 };
 
 // ==================== LOGOUT (basic for header button) ====================
+// Sem qualquer aviso/confirmacao. Se a pessoa clicar "Sair", faz logout imediatamente.
 window.logout = function() {
-  // Use custom styled confirm (replaces ugly native "Essa página diz" browser dialog)
-  confirmPopup("Terminar sessão", "Queres mesmo terminar a sessão?", () => {
-    // limpa timers do QR
-    if (qrTimerId) { clearTimeout(qrTimerId); qrTimerId = null; }
-    if (qrCountdownId) { clearInterval(qrCountdownId); qrCountdownId = null; }
+  // limpa timers do QR
+  if (qrTimerId) { clearTimeout(qrTimerId); qrTimerId = null; }
+  if (qrCountdownId) { clearInterval(qrCountdownId); qrCountdownId = null; }
 
-    residenteLogado = null;
-    window.residenteLogado = null;
-    try {
-      localStorage.removeItem("noszona_session");
-      sessionStorage.removeItem("noszona_session");
-    } catch(e) {}
-    esconderTudo();
-    const ctasDeslogado = document.getElementById("ctasDeslogado");
-    const ctasLogado = document.getElementById("ctasLogado");
-    if (ctasDeslogado) ctasDeslogado.style.display = "flex";
-    if (ctasLogado) ctasLogado.style.display = "none";
-    popup("sucesso", "Sessão terminada", "Voltaste a estar deslogado.");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
+  residenteLogado = null;
+  window.residenteLogado = null;
+  try {
+    localStorage.removeItem("noszona_session");
+    sessionStorage.removeItem("noszona_session");
+  } catch(e) {}
+  esconderTudo();
+  const ctasDeslogado = document.getElementById("ctasDeslogado");
+  const ctasLogado = document.getElementById("ctasLogado");
+  if (ctasDeslogado) ctasDeslogado.style.display = "flex";
+  if (ctasLogado) ctasLogado.style.display = "none";
+  popup("sucesso", "Sessão terminada", "Voltaste a estar deslogado.");
+  window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
-// ==================== POPUP (info/success/error) + CONFIRM HELPER ====================
+// ==================== POPUP ====================
 window.popup = function(tipo, titulo, texto) {
   const icones = { sucesso: "✅", erro: "⚠️", info: "ℹ️" };
   const icone = icones[tipo] || "ℹ️";
@@ -88,33 +86,6 @@ window.popup = function(tipo, titulo, texto) {
     </div>
   `;
   el.querySelector(".popup-btn").onclick = () => el.remove();
-  el.onclick = (e) => { if (e.target === el) el.remove(); };
-  document.body.appendChild(el);
-};
-
-// Custom confirm that reuses the exact same popup styling (no native browser dialog)
-window.confirmPopup = function(titulo, texto, onConfirm) {
-  const el = document.createElement("div");
-  el.className = "popup-overlay";
-  el.innerHTML = `
-    <div class="popup-box">
-      <span class="popup-icon">🚪</span>
-      <h2>${titulo}</h2>
-      <p>${texto}</p>
-      <div class="popup-actions">
-        <button class="popup-btn secondary">Cancelar</button>
-        <button class="popup-btn">Sim, sair</button>
-      </div>
-    </div>
-  `;
-  const buttons = el.querySelectorAll(".popup-btn");
-  const cancelBtn = buttons[0];
-  const confirmBtn = buttons[1];
-  cancelBtn.onclick = () => el.remove();
-  confirmBtn.onclick = () => {
-    el.remove();
-    if (typeof onConfirm === "function") onConfirm();
-  };
   el.onclick = (e) => { if (e.target === el) el.remove(); };
   document.body.appendChild(el);
 };
