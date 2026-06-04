@@ -159,7 +159,7 @@ window.login = async function(e) {
       const greetingEl = document.getElementById("userGreeting");
       if (ctasLogado && greetingEl) {
         const primeiroNome = (residenteLogado.nome || "").split(" ")[0];
-        greetingEl.textContent = `Olá, ${primeiroNome}`;
+        greetingEl.textContent = `Óla, ${primeiroNome}`;
       }
 
       const isDemo = !data.residente || data.residente.uid?.startsWith("demo-");
@@ -192,7 +192,7 @@ window.mostrarDashboard = function() {
   const greetingEl = document.getElementById("userGreeting");
   if (ctasLogado && greetingEl && residenteLogado) {
     const primeiroNome = (residenteLogado.nome || "").split(" ")[0];
-    greetingEl.textContent = `Olá, ${primeiroNome}`;
+    greetingEl.textContent = `Óla, ${primeiroNome}`;
   }
 
   esconderTudo();
@@ -509,6 +509,8 @@ window.solicitarCartao = function() {
 };
 
 window.loginWithGoogle = function() {
+  // LOGIN com Google: APENAS para contas já registadas.
+  // Se não estiver registado, mostra aviso claro "Conta não registada" (sem criar conta nem pedir campos).
   popup("info", "Conectando com Google", "Abrindo janela de autenticação do Google (simulação)...");
 
   setTimeout(() => {
@@ -528,65 +530,8 @@ window.loginWithGoogle = function() {
     let existing = registered.find(u => (u.email || "").toLowerCase() === googleEmail.toLowerCase());
 
     if (existing) {
-      // Login existente
+      // Login existente - direto, sem qualquer pedido de campos adicionais
       residenteLogado = existing;
-      window.residenteLogado = residenteLogado;
-
-      try {
-        const sessionData = JSON.stringify({ residente: residenteLogado });
-        sessionStorage.setItem("noszona_session", sessionData);
-        localStorage.setItem("noszona_session", sessionData); // Google lembra por padrão
-      } catch(e) {}
-
-      // Atualiza header
-      const ctasDeslogado = document.getElementById("ctasDeslogado");
-      const ctasLogado = document.getElementById("ctasLogado");
-      if (ctasDeslogado) ctasDeslogado.style.display = "none";
-      if (ctasLogado) ctasLogado.style.display = "flex";
-      const greetingEl = document.getElementById("userGreeting");
-      if (ctasLogado && greetingEl) {
-        const primeiroNome = (residenteLogado.nome || "").split(" ")[0];
-        greetingEl.textContent = `Olá, ${primeiroNome}`;
-      }
-
-      popup("sucesso", "Login com Google", `Bem-vindo de volta, ${residenteLogado.nome || googleEmail}!`);
-      mostrarDashboard();
-    } else {
-      // Novo usuário - cria conta via Google
-      const nome = prompt("Nome completo (vindo do Google):", googleEmail.split("@")[0]);
-      let username = prompt("Escolhe um username para a NOSZONA:", googleEmail.split("@")[0]);
-
-      if (!nome || !username) {
-        popup("erro", "Cancelado", "Registo com Google cancelado.");
-        return;
-      }
-
-      // Garante username único
-      let baseUsername = username;
-      let counter = 1;
-      while (registered.some(u => u.username === username)) {
-        username = baseUsername + counter;
-        counter++;
-      }
-
-      const newUser = {
-        nome: nome,
-        email: googleEmail,
-        username: username,
-        pacote: "Pacote 2",
-        saldo: 0,
-        swipes: 0,
-        uid: "google-" + Date.now(),
-        emailConfirmado: true,
-        registadoEm: new Date().toISOString(),
-        viaGoogle: true
-      };
-
-      registered.push(newUser);
-      localStorage.setItem("noszona_registered_users", JSON.stringify(registered));
-
-      // Login automático
-      residenteLogado = newUser;
       window.residenteLogado = residenteLogado;
 
       try {
@@ -603,18 +548,122 @@ window.loginWithGoogle = function() {
       const greetingEl = document.getElementById("userGreeting");
       if (ctasLogado && greetingEl) {
         const primeiroNome = (residenteLogado.nome || "").split(" ")[0];
-        greetingEl.textContent = `Olá, ${primeiroNome}`;
+        greetingEl.textContent = `Óla, ${primeiroNome}`;
       }
 
-      popup("sucesso", "Registo com Google", `Conta criada com sucesso via Google! Bem-vindo, ${nome}!`);
+      popup("sucesso", "Login com Google", `Bem-vindo de volta, ${residenteLogado.nome || googleEmail}!`);
       mostrarDashboard();
+    } else {
+      // Não registado -> aviso específico, NÃO cria conta, NÃO pede preenchimento de campos
+      popup("erro", "Conta não registada", "A sua conta Google não está registada no sistema NOSZONA. Por favor, crie primeiro a sua conta usando o formulário de Registo.");
     }
   }, 900);
 };
 
 window.registerWithGoogle = function() {
-  // Reutiliza a mesma lógica (Google Sign-In cria conta se não existir)
-  window.loginWithGoogle();
+  // REGISTO com Google: cria conta automaticamente (sem popups de "campos obrigatórios").
+  // Deriva nome/username do email + usa pacote selecionado no form (se houver).
+  popup("info", "Conectando com Google", "Abrindo janela de autenticação do Google para registo (simulação)...");
+
+  setTimeout(() => {
+    const googleEmail = prompt("Simulação Google: Insere o email da tua conta Google para registo:", "teuemail@gmail.com");
+    if (!googleEmail || !googleEmail.includes("@")) {
+      popup("erro", "Cancelado", "Registo com Google cancelado ou email inválido.");
+      return;
+    }
+
+    let registered = [];
+    try {
+      registered = JSON.parse(localStorage.getItem("noszona_registered_users") || "[]");
+    } catch (e) { registered = []; }
+
+    let existing = registered.find(u => (u.email || "").toLowerCase() === googleEmail.toLowerCase());
+
+    if (existing) {
+      popup("info", "Já registado", "Esta conta Google já tem registo. A iniciar sessão...");
+      // auto-login
+      residenteLogado = existing;
+      window.residenteLogado = residenteLogado;
+      try {
+        const sessionData = JSON.stringify({ residente: residenteLogado });
+        sessionStorage.setItem("noszona_session", sessionData);
+        localStorage.setItem("noszona_session", sessionData);
+      } catch(e) {}
+      const ctasDeslogado = document.getElementById("ctasDeslogado");
+      const ctasLogado = document.getElementById("ctasLogado");
+      if (ctasDeslogado) ctasDeslogado.style.display = "none";
+      if (ctasLogado) ctasLogado.style.display = "flex";
+      const greetingEl = document.getElementById("userGreeting");
+      if (ctasLogado && greetingEl) {
+        const primeiroNome = (residenteLogado.nome || "").split(" ")[0];
+        greetingEl.textContent = `Óla, ${primeiroNome}`;
+      }
+      mostrarDashboard();
+      return;
+    }
+
+    // Criação automática (sem prompts manuais de campos obrigatórios)
+    const emailLocal = googleEmail.split("@")[0];
+    let nome = emailLocal.replace(/[._-]/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    let username = emailLocal.toLowerCase().replace(/[^a-z0-9._]/g, "");
+    if (!username) username = "user";
+
+    // Garante username único
+    let baseUsername = username;
+    let counter = 1;
+    while (registered.some(u => u.username === username)) {
+      username = baseUsername + counter;
+      counter++;
+    }
+
+    // Usa o pacote escolhido no form de registo (se a secção estiver visível)
+    const pacoteSel = document.getElementById("pacote");
+    const pacote = (pacoteSel && pacoteSel.value) || "Pacote 2";
+
+    const newUser = {
+      nome: nome,
+      email: googleEmail,
+      username: username,
+      pacote: pacote,
+      saldo: 0,
+      swipes: 0,
+      uid: "google-" + Date.now(),
+      emailConfirmado: true,
+      registadoEm: new Date().toISOString(),
+      viaGoogle: true
+    };
+
+    registered.push(newUser);
+    localStorage.setItem("noszona_registered_users", JSON.stringify(registered));
+
+    // Login automático após registo Google
+    residenteLogado = newUser;
+    window.residenteLogado = residenteLogado;
+
+    try {
+      const sessionData = JSON.stringify({ residente: residenteLogado });
+      sessionStorage.setItem("noszona_session", sessionData);
+      localStorage.setItem("noszona_session", sessionData);
+    } catch(e) {}
+
+    // Atualiza header
+    const ctasDeslogado = document.getElementById("ctasDeslogado");
+    const ctasLogado = document.getElementById("ctasLogado");
+    if (ctasDeslogado) ctasDeslogado.style.display = "none";
+    if (ctasLogado) ctasLogado.style.display = "flex";
+    const greetingEl = document.getElementById("userGreeting");
+    if (ctasLogado && greetingEl) {
+      const primeiroNome = (residenteLogado.nome || "").split(" ")[0];
+      greetingEl.textContent = `Óla, ${primeiroNome}`;
+    }
+
+    // Limpa form de registo se estiver aberto
+    const formReg = document.getElementById("formRegisto");
+    if (formReg) formReg.reset();
+
+    popup("sucesso", "Registo com Google", `Conta criada com sucesso via Google! Bem-vindo, ${nome}!`);
+    mostrarDashboard();
+  }, 900);
 };
 
 window.recuperarPassword = async function(e) {
@@ -667,7 +716,7 @@ function carregarSessao() {
       const greetingEl = document.getElementById("userGreeting");
       if (ctasLogado && greetingEl) {
         const primeiroNome = (residente.nome || "").split(" ")[0];
-        greetingEl.textContent = `Olá, ${primeiroNome}`;
+        greetingEl.textContent = `Óla, ${primeiroNome}`;
       }
       return true;
     }
