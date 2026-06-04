@@ -432,60 +432,184 @@ window.registar = async function(e) {
 
 window.recarregar = async function(e) {
   if (e) e.preventDefault();
+
   if (!residenteLogado) {
     popup("erro", "Login necessário", "Faz login primeiro.");
     return mostrarLogin();
   }
 
-  setLoading(true);
+  const tipo = document.getElementById("tipoRecarga")
+    ? document.getElementById("tipoRecarga").value
+    : "saldo";
+
+  const valorEl = document.getElementById("valorRecarga");
+  const valor = Number(valorEl ? valorEl.value : "0");
+
+  if (!valor || valor <= 0) {
+    popup("erro", "Valor inválido", "Introduz um valor positivo.");
+    return;
+  }
+
+  const endpointSisp = "https://violet-beaver-178312.hostingersite.com/api/pagamento/iniciar";
+
+  let janelaPagamento = null;
 
   try {
-    const tipo = document.getElementById("tipoRecarga") ? document.getElementById("tipoRecarga").value : "saldo";
-    const valorEl = document.getElementById("valorRecarga");
-    const valor = parseInt(valorEl ? valorEl.value : "0", 10) || 0;
+    setLoading(true);
 
-    if (valor <= 0) {
-      popup("erro", "Valor inválido", "Introduz um valor positivo.");
-      setLoading(false);
+    janelaPagamento = window.open("", "_blank");
+
+    if (janelaPagamento) {
+      janelaPagamento.document.open();
+      janelaPagamento.document.write(`
+        <!DOCTYPE html>
+        <html lang="pt">
+        <head>
+          <meta charset="UTF-8">
+          <title>A abrir pagamento Vinti4...</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              background: #061827;
+              color: white;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 100vh;
+              margin: 0;
+            }
+            .box {
+              text-align: center;
+              background: white;
+              color: #0f1f2e;
+              padding: 40px;
+              border-radius: 20px;
+              box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+            }
+            p { color: #7b8fa3; }
+          </style>
+        </head>
+        <body>
+          <div class="box">
+            <h2>A preparar pagamento...</h2>
+            <p>Aguarda enquanto abrimos o portal seguro Vinti4.</p>
+          </div>
+        </body>
+        </html>
+      `);
+      janelaPagamento.document.close();
+    }
+
+    console.log("A chamar Node-RED online para pagamento SISP...");
+    console.log({
+      residenteId: residenteLogado.id || residenteLogado.uid || "",
+      pacote: residenteLogado.pacote || "Recarga",
+      tipo: tipo,
+      valor: valor,
+      email: residenteLogado.email || "",
+      cidade: residenteLogado.municipio || "Praia",
+      morada: residenteLogado.morada || "Cabo Verde",
+      codigoPostal: "7600"
+    });
+
+    const r = await fetch(endpointSisp, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        residenteId: residenteLogado.id || residenteLogado.uid || "",
+        pacote: residenteLogado.pacote || "Recarga",
+        tipo: tipo,
+        valor: valor,
+        email: residenteLogado.email || "",
+        cidade: residenteLogado.municipio || "Praia",
+        morada: residenteLogado.morada || "Cabo Verde",
+        codigoPostal: "7600"
+      })
+    });
+
+    const d = await r.json();
+
+    if (!d.sucesso) {
+      if (janelaPagamento && !janelaPagamento.closed) {
+        janelaPagamento.close();
+      }
+
+      popup(
+        "erro",
+        "Erro na recarga",
+        d.detalhe || d.mensagem || "A SISP devolveu um erro no pedido de pagamento."
+      );
+
       return;
     }
 
-    if (tipo === "saldo") {
-      residenteLogado.saldo = (residenteLogado.saldo || 0) + valor;
-    } else {
-      residenteLogado.swipes = (residenteLogado.swipes || 0) + valor;
+    if (d.htmlPagamento) {
+      if (!janelaPagamento || janelaPagamento.closed) {
+        janelaPagamento = window.open("", "_blank");
+      }
+
+      if (!janelaPagamento) {
+        popup(
+          "erro",
+          "Popup bloqueado",
+          "O navegador bloqueou a janela de pagamento. Permite popups para continuar."
+        );
+        return;
+      }
+
+      janelaPagamento.document.open();
+      janelaPagamento.document.write(d.htmlPagamento);
+      janelaPagamento.document.close();
+
+      popup(
+        "sucesso",
+        "Pagamento aberto",
+        "Abrimos o portal seguro Vinti4 numa nova janela."
+      );
+
+      return;
     }
 
-    // update window copy
-    window.residenteLogado = residenteLogado;
+    if (d.paymentUrl) {
+      if (janelaPagamento && !janelaPagamento.closed) {
+        janelaPagamento.location.href = d.paymentUrl;
+      } else {
+        window.location.href = d.paymentUrl;
+      }
 
-    // persiste a atualização (para refresh com demo)
-    try {
-      localStorage.setItem("noszona_session", JSON.stringify({ residente: residenteLogado }));
-    } catch (e) {}
-
-    // re-render the stats in dashboard
-    const dadosConta = document.getElementById("dadosConta");
-    if (dadosConta) {
-      const r = residenteLogado;
-      dadosConta.innerHTML = `
-        <div class="stat-box"><span>Nome</span><strong>${escapeHtml(r.nome || "Utilizador")}</strong></div>
-        <div class="stat-box"><span>Pacote</span><strong>${escapeHtml(r.pacote || "—")}</strong></div>
-        <div class="stat-box"><span>Saldo</span><strong>${r.saldo ?? 0} CVE</strong></div>
-        <div class="stat-box"><span>Swipes</span><strong>${r.swipes ?? 0}</strong></div>
-        <div class="stat-box"><span>Estado</span><strong><span class="chip-active">Ativo</span></strong></div>
-      `;
+      popup("info", "A redirecionar...", "Vais para o portal seguro Vinti4.");
+      return;
     }
 
-    popup("sucesso", "Recarga simulada", `+${valor} ${tipo === "saldo" ? "CVE de saldo" : "swipes"} adicionados (modo demo).`);
+    if (janelaPagamento && !janelaPagamento.closed) {
+      janelaPagamento.close();
+    }
+
+    popup(
+      "sucesso",
+      "Pedido enviado!",
+      d.mensagem || "Pedido de pagamento enviado para Vinti4."
+    );
+
   } catch (err) {
-    console.error(err);
-    popup("erro", "Erro na recarga", "Não foi possível processar a recarga simulada.");
+    console.error("Erro na recarga SISP:", err);
+
+    if (janelaPagamento && !janelaPagamento.closed) {
+      janelaPagamento.close();
+    }
+
+    popup(
+      "erro",
+      "Erro de ligação",
+      "Não foi possível comunicar com o servidor de pagamento."
+    );
+
   } finally {
     setLoading(false);
   }
 };
-
 window.solicitarCartao = function() {
   if (!residenteLogado) {
     popup("erro", "Login necessário", "Faz login primeiro.");
