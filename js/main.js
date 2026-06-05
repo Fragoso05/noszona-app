@@ -641,7 +641,7 @@ window.solicitarCartao = function() {
 };
 
 window.loginWithGoogle = function() {
-  // Cria um popup que simula o login do Google de forma realista
+  // Cria um popup estilo Google. Agora faz login REAL chamando o endpoint /api/residentes/google-login (email + password da conta registada)
   const existing = document.getElementById('google-login-modal');
   if (existing) existing.remove();
 
@@ -689,8 +689,11 @@ window.loginWithGoogle = function() {
             <div id="google-email-display" style="font-size: 14px; color: #202124; font-weight: 500;"></div>
             <a href="#" id="google-back-email" style="font-size: 13px; color: #1a73e8; text-decoration: none;">Not your account?</a>
           </div>
-          <input id="google-password-input" type="password" placeholder="Enter your password" 
-                 style="width: 100%; padding: 12px 14px; border: 1px solid #dadce0; border-radius: 4px; font-size: 16px; outline: none; margin-bottom: 12px;">
+          <input id="google-password-input" type="password" placeholder="Password da tua conta NOSZONA" 
+                 style="width: 100%; padding: 12px 14px; border: 1px solid #dadce0; border-radius: 4px; font-size: 16px; outline: none; margin-bottom: 6px;">
+          <div style="font-size: 11px; color: #5f6368; margin-bottom: 12px;">
+            Usa a password que criaste ao registar-te com este email.
+          </div>
           <div style="margin-bottom: 20px;">
             <label style="font-size: 14px; color: #5f6368; display: flex; align-items: center; gap: 8px;">
               <input type="checkbox" id="google-show-password"> Show password
@@ -703,7 +706,7 @@ window.loginWithGoogle = function() {
       </div>
 
       <div style="background: #f8f9fa; padding: 16px 28px; font-size: 12px; color: #5f6368; border-top: 1px solid #dadce0;">
-        This is a simulation for demonstration purposes only.
+        Autenticação NOSZONA • Para contas registadas com email Google
       </div>
     </div>
   `;
@@ -735,17 +738,46 @@ window.loginWithGoogle = function() {
     };
   }
 
-  // Step 1 → Step 2
-  nextBtn.onclick = () => {
+  // Step 1 → Step 2 (agora verifica primeiro se o email já foi registado)
+  nextBtn.onclick = async () => {
     const email = emailInput.value.trim();
     if (!email || !email.includes('@')) {
       alert('Please enter a valid email');
       return;
     }
-    emailDisplay.textContent = email;
-    step1.style.display = 'none';
-    step2.style.display = 'block';
-    passwordInput.focus();
+
+    // Chama o backend para verificar se o email já existe (antes de pedir a password)
+    const checkEndpoint = "https://violet-beaver-178312.hostingersite.com/api/residentes/google-login";
+    try {
+      setLoading(true);
+      const resp = await fetch(checkEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, checkOnly: true })
+      });
+      const checkData = await resp.json();
+
+      if (checkData && checkData.exists === false) {
+        setLoading(false);
+        popup("erro", "Conta não registada", checkData.mensagem || "Esta conta Google ainda não está registada no NOSZONA. Por favor efectua o registo através do formulário normal primeiro.");
+        return;
+      }
+
+      // Existe → prossegue para o passo da password
+      emailDisplay.textContent = email;
+      step1.style.display = 'none';
+      step2.style.display = 'block';
+      passwordInput.focus();
+    } catch (e) {
+      // Em caso de erro de rede, permite prosseguir (o submit final vai falhar ou usar demo)
+      console.warn("Check email falhou, permitindo prosseguir para demo/fallback", e);
+      emailDisplay.textContent = email;
+      step1.style.display = 'none';
+      step2.style.display = 'block';
+      passwordInput.focus();
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Back to email
@@ -761,15 +793,16 @@ window.loginWithGoogle = function() {
     passwordInput.type = showPassCheckbox.checked ? 'text' : 'password';
   };
 
-  // Final Sign in
+  // Final Sign in (agora REAL - chama o endpoint /google-login com email + password)
   const handleSignIn = () => {
-    const email = emailDisplay.textContent || emailInput.value.trim();
+    const email = (emailDisplay.textContent || emailInput.value || "").trim();
+    const pass = (passwordInput ? passwordInput.value : "").trim();
     if (!email) return;
 
     modal.remove(); // close Google popup
 
-    // Processa login Google (agora só permite contas já registadas; sem criação, sem validação de registo)
-    processGoogleAuth(email);
+    // Chama a função real que faz fetch para o backend (com fallback demo)
+    realGoogleLogin(email, pass);
   };
 
   signinBtn.onclick = handleSignIn;
@@ -788,51 +821,100 @@ window.loginWithGoogle = function() {
   setTimeout(() => emailInput.focus(), 100);
 };
 
-function processGoogleAuth(googleEmail) {
-  // Carrega usuários registados
-  let registered = [];
+// =====================================================
+// LOGIN GOOGLE REAL - Chama o endpoint do backend
+// Agora faz verificação real de email + password no Node-RED / MySQL
+// Se a conta foi registada (com password), permite o login usando essa password.
+// Fallback para demo/localStorage quando a API não responde.
+// =====================================================
+async function realGoogleLogin(email, password) {
+  if (!email || !password) {
+    popup("erro", "Campos obrigatórios", "Introduz o email Google e a password da conta.");
+    return;
+  }
+
+  const endpoint = "https://violet-beaver-178312.hostingersite.com/api/residentes/google-login";
+
   try {
-    registered = JSON.parse(localStorage.getItem("noszona_registered_users") || "[]");
-  } catch (e) { registered = []; }
+    setLoading(true);
 
-  // Procura usuário existente por email
-  // IMPORTANTE: Google login é APENAS para contas já registadas manualmente.
-  // Nunca cria conta aqui, nunca chama registar(), nunca valida "termos" ou "campos obrigatórios".
-  let existing = registered.find(u => (u.email || "").toLowerCase() === googleEmail.toLowerCase());
-
-  if (existing) {
-    // Login existente - fluxo 100% independente do registo manual
-    residenteLogado = existing;
-    window.residenteLogado = residenteLogado;
-
+    let data;
     try {
-      const sessionData = JSON.stringify({ residente: residenteLogado });
-      sessionStorage.setItem("noszona_session", sessionData);
-      localStorage.setItem("noszona_session", sessionData);
-    } catch(e) {}
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+      data = await response.json();
+    } catch (fetchErr) {
+      // Fallback DEMO (quando backend offline ou file://)
+      console.warn("API Google login indisponível. Usando modo DEMO com localStorage.");
+      let registered = [];
+      try {
+        registered = JSON.parse(localStorage.getItem("noszona_registered_users") || "[]");
+      } catch(e) { registered = []; }
 
-    // Atualiza header
-    const ctasDeslogado = document.getElementById("ctasDeslogado");
-    const ctasLogado = document.getElementById("ctasLogado");
-    if (ctasDeslogado) ctasDeslogado.style.display = "none";
-    if (ctasLogado) ctasLogado.style.display = "flex";
-    const greetingEl = document.getElementById("userGreeting");
-    if (ctasLogado && greetingEl) {
-      const primeiroNome = (residenteLogado.nome || "").split(" ")[0];
-      greetingEl.textContent = `Olá, ${primeiroNome}`;
+      const existing = registered.find(u => (u.email || "").toLowerCase() === email.toLowerCase());
+      if (existing) {
+        // Em demo, aceitamos qualquer password se o email estiver registado (para facilitar testes locais)
+        data = {
+          sucesso: true,
+          mensagem: "Login com Google (DEMO)",
+          residente: existing
+        };
+      } else {
+        data = {
+          sucesso: false,
+          mensagem: "Conta não registada no modo DEMO. Regista-te primeiro pelo formulário normal."
+        };
+      }
     }
 
-    popup("sucesso", "Login com Google", `Bem-vindo de volta, ${residenteLogado.nome || googleEmail}!`);
-    mostrarDashboard();
-  } else {
-    // Conta não existe ainda -> aviso claro, sem criar nada, sem prompts, sem registar()
-    popup("erro", "Conta não registrada", "Esta conta Google ainda não está registada no Noszona. Por favor efetua o registo através do formulário normal primeiro.");
+    if (data && data.sucesso) {
+      residenteLogado = data.residente;
+      window.residenteLogado = residenteLogado;
+
+      // Persistir sessão (usamos ambas para conveniência no fluxo Google)
+      try {
+        const sessionData = JSON.stringify({ residente: residenteLogado });
+        sessionStorage.setItem("noszona_session", sessionData);
+        localStorage.setItem("noszona_session", sessionData);
+      } catch(e) {}
+
+      // Atualiza header (igual ao login normal)
+      const ctasDeslogado = document.getElementById("ctasDeslogado");
+      const ctasLogado = document.getElementById("ctasLogado");
+      if (ctasDeslogado) ctasDeslogado.style.display = "none";
+      if (ctasLogado) ctasLogado.style.display = "flex";
+      const greetingEl = document.getElementById("userGreeting");
+      if (ctasLogado && greetingEl) {
+        const primeiroNome = (residenteLogado.nome || "").split(" ")[0];
+        greetingEl.textContent = `Olá, ${primeiroNome}`;
+      }
+
+      const isDemo = !data.residente || String(data.mensagem || "").toLowerCase().includes("demo");
+      popup("sucesso", "Login com Google", isDemo ? "Modo DEMO - Bem-vindo!" : (data.mensagem || "Bem-vindo de volta!"));
+      mostrarDashboard();
+    } else {
+      popup("erro", "Login Google falhou", data ? (data.mensagem || "Email ou password incorretos.") : "Erro desconhecido.");
+    }
+  } catch (err) {
+    console.error(err);
+    popup("erro", "Erro de ligação", "Não foi possível contactar o servidor de login Google.");
+  } finally {
+    setLoading(false);
   }
 }
 
+// Mantido para compatibilidade com código antigo / testes
+function processGoogleAuth(googleEmail) {
+  // Versão simplificada que agora delega para o real (sem password - só para fallback em testes)
+  realGoogleLogin(googleEmail, "demo-ignore-pass");
+}
+
 window.registerWithGoogle = function() {
-  // Mantido por compatibilidade: NÃO faz login/registo Google.
-  // Registo com Google não existe mais. O único registo é manual (exige email + checkbox termos).
+  // Registo "com Google" redireciona sempre para o registo manual completo
+  // (exige todos os campos, termos, escolha de pacote, etc.).
   if (typeof window.mostrarRegisto === "function") {
     window.mostrarRegisto("Pacote 2");
   }

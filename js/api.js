@@ -98,6 +98,13 @@ export async function reenviarConfirmacaoAPI(email, token) {
   });
 }
 
+export async function googleLoginAPI(email, password) {
+  return apiFetch('/residentes/google-login', {
+    method: 'POST',
+    body: { email, password },
+  });
+}
+
 // Helper para obter token do session se quiser usar em chamadas manuais
 export function withToken(token) {
   return { token };
