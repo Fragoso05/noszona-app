@@ -382,46 +382,74 @@ window.registar = async function(e) {
       return;
     }
 
-    // simula "guardar" no "backend" usando localStorage
-    let registered = [];
+    // Tenta registo real no backend (para enviar email de boas-vindas real)
+    const regEndpoint = "https://violet-beaver-178312.hostingersite.com/api/residentes/registar";
+    let realSuccess = false;
+    let returnedResidente = null;
+
     try {
-      registered = JSON.parse(localStorage.getItem("noszona_registered_users") || "[]");
-    } catch (e) { registered = []; }
+      const regResp = await fetch(regEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData)
+      });
+      const regData = await regResp.json();
+      if (regData && regData.sucesso) {
+        realSuccess = true;
+        returnedResidente = regData.residente || userData;
+        // guarda para o Google demo fallback
+        let registered = [];
+        try { registered = JSON.parse(localStorage.getItem("noszona_registered_users") || "[]"); } catch (e) { registered = []; }
+        registered = registered.filter(u => u.username !== userData.username);
+        registered.push(returnedResidente);
+        localStorage.setItem("noszona_registered_users", JSON.stringify(registered));
+      }
+    } catch (apiErr) {
+      console.warn("Registo API falhou, usando simulação local + preview de email.", apiErr);
+    }
 
-    // evita duplicados por username
-    registered = registered.filter(u => u.username !== userData.username);
-    registered.push(userData);
-    localStorage.setItem("noszona_registered_users", JSON.stringify(registered));
+    if (!realSuccess) {
+      // fallback simulação (demo / offline)
+      let registered = [];
+      try {
+        registered = JSON.parse(localStorage.getItem("noszona_registered_users") || "[]");
+      } catch (e) { registered = []; }
+      registered = registered.filter(u => u.username !== userData.username);
+      registered.push(userData);
+      localStorage.setItem("noszona_registered_users", JSON.stringify(registered));
+      returnedResidente = userData;
+    }
 
-    // guarda também como sessão atual (simula login após registo)
-    residenteLogado = userData;
-    window.residenteLogado = userData;
+    // guarda como sessão atual
+    residenteLogado = returnedResidente;
+    window.residenteLogado = returnedResidente;
 
-    // persiste (sempre sessionStorage + local para conveniência na sim de registo)
     try {
-      const sessionData = JSON.stringify({ residente: userData });
+      const sessionData = JSON.stringify({ residente: returnedResidente });
       sessionStorage.setItem("noszona_session", sessionData);
       localStorage.setItem("noszona_session", sessionData);
     } catch (e) {}
 
-    // Simula envio de email de boas-vindas (como pedido)
-    setTimeout(() => {
-      popup("sucesso", "Registo simulado com sucesso!", "Conta criada! Um email de boas-vindas foi enviado para " + userData.email);
-
-      // Mostra preview do email enviado (simulação)
-      setTimeout(() => {
-        showWelcomeEmailPreview(userData);
-      }, 1200);
-    }, 600);
-
     // limpa o form
     form.reset();
 
-    // vai direto para o dashboard (simula após "pagamento")
-    setTimeout(() => {
+    if (realSuccess) {
+      popup("sucesso", "Registo efetuado com sucesso!", "Conta criada! Um email de boas-vindas foi enviado para " + returnedResidente.email);
       setLoading(false);
       mostrarDashboard();
-    }, 2200);
+    } else {
+      // simulação: mostra preview do email (como antes)
+      setTimeout(() => {
+        popup("sucesso", "Registo simulado com sucesso!", "Conta criada! Um email de boas-vindas foi enviado para " + returnedResidente.email);
+        setTimeout(() => {
+          showWelcomeEmailPreview(returnedResidente);
+        }, 800);
+      }, 400);
+      setTimeout(() => {
+        setLoading(false);
+        mostrarDashboard();
+      }, 1800);
+    }
 
   } catch (err) {
     console.error(err);
@@ -912,13 +940,6 @@ function processGoogleAuth(googleEmail) {
   realGoogleLogin(googleEmail, "demo-ignore-pass");
 }
 
-window.registerWithGoogle = function() {
-  // Registo "com Google" redireciona sempre para o registo manual completo
-  // (exige todos os campos, termos, escolha de pacote, etc.).
-  if (typeof window.mostrarRegisto === "function") {
-    window.mostrarRegisto("Pacote 2");
-  }
-};
 
 // Simula o envio de email de boas-vindas após registro
 function showWelcomeEmailPreview(userData) {
