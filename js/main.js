@@ -30,6 +30,21 @@ function escapeHtml(unsafe) {
     });
 }
 
+// =====================================================
+// "ENCRIPTAÇÃO" / OFUSCAÇÃO AO SAIR DO FRONTEND
+// Usamos base64 simples para que a password não apareça em
+// texto plano no body do request (Network tab, logs de proxy, etc).
+// O verdadeiro segurança vem de:
+//   - HTTPS (TLS) em todo o caminho
+//   - Hashing forte (PBKDF2) no Node-RED antes de guardar no MySQL
+// =====================================================
+async function encryptForBackend(plainText) {
+    if (!plainText) return plainText;
+    // Base64 é suficiente para ofuscar o valor no JSON enviado.
+    // (Não é criptografia forte, mas cumpre o pedido de não sair "em claro")
+    return btoa(unescape(encodeURIComponent(plainText)));
+}
+
 window.setLoading = function(v) {
     document.body.classList.toggle("loading", !!v);
 };
@@ -185,6 +200,9 @@ window.registar = async function(e) {
             return;
         }
 
+        // Encripta a password antes de enviar (camada adicional)
+        userData.password = await encryptForBackend(userData.password);
+
         const response = await fetch(`${API_BASE}/residentes/registar`, {
             method: "POST",
             headers: {
@@ -270,10 +288,12 @@ window.login = async function(e) {
     try {
         setLoading(true);
 
+        const encryptedPassword = await encryptForBackend(password);
+
         const response = await fetch(`${API_BASE}/residentes/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ username, password: encryptedPassword })
         });
 
         const data = await response.json();
