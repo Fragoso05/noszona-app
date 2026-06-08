@@ -309,6 +309,7 @@ function escapeHtml(unsafe) {
   }[m]));
 }
 
+
 // ==================== STUBS para handlers que ainda não têm impl completa (evita crashes em cliques)
 window.registar = async function(e) {
     if (e) e.preventDefault();
@@ -327,6 +328,7 @@ window.registar = async function(e) {
             return el ? el.value.trim() : "";
         };
 
+        // === 1. Recolher dados ===
         const userData = {
             nome: getVal("nome"),
             dataNascimento: getVal("dataNascimento"),
@@ -341,7 +343,7 @@ window.registar = async function(e) {
             pacote: getVal("pacote") || "Pacote 2"
         };
 
-        // Validação de campos obrigatórios
+        // === 2. Validações ===
         const obrigatorios = ["nome", "dataNascimento", "nacionalidade", "documento", 
                               "telefone", "email", "morada", "municipio", "username", "password"];
 
@@ -353,7 +355,6 @@ window.registar = async function(e) {
             }
         }
 
-        // Validações extras
         if (userData.username.length < 3) {
             popup("erro", "Username inválido", "O username deve ter pelo menos 3 caracteres.");
             setLoading(false);
@@ -372,7 +373,7 @@ window.registar = async function(e) {
             return;
         }
 
-        // Verificar termos e condições
+        // Termos e Condições
         const termos = document.getElementById("termos");
         if (!termos || !termos.checked) {
             popup("erro", "Termos e Condições", "É obrigatório aceitar os Termos e Condições.");
@@ -380,11 +381,20 @@ window.registar = async function(e) {
             return;
         }
 
-        // Enviar para o Node-RED
+        // === 3. HASHEAR A PASSWORD (ANTES DE ENVIAR) ===
+        const hashedPassword = await hashPassword(userData.password);
+
+        const dataToSend = {
+            ...userData,
+            password: hashedPassword.hash,   // ← Hash da password
+            salt: hashedPassword.salt        // ← Salt
+        };
+
+        // === 4. ENVIAR PARA O NODE-RED ===
         const response = await fetch("https://violet-beaver-178312.hostingersite.com/api/residentes/registar", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(userData)
+            body: JSON.stringify(dataToSend)
         });
 
         const data = await response.json();
@@ -396,20 +406,19 @@ window.registar = async function(e) {
             return;
         }
 
-        // === SUCESSO ===
+        // === 5. SUCESSO ===
         popup("sucesso", "Conta criada!", 
             data.mensagem || "Registo efetuado com sucesso. Verifica o teu email.");
 
         form.reset();
         setLoading(false);
 
-        // Se o backend devolver paymentUrl, redireciona para pagamento
+        // Redirecionar para pagamento ou login
         if (data.paymentUrl) {
             setTimeout(() => {
                 window.location.href = data.paymentUrl;
             }, 1500);
         } else {
-            // Se não houver pagamento obrigatório, mostra login
             setTimeout(() => {
                 mostrarLogin();
             }, 1800);
