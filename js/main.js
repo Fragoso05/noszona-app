@@ -49,7 +49,6 @@ window.mostrarRecuperar = function() {
   }
 };
 
-// ==================== LOGOUT (basic for header button) ====================
 window.logout = function() {
   if (!confirm("Queres mesmo terminar a sessão?")) return;
 
@@ -312,152 +311,115 @@ function escapeHtml(unsafe) {
 
 // ==================== STUBS para handlers que ainda não têm impl completa (evita crashes em cliques)
 window.registar = async function(e) {
-  if (e) e.preventDefault();
+    if (e) e.preventDefault();
 
-  const form = document.getElementById("formRegisto");
-  if (!form) {
-    popup("erro", "Erro", "Formulário de registo não encontrado.");
-    return;
-  }
-
-  setLoading(true);
-
-  try {
-    // recolhe dados do form de forma segura
-    const getVal = (id) => {
-      const el = document.getElementById(id);
-      return el ? el.value.trim() : "";
-    };
-
-    const userData = {
-      nome: getVal("nome"),
-      dataNascimento: getVal("dataNascimento"),
-      nacionalidade: getVal("nacionalidade"),
-      documento: getVal("documento"),
-      telefone: getVal("telefone"),
-      email: getVal("email"),
-      morada: getVal("morada"),
-      municipio: getVal("municipio"),
-      username: getVal("username"),
-      // password não guardamos por segurança na simulação
-      pacote: getVal("pacote") || "Pacote 2",
-      // dados para demo/pós-login
-      saldo: 0,
-      swipes: 0,
-      uid: "user-" + Date.now().toString(36),
-      emailConfirmado: false,
-      registadoEm: new Date().toISOString()
-    };
-
-    // validação básica (além do HTML required)
-    const obrigatorios = ["nome", "dataNascimento", "nacionalidade", "documento", "telefone", "email", "morada", "municipio", "username", "pacote"];
-    for (const campo of obrigatorios) {
-      if (!userData[campo]) {
-        popup("erro", "Campos obrigatórios", "Por favor preenche todos os campos assinalados.");
-        setLoading(false);
+    const form = document.getElementById("formRegisto");
+    if (!form) {
+        popup("erro", "Erro", "Formulário de registo não encontrado.");
         return;
-      }
     }
 
-    if (userData.username.length < 3) {
-      popup("erro", "Username inválido", "O username deve ter pelo menos 3 caracteres.");
-      setLoading(false);
-      return;
-    }
-
-    // check terms and conditions
-    const termos = document.getElementById("termos");
-    const erroTermos = document.getElementById("erro-termos");
-    if (erroTermos) {
-      erroTermos.textContent = "";
-      erroTermos.classList.remove("visible");
-    }
-    if (!termos || !termos.checked) {
-      if (erroTermos) {
-        erroTermos.textContent = "Obrigatório aceitar os Termos e Condições.";
-        erroTermos.classList.add("visible");
-      }
-      popup("erro", "Termos e Condições", "É obrigatório aceitar os Termos e Condições para criar a conta.");
-      setLoading(false);
-      return;
-    }
-
-    // Tenta registo real no backend (para enviar email de boas-vindas real)
-    const regEndpoint = "https://violet-beaver-178312.hostingersite.com/api/residentes/registar";
-    let realSuccess = false;
-    let returnedResidente = null;
+    setLoading(true);
 
     try {
-      const regResp = await fetch(regEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userData)
-      });
-      const regData = await regResp.json();
-      if (regData && regData.sucesso) {
-        realSuccess = true;
-        returnedResidente = regData.residente || userData;
-        // guarda para o Google demo fallback
-        let registered = [];
-        try { registered = JSON.parse(localStorage.getItem("noszona_registered_users") || "[]"); } catch (e) { registered = []; }
-        registered = registered.filter(u => u.username !== userData.username);
-        registered.push(returnedResidente);
-        localStorage.setItem("noszona_registered_users", JSON.stringify(registered));
-      }
-    } catch (apiErr) {
-      console.warn("Registo API falhou, usando simulação local + preview de email.", apiErr);
-    }
+        const getVal = (id) => {
+            const el = document.getElementById(id);
+            return el ? el.value.trim() : "";
+        };
 
-    if (!realSuccess) {
-      // fallback simulação (demo / offline)
-      let registered = [];
-      try {
-        registered = JSON.parse(localStorage.getItem("noszona_registered_users") || "[]");
-      } catch (e) { registered = []; }
+        const userData = {
+            nome: getVal("nome"),
+            dataNascimento: getVal("dataNascimento"),
+            nacionalidade: getVal("nacionalidade"),
+            documento: getVal("documento"),
+            telefone: getVal("telefone"),
+            email: getVal("email").toLowerCase(),
+            morada: getVal("morada"),
+            municipio: getVal("municipio"),
+            username: getVal("username"),
+            password: getVal("password"),
+            pacote: getVal("pacote") || "Pacote 2"
+        };
 
-        // evita duplicados por username
-      registered = registered.filter(u => u.username !== userData.username);
-      registered.push(userData);
-      localStorage.setItem("noszona_registered_users", JSON.stringify(registered));
-      returnedResidente = userData;
-    }
+        // Validação de campos obrigatórios
+        const obrigatorios = ["nome", "dataNascimento", "nacionalidade", "documento", 
+                              "telefone", "email", "morada", "municipio", "username", "password"];
 
-    // guarda como sessão atual
-    residenteLogado = returnedResidente;
-    window.residenteLogado = returnedResidente;
+        for (const campo of obrigatorios) {
+            if (!userData[campo]) {
+                popup("erro", "Campos obrigatórios", `Por favor preenche o campo: ${campo}`);
+                setLoading(false);
+                return;
+            }
+        }
 
-    try {
-      const sessionData = JSON.stringify({ residente: returnedResidente });
-      sessionStorage.setItem("noszona_session", sessionData);
-      localStorage.setItem("noszona_session", sessionData);
-    } catch (e) {}
+        // Validações extras
+        if (userData.username.length < 3) {
+            popup("erro", "Username inválido", "O username deve ter pelo menos 3 caracteres.");
+            setLoading(false);
+            return;
+        }
 
-    // limpa o form
-    form.reset();
+        if (userData.password.length < 6) {
+            popup("erro", "Password inválida", "A password deve ter pelo menos 6 caracteres.");
+            setLoading(false);
+            return;
+        }
 
-    if (realSuccess) {
-      popup("sucesso", "Registo efetuado com sucesso!", "Conta criada! Um email de boas-vindas foi enviado para " + returnedResidente.email);
-      setLoading(false);
-      mostrarDashboard();
-    } else {
-      // simulação: mostra preview do email (como antes)
-      setTimeout(() => {
-        popup("sucesso", "Registo simulado com sucesso!", "Conta criada! Um email de boas-vindas foi enviado para " + returnedResidente.email);
-        setTimeout(() => {
-          showWelcomeEmailPreview(returnedResidente);
-        }, 800);
-      }, 400);
-      setTimeout(() => {
+        if (!userData.email.includes("@") || !userData.email.includes(".")) {
+            popup("erro", "Email inválido", "Introduz um email válido.");
+            setLoading(false);
+            return;
+        }
+
+        // Verificar termos e condições
+        const termos = document.getElementById("termos");
+        if (!termos || !termos.checked) {
+            popup("erro", "Termos e Condições", "É obrigatório aceitar os Termos e Condições.");
+            setLoading(false);
+            return;
+        }
+
+        // Enviar para o Node-RED
+        const response = await fetch("https://violet-beaver-178312.hostingersite.com/api/residentes/registar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(userData)
+        });
+
+        const data = await response.json();
+        console.log("Resposta do registo:", data);
+
+        if (!response.ok || !data.sucesso) {
+            popup("erro", "Registo falhou", data.mensagem || "Erro ao criar a conta no servidor.");
+            setLoading(false);
+            return;
+        }
+
+        // === SUCESSO ===
+        popup("sucesso", "Conta criada!", 
+            data.mensagem || "Registo efetuado com sucesso. Verifica o teu email.");
+
+        form.reset();
         setLoading(false);
-        mostrarDashboard();
-      }, 1800);
-    }
 
-  } catch (err) {
-    console.error(err);
-    popup("erro", "Erro no registo", "Ocorreu um problema ao processar o teu registo (simulação). Tenta novamente.");
-    setLoading(false);
-  }
+        // Se o backend devolver paymentUrl, redireciona para pagamento
+        if (data.paymentUrl) {
+            setTimeout(() => {
+                window.location.href = data.paymentUrl;
+            }, 1500);
+        } else {
+            // Se não houver pagamento obrigatório, mostra login
+            setTimeout(() => {
+                mostrarLogin();
+            }, 1800);
+        }
+
+    } catch (err) {
+        console.error("Erro no registo:", err);
+        popup("erro", "Erro de ligação", "Não foi possível comunicar com o servidor.");
+        setLoading(false);
+    }
 };
 
 window.recarregar = async function(e) {
@@ -941,14 +903,6 @@ function processGoogleAuth(googleEmail) {
   // Versão simplificada que agora delega para o real (sem password - só para fallback em testes)
   realGoogleLogin(googleEmail, "demo-ignore-pass");
 }
-
-window.registerWithGoogle = function() {
-  // Registo "com Google" redireciona sempre para o registo manual completo
-  // (exige todos os campos, termos, escolha de pacote, etc.).
-  if (typeof window.mostrarRegisto === "function") {
-    window.mostrarRegisto("Pacote 2");
-  }
-};
 
 // Simula o envio de email de boas-vindas após registro
 function showWelcomeEmailPreview(userData) {
