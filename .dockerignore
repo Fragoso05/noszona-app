@@ -1,0 +1,13 @@
+.git
+.vscode
+tests
+README.md
+*.md
+node_modules
+package.json
+package-lock.json
+.gitignore
+playwright.config.ts
+*.log
+/test-results
+/playwright-report

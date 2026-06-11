@@ -1,0 +1,30 @@
+services:
+  web:
+    build: .
+    container_name: noszona-web
+    ports:
+      - "3000:80"
+    volumes:
+      - .:/usr/share/nginx/html:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  test:
+    image: mcr.microsoft.com/playwright:v1.44.0-jammy
+    container_name: noszona-test
+    depends_on:
+      web:
+        condition: service_healthy
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      - BASE_URL=http://web
+    # Bootstrap npm (installs @playwright/test from package.json into node_modules on first run)
+    # then execute the tests. This fixes "Cannot find module '@playwright/test'" and "playwright: not found".
+    command: sh -c '[ -f package-lock.json ] && npm ci --no-audit --no-fund || npm install --no-audit --no-fund; npx playwright test'
