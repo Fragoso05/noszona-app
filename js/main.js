@@ -329,12 +329,70 @@ function escapeHtml(unsafe) {
 window.registar = async function(e) {
     if (e) e.preventDefault();
 
+<<<<<<< Updated upstream
     const form = document.getElementById("formRegisto");
     if (!form) {
         popup("erro", "Erro", "Formulário de registo não encontrado.");
+=======
+  const form = document.getElementById("formRegisto");
+  if (!form) {
+    popup("erro", "Erro", "Formulário de registo não encontrado.");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    // recolhe dados do form de forma segura
+    const getVal = (id) => {
+      const el = document.getElementById(id);
+      return el ? el.value.trim() : "";
+    };
+
+    const userData = {
+      nome: getVal("nome"),
+      dataNascimento: getVal("dataNascimento"),
+      nacionalidade: getVal("nacionalidade"),
+      documento: getVal("documento"),
+      telefone: getVal("telefone"),
+      email: getVal("email"),
+      morada: getVal("morada"),
+      municipio: getVal("municipio"),
+      username: getVal("username"),
+      password: getVal("password"),
+      pacote: getVal("pacote") || "Pacote 2",
+      // dados para demo/pós-login
+      saldo: 0,
+      swipes: 0,
+      uid: "user-" + Date.now().toString(36),
+      emailConfirmado: false,
+      registadoEm: new Date().toISOString()
+    };
+
+    // validação básica (além do HTML required)
+    const obrigatorios = [
+      "nome",
+      "dataNascimento",
+      "nacionalidade",
+      "documento",
+      "telefone",
+      "email",
+      "morada",
+      "municipio",
+      "username",
+      "password",
+      "pacote"
+    ];
+
+    for (const campo of obrigatorios) {
+      if (!userData[campo]) {
+        popup("erro", "Campos obrigatórios", "Por favor preenche todos os campos assinalados.");
+        setLoading(false);
+>>>>>>> Stashed changes
         return;
     }
 
+<<<<<<< Updated upstream
     setLoading(true);
 
     try {
@@ -361,6 +419,90 @@ window.registar = async function(e) {
         // === 2. Validações ===
         const obrigatorios = ["nome", "dataNascimento", "nacionalidade", "documento", 
                               "telefone", "email", "morada", "municipio", "username", "password"];
+=======
+    if (userData.username.length < 3) {
+      popup("erro", "Username inválido", "O username deve ter pelo menos 3 caracteres.");
+      setLoading(false);
+      return;
+    }
+
+    if (userData.password.length < 3) {
+      popup("erro", "Password inválida", "A password deve ter pelo menos 3 caracteres.");
+      setLoading(false);
+      return;
+    }
+
+    if (!userData.email.includes("@")) {
+      popup("erro", "Email inválido", "Introduz um email válido.");
+      setLoading(false);
+      return;
+    }
+
+    // check terms and conditions
+    const termos = document.getElementById("termos");
+    const erroTermos = document.getElementById("erro-termos");
+    if (erroTermos) {
+      erroTermos.textContent = "";
+      erroTermos.classList.remove("visible");
+    }
+    if (!termos || !termos.checked) {
+      if (erroTermos) {
+        erroTermos.textContent = "Obrigatório aceitar os Termos e Condições.";
+        erroTermos.classList.add("visible");
+      }
+      popup("erro", "Termos e Condições", "É obrigatório aceitar os Termos e Condições para criar a conta.");
+      setLoading(false);
+      return;
+    }
+
+    // Registo real no backend Node-RED
+    const regEndpoint = "https://violet-beaver-178312.hostingersite.com/api/residentes/registar";
+
+    const regResp = await fetch(regEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData)
+    });
+
+    let regData;
+
+    try {
+      regData = await regResp.json();
+    } catch (jsonErr) {
+      console.error("Resposta inválida do Node-RED:", jsonErr);
+      popup("erro", "Erro no servidor", "O Node-RED respondeu, mas não devolveu JSON válido.");
+      setLoading(false);
+      return;
+    }
+
+    console.log("Resposta do registo Node-RED:", regData);
+
+    if (!regResp.ok || !regData || !regData.sucesso) {
+      popup(
+        "erro",
+        "Registo falhou",
+        regData?.mensagem || "O Node-RED não confirmou o registo. Verifica o debug do Node-RED."
+      );
+      setLoading(false);
+      return;
+    }
+
+    const returnedResidente = regData.residente || userData;
+
+    // guarda para o Google demo fallback
+    try {
+      let registered = [];
+      try {
+        registered = JSON.parse(localStorage.getItem("noszona_registered_users") || "[]");
+      } catch (e) {
+        registered = [];
+      }
+
+      registered = registered.filter(u => u.username !== userData.username);
+      registered.push(returnedResidente);
+      localStorage.setItem("noszona_registered_users", JSON.stringify(registered));
+    } catch (e) {}
+>>>>>>> Stashed changes
 
         for (const campo of obrigatorios) {
             if (!userData[campo]) {
@@ -382,6 +524,7 @@ window.registar = async function(e) {
             return;
         }
 
+<<<<<<< Updated upstream
         if (!userData.email.includes("@") || !userData.email.includes(".")) {
             popup("erro", "Email inválido", "Introduz um email válido.");
             setLoading(false);
@@ -443,188 +586,85 @@ window.registar = async function(e) {
         popup("erro", "Erro de ligação", "Não foi possível comunicar com o servidor.");
         setLoading(false);
     }
-};
-
-window.recarregar = async function(e) {
-  if (e) e.preventDefault();
-
-  const loggedUser = (typeof window.getResidenteLogado === 'function' ? window.getResidenteLogado() : null) || residenteLogado;
-  if (!loggedUser) {
-    popup("erro", "Login necessário", "Faz login primeiro.");
-    return mostrarLogin();
-  }
-
-  const tipo = document.getElementById("tipoRecarga")
-    ? document.getElementById("tipoRecarga").value
-    : "saldo";
-
-  const valorEl = document.getElementById("valorRecarga");
-  const valor = Number(valorEl ? valorEl.value : "0");
-
-  if (!valor || valor <= 0) {
-    popup("erro", "Valor inválido", "Introduz um valor positivo.");
-    return;
-  }
-
-  const endpointSisp = "https://violet-beaver-178312.hostingersite.com/api/pagamento/iniciar";
-
-  let janelaPagamento = null;
-
-  try {
-    setLoading(true);
-
-    janelaPagamento = window.open("", "_blank");
-
-    if (janelaPagamento) {
-      janelaPagamento.document.open();
-      janelaPagamento.document.write(`
-        <!DOCTYPE html>
-        <html lang="pt">
-        <head>
-          <meta charset="UTF-8">
-          <title>A abrir pagamento Vinti4...</title>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              background: #061827;
-              color: white;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              height: 100vh;
-              margin: 0;
-            }
-            .box {
-              text-align: center;
-              background: white;
-              color: #0f1f2e;
-              padding: 40px;
-              border-radius: 20px;
-              box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-            }
-            p { color: #7b8fa3; }
-          </style>
-        </head>
-        <body>
-          <div class="box">
-            <h2>A preparar pagamento...</h2>
-            <p>Aguarda enquanto abrimos o portal seguro Vinti4.</p>
-          </div>
-        </body>
-        </html>
-      `);
-      janelaPagamento.document.close();
-    }
-
-    console.log("A chamar Node-RED online para pagamento SISP...");
-    console.log({
-      residenteId: loggedUser.id || loggedUser.uid || "",
-      pacote: loggedUser.pacote || "Recarga",
-      tipo: tipo,
-      valor: valor,
-      email: loggedUser.email || "",
-      cidade: loggedUser.municipio || "Praia",
-      morada: loggedUser.morada || "Cabo Verde",
-      codigoPostal: "7600"
-    });
-
-    const r = await fetch(endpointSisp, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        residenteId: loggedUser.id || loggedUser.uid || "",
-        pacote: loggedUser.pacote || "Recarga",
-        tipo: tipo,
-        valor: valor,
-        email: loggedUser.email || "",
-        cidade: loggedUser.municipio || "Praia",
-        morada: loggedUser.morada || "Cabo Verde",
-        codigoPostal: "7600"
-      })
-    });
-
-    const d = await r.json();
-
-    if (!d.sucesso) {
-      if (janelaPagamento && !janelaPagamento.closed) {
-        janelaPagamento.close();
-      }
-
-      popup(
-        "erro",
-        "Erro na recarga",
-        d.detalhe || d.mensagem || "A SISP devolveu um erro no pedido de pagamento."
-      );
-
-      return;
-    }
-
-    if (d.htmlPagamento) {
-      if (!janelaPagamento || janelaPagamento.closed) {
-        janelaPagamento = window.open("", "_blank");
-      }
-
-      if (!janelaPagamento) {
-        popup(
-          "erro",
-          "Popup bloqueado",
-          "O navegador bloqueou a janela de pagamento. Permite popups para continuar."
-        );
-        return;
-      }
-
-      janelaPagamento.document.open();
-      janelaPagamento.document.write(d.htmlPagamento);
-      janelaPagamento.document.close();
-
-      popup(
-        "sucesso",
-        "Pagamento aberto",
-        "Abrimos o portal seguro Vinti4 numa nova janela."
-      );
-
-      return;
-    }
-
-    if (d.paymentUrl) {
-      if (janelaPagamento && !janelaPagamento.closed) {
-        janelaPagamento.location.href = d.paymentUrl;
-      } else {
-        window.location.href = d.paymentUrl;
-      }
-
-      popup("info", "A redirecionar...", "Vais para o portal seguro Vinti4.");
-      return;
-    }
-
-    if (janelaPagamento && !janelaPagamento.closed) {
-      janelaPagamento.close();
-    }
-
+=======
     popup(
       "sucesso",
-      "Pedido enviado!",
-      d.mensagem || "Pedido de pagamento enviado para Vinti4."
+      "Registo efetuado com sucesso!",
+      "Conta criada! Um email de boas-vindas foi enviado para " + returnedResidente.email
     );
 
+    setLoading(false);
+    mostrarDashboard();
+
   } catch (err) {
-    console.error("Erro na recarga SISP:", err);
-
-    if (janelaPagamento && !janelaPagamento.closed) {
-      janelaPagamento.close();
-    }
-
+    console.error("Erro no registo:", err);
     popup(
       "erro",
       "Erro de ligação",
-      "Não foi possível comunicar com o servidor de pagamento."
+      "Não foi possível comunicar com o Node-RED. O registo não foi gravado no MySQL."
     );
-
-  } finally {
     setLoading(false);
   }
+>>>>>>> Stashed changes
+};
+
+window.recarregar = function(e) {
+    if (e) e.preventDefault();
+
+    if (!residenteLogado) {
+        popup("erro", "Login necessário", "Faz login primeiro.");
+        return mostrarLogin();
+    }
+
+    const tipo = document.getElementById("tipoRecarga") ? document.getElementById("tipoRecarga").value : "saldo";
+    const valorEl = document.getElementById("valorRecarga");
+    const valor = Number(valorEl ? valorEl.value : "0");
+
+    if (!valor || valor <= 0) {
+        popup("erro", "Valor inválido", "Introduz um valor positivo.");
+        return;
+    }
+
+    const endpointSisp = "https://violet-beaver-178312.hostingersite.com/api/pagamento/iniciar";
+
+    const dadosPagamento = {
+        residenteId: residenteLogado.id || residenteLogado.uid || "",
+        pacote: residenteLogado.pacote || "Recarga",
+        tipo: tipo,
+        valor: valor,
+        email: "noszonasmart@gmail.com",
+        cidade: residenteLogado.municipio || "Praia",
+        municipio: residenteLogado.municipio || "Praia",
+        morada: residenteLogado.morada || "Cabo Verde",
+        codigoPostal: "7600"
+    };
+
+    console.log("A abrir pagamento SISP por formulário POST...");
+    console.log(dadosPagamento);
+
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = endpointSisp;
+    form.target = "_blank";
+    form.style.display = "none";
+
+    Object.keys(dadosPagamento).forEach(function(key) {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = dadosPagamento[key];
+        form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+
+    popup(
+        "sucesso",
+        "Pagamento aberto",
+        "Abrimos o portal seguro Vinti4 numa nova janela."
+    );
 };
 window.solicitarCartao = function() {
   const loggedUser = (typeof window.getResidenteLogado === 'function' ? window.getResidenteLogado() : null) || residenteLogado;
