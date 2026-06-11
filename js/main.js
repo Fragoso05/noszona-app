@@ -445,10 +445,11 @@ window.registar = async function(e) {
     }
 };
 
-window.recarregar = async function(e) {
+window.recarregar = function(e) {
   if (e) e.preventDefault();
 
   const loggedUser = (typeof window.getResidenteLogado === 'function' ? window.getResidenteLogado() : null) || residenteLogado;
+
   if (!loggedUser) {
     popup("erro", "Login necessário", "Faz login primeiro.");
     return mostrarLogin();
@@ -468,163 +469,48 @@ window.recarregar = async function(e) {
 
   const endpointSisp = "https://violet-beaver-178312.hostingersite.com/api/pagamento/iniciar";
 
-  let janelaPagamento = null;
+  const dadosPagamento = {
+    residenteId: loggedUser.id || loggedUser.uid || "",
+    pacote: loggedUser.pacote || "Recarga",
+    tipo: tipo,
+    valor: valor,
 
-  try {
-    setLoading(true);
+    // Email associado ao teste SISP
+    email: "noszonasmart@gmail.com",
 
-    janelaPagamento = window.open("", "_blank");
+    // Campos exigidos pela SISP
+    cidade: loggedUser.municipio || "Praia",
+    municipio: loggedUser.municipio || "Praia",
+    morada: loggedUser.morada || "Cabo Verde",
+    codigoPostal: "7600"
+  };
 
-    if (janelaPagamento) {
-      janelaPagamento.document.open();
-      janelaPagamento.document.write(`
-        <!DOCTYPE html>
-        <html lang="pt">
-        <head>
-          <meta charset="UTF-8">
-          <title>A abrir pagamento Vinti4...</title>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              background: #061827;
-              color: white;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              height: 100vh;
-              margin: 0;
-            }
-            .box {
-              text-align: center;
-              background: white;
-              color: #0f1f2e;
-              padding: 40px;
-              border-radius: 20px;
-              box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-            }
-            p { color: #7b8fa3; }
-          </style>
-        </head>
-        <body>
-          <div class="box">
-            <h2>A preparar pagamento...</h2>
-            <p>Aguarda enquanto abrimos o portal seguro Vinti4.</p>
-          </div>
-        </body>
-        </html>
-      `);
-      janelaPagamento.document.close();
-    }
+  console.log("A abrir pagamento SISP por formulário POST...");
+  console.log(dadosPagamento);
 
-    console.log("A chamar Node-RED online para pagamento SISP...");
-    console.log({
-      residenteId: loggedUser.id || loggedUser.uid || "",
-      pacote: loggedUser.pacote || "Recarga",
-      tipo: tipo,
-      valor: valor,
-      email: loggedUser.email || "",
-      cidade: loggedUser.municipio || "Praia",
-      morada: loggedUser.morada || "Cabo Verde",
-      codigoPostal: "7600"
-    });
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = endpointSisp;
+  form.target = "_blank";
+  form.style.display = "none";
 
-    const r = await fetch(endpointSisp, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        residenteId: loggedUser.id || loggedUser.uid || "",
-        pacote: loggedUser.pacote || "Recarga",
-        tipo: tipo,
-        valor: valor,
-        email: loggedUser.email || "",
-        cidade: loggedUser.municipio || "Praia",
-        morada: loggedUser.morada || "Cabo Verde",
-        codigoPostal: "7600"
-      })
-    });
+  Object.keys(dadosPagamento).forEach(function(key) {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = key;
+    input.value = dadosPagamento[key];
+    form.appendChild(input);
+  });
 
-    const d = await r.json();
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
 
-    if (!d.sucesso) {
-      if (janelaPagamento && !janelaPagamento.closed) {
-        janelaPagamento.close();
-      }
-
-      popup(
-        "erro",
-        "Erro na recarga",
-        d.detalhe || d.mensagem || "A SISP devolveu um erro no pedido de pagamento."
-      );
-
-      return;
-    }
-
-    if (d.htmlPagamento) {
-      if (!janelaPagamento || janelaPagamento.closed) {
-        janelaPagamento = window.open("", "_blank");
-      }
-
-      if (!janelaPagamento) {
-        popup(
-          "erro",
-          "Popup bloqueado",
-          "O navegador bloqueou a janela de pagamento. Permite popups para continuar."
-        );
-        return;
-      }
-
-      janelaPagamento.document.open();
-      janelaPagamento.document.write(d.htmlPagamento);
-      janelaPagamento.document.close();
-
-      popup(
-        "sucesso",
-        "Pagamento aberto",
-        "Abrimos o portal seguro Vinti4 numa nova janela."
-      );
-
-      return;
-    }
-
-    if (d.paymentUrl) {
-      if (janelaPagamento && !janelaPagamento.closed) {
-        janelaPagamento.location.href = d.paymentUrl;
-      } else {
-        window.location.href = d.paymentUrl;
-      }
-
-      popup("info", "A redirecionar...", "Vais para o portal seguro Vinti4.");
-      return;
-    }
-
-    if (janelaPagamento && !janelaPagamento.closed) {
-      janelaPagamento.close();
-    }
-
-    popup(
-      "sucesso",
-      "Pedido enviado!",
-      d.mensagem || "Pedido de pagamento enviado para Vinti4."
-    );
-
-  } catch (err) {
-    console.error("Erro na recarga SISP:", err);
-
-    if (janelaPagamento && !janelaPagamento.closed) {
-      janelaPagamento.close();
-    }
-
-    popup(
-      "erro",
-      "Erro de ligação",
-      "Não foi possível comunicar com o servidor de pagamento."
-    );
-
-  } finally {
-    setLoading(false);
-  }
+  popup(
+    "sucesso",
+    "Pagamento aberto",
+    "Abrimos o portal seguro Vinti4 numa nova janela."
+  );
 };
 window.solicitarCartao = function() {
   const loggedUser = (typeof window.getResidenteLogado === 'function' ? window.getResidenteLogado() : null) || residenteLogado;
