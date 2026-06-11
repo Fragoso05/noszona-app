@@ -87,3 +87,4 @@ export function atualizarHeader() {
 // Expor para compatibilidade com handlers inline no HTML
 window.logout = logout;
 window.carregarSessao = carregarSessao;
+window.getResidenteLogado = getResidenteLogado;

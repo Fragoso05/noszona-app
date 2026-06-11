@@ -139,30 +139,38 @@ window.login = async function(e) {
       residenteLogado = data.residente;
       window.residenteLogado = residenteLogado;
 
-      // persist session:
-      // - always to sessionStorage (current browser session)
-      // - to localStorage only if "lembrar" checked (persist across restarts)
-      try {
-        const sessionData = JSON.stringify({ residente: residenteLogado });
-        sessionStorage.setItem("noszona_session", sessionData);
-        if (lembrar) {
-          localStorage.setItem("noszona_session", sessionData);
-        }
-      } catch(e) {}
+      // Prefer the central session module for persistence (helps consistency with carregarSessao from session.js)
+      if (typeof window.guardarSessao === 'function') {
+        window.guardarSessao(residenteLogado, data.token || null, lembrar);
+      } else {
+        // fallback to direct persist
+        try {
+          const sessionData = JSON.stringify({ residente: residenteLogado });
+          sessionStorage.setItem("noszona_session", sessionData);
+          if (lembrar) {
+            localStorage.setItem("noszona_session", sessionData);
+          }
+        } catch(e) {}
+      }
 
-      // switch header to logged state (post-login fix)
-      const ctasDeslogado = document.getElementById("ctasDeslogado");
-      const ctasLogado = document.getElementById("ctasLogado");
-      if (ctasDeslogado) ctasDeslogado.style.display = "none";
-      if (ctasLogado) ctasLogado.style.display = "flex";
-      const greetingEl = document.getElementById("userGreeting");
-      if (ctasLogado && greetingEl) {
-        const primeiroNome = (residenteLogado.nome || "").split(" ")[0];
-        greetingEl.textContent = `Olá, ${primeiroNome}`;
+      // switch header to logged state (post-login fix) - prefer central if available
+      if (typeof window.atualizarHeader === 'function') {
+        window.atualizarHeader();
+      } else {
+        const ctasDeslogado = document.getElementById("ctasDeslogado");
+        const ctasLogado = document.getElementById("ctasLogado");
+        if (ctasDeslogado) ctasDeslogado.style.display = "none";
+        if (ctasLogado) ctasLogado.style.display = "flex";
+        const greetingEl = document.getElementById("userGreeting");
+        if (ctasLogado && greetingEl) {
+          const primeiroNome = (residenteLogado.nome || "").split(" ")[0];
+          greetingEl.textContent = `Olá, ${primeiroNome}`;
+        }
       }
 
       const isDemo = !data.residente || data.residente.uid?.startsWith("demo-");
       popup("sucesso", "Login efetuado com sucesso!", isDemo ? "Modo DEMO (API offline) - Bem-vindo de volta!" : "Bem-vindo de volta!");
+      esconderTudo(); // garante que o formulário de login some
       mostrarDashboard();
     } else {
       popup("erro", "Login falhou", data.mensagem || "Username ou password incorretos.");
@@ -178,20 +186,25 @@ window.login = async function(e) {
 // ==================== DASHBOARD ====================
 
 window.mostrarDashboard = function() {
-  if (!residenteLogado) {
+  const user = (typeof window.getResidenteLogado === 'function' ? window.getResidenteLogado() : null) || residenteLogado;
+  if (!user) {
     popup("erro", "Login necessário", "Faz login primeiro.");
     return mostrarLogin();
   }
 
-  // ensure header is in logged state
-  const ctasDeslogado = document.getElementById("ctasDeslogado");
-  const ctasLogado = document.getElementById("ctasLogado");
-  if (ctasDeslogado) ctasDeslogado.style.display = "none";
-  if (ctasLogado) ctasLogado.style.display = "flex";
-  const greetingEl = document.getElementById("userGreeting");
-  if (ctasLogado && greetingEl && residenteLogado) {
-    const primeiroNome = (residenteLogado.nome || "").split(" ")[0];
-    greetingEl.textContent = `Olá, ${primeiroNome}`;
+  // ensure header is in logged state (prefer central session module)
+  if (typeof window.atualizarHeader === 'function') {
+    window.atualizarHeader();
+  } else {
+    const ctasDeslogado = document.getElementById("ctasDeslogado");
+    const ctasLogado = document.getElementById("ctasLogado");
+    if (ctasDeslogado) ctasDeslogado.style.display = "none";
+    if (ctasLogado) ctasLogado.style.display = "flex";
+    const greetingEl = document.getElementById("userGreeting");
+    if (ctasLogado && greetingEl && user) {
+      const primeiroNome = (user.nome || "").split(" ")[0];
+      greetingEl.textContent = `Olá, ${primeiroNome}`;
+    }
   }
 
   esconderTudo();
@@ -202,7 +215,8 @@ window.mostrarDashboard = function() {
 };
 
 function renderizarDashboard() {
-  const r = residenteLogado || {};
+  const user = (typeof window.getResidenteLogado === 'function' ? window.getResidenteLogado() : null) || residenteLogado;
+  const r = user || {};
 
   // Preenche os dados (inclui info extra se existir)
   let extra = "";
@@ -273,8 +287,9 @@ function atualizarQR() {
   if (!container) return;
   container.innerHTML = "";
 
+  const currentQRUser = (typeof window.getResidenteLogado === 'function' ? window.getResidenteLogado() : null) || residenteLogado;
   const payload = {
-    uid: residenteLogado?.uid || "demo123",
+    uid: currentQRUser?.uid || "demo123",
     ts: Math.floor(Date.now() / 1000)
   };
 
@@ -433,7 +448,8 @@ window.registar = async function(e) {
 window.recarregar = async function(e) {
   if (e) e.preventDefault();
 
-  if (!residenteLogado) {
+  const loggedUser = (typeof window.getResidenteLogado === 'function' ? window.getResidenteLogado() : null) || residenteLogado;
+  if (!loggedUser) {
     popup("erro", "Login necessário", "Faz login primeiro.");
     return mostrarLogin();
   }
@@ -502,13 +518,13 @@ window.recarregar = async function(e) {
 
     console.log("A chamar Node-RED online para pagamento SISP...");
     console.log({
-      residenteId: residenteLogado.id || residenteLogado.uid || "",
-      pacote: residenteLogado.pacote || "Recarga",
+      residenteId: loggedUser.id || loggedUser.uid || "",
+      pacote: loggedUser.pacote || "Recarga",
       tipo: tipo,
       valor: valor,
-      email: residenteLogado.email || "",
-      cidade: residenteLogado.municipio || "Praia",
-      morada: residenteLogado.morada || "Cabo Verde",
+      email: loggedUser.email || "",
+      cidade: loggedUser.municipio || "Praia",
+      morada: loggedUser.morada || "Cabo Verde",
       codigoPostal: "7600"
     });
 
@@ -518,13 +534,13 @@ window.recarregar = async function(e) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        residenteId: residenteLogado.id || residenteLogado.uid || "",
-        pacote: residenteLogado.pacote || "Recarga",
+        residenteId: loggedUser.id || loggedUser.uid || "",
+        pacote: loggedUser.pacote || "Recarga",
         tipo: tipo,
         valor: valor,
-        email: residenteLogado.email || "",
-        cidade: residenteLogado.municipio || "Praia",
-        morada: residenteLogado.morada || "Cabo Verde",
+        email: loggedUser.email || "",
+        cidade: loggedUser.municipio || "Praia",
+        morada: loggedUser.morada || "Cabo Verde",
         codigoPostal: "7600"
       })
     });
@@ -611,26 +627,33 @@ window.recarregar = async function(e) {
   }
 };
 window.solicitarCartao = function() {
-  if (!residenteLogado) {
+  const loggedUser = (typeof window.getResidenteLogado === 'function' ? window.getResidenteLogado() : null) || residenteLogado;
+  if (!loggedUser) {
     popup("erro", "Login necessário", "Faz login primeiro.");
     return mostrarLogin();
   }
 
-  // marca como pedido
-  residenteLogado.cartaoPedido = true;
-  residenteLogado.cartaoPedidoEm = new Date().toISOString();
+  // marca como pedido (usa o usuário atual)
+  loggedUser.cartaoPedido = true;
+  loggedUser.cartaoPedidoEm = new Date().toISOString();
 
-  window.residenteLogado = residenteLogado;
+  // sync de volta para a variável local se necessário
+  residenteLogado = loggedUser;
+  window.residenteLogado = loggedUser;
 
-  // persiste
-  try {
-    localStorage.setItem("noszona_session", JSON.stringify({ residente: residenteLogado }));
-  } catch (e) {}
+  // persiste via central se possível, senão fallback
+  if (typeof window.guardarSessao === 'function') {
+    window.guardarSessao(loggedUser, null, false);
+  } else {
+    try {
+      localStorage.setItem("noszona_session", JSON.stringify({ residente: loggedUser }));
+    } catch (e) {}
+  }
 
   // atualiza a UI da secção do cartão no dashboard (se visível)
   const cardBox = document.querySelector(".card-req-box");
   if (cardBox) {
-    const data = new Date(residenteLogado.cartaoPedidoEm).toLocaleDateString("pt-PT");
+    const data = new Date(loggedUser.cartaoPedidoEm).toLocaleDateString("pt-PT");
     cardBox.innerHTML = `
       <h3>Cartão Físico RFID</h3>
       <p style="color:#0ea472">✅ Pedido enviado em ${data}. Entraremos em contacto em breve.</p>

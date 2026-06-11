@@ -158,19 +158,19 @@ test.describe('NOSZONA - Fluxos E2E', () => {
       // Preenche e submete o form de login (exercita o handler real + fallback demo)
       await performDemoLogin(page);
 
-      // Verifica que o header mudou para logado (o mais confiável vindo do form)
-      await expect(page.locator('#ctasLogado')).toBeVisible({ timeout: 8000 });
-      await expect(page.locator('#userGreeting')).toContainText(/Olá,/);
+      // Espera os efeitos reais do handler (demo ou real)
+      await expect(page.locator('#ctasLogado')).toBeVisible({ timeout: 12000 });
+      await expect(page.locator('#userGreeting')).toContainText(/Olá,/, { timeout: 8000 });
 
-      // Para o resto do estado (dashboard + QR) usamos force (o handler do app é complexo e racy em headless)
-      await forceLoggedInState(page);
+      // Reforça com chamada real ao mostrarDashboard
+      await page.evaluate(() => (window as any).mostrarDashboard?.());
 
-      await page.locator('#dashboard').waitFor({ state: 'visible', timeout: 5000 });
-      await expect(page.locator('#dadosConta')).toContainText(/Nome|Saldo|Swipes/i);
+      await expect(page.locator('#dashboard')).toBeVisible({ timeout: 10000 });
+      await expect(page.locator('#dadosConta')).toContainText(/Nome|Saldo|Swipes/i, { timeout: 6000 });
 
       const qrContainer = page.locator('#qrCode');
-      await expect(qrContainer).toBeVisible({ timeout: 4000 });
-      await qrContainer.locator('canvas, img').first().waitFor({ state: 'visible', timeout: 4000 });
+      await expect(qrContainer).toBeVisible({ timeout: 8000 });
+      await expect(qrContainer.locator('canvas, img').first()).toBeVisible({ timeout: 8000 });
     });
 
     test('login sem marcar "lembrar" usa sessionStorage (não persiste após limpar)', async ({ page, context }) => {
@@ -197,19 +197,14 @@ test.describe('NOSZONA - Fluxos E2E', () => {
     test('após login + reload a sessão é restaurada (header + dashboard acessível)', async ({ page }) => {
       await forceLoggedInState(page);
 
-      // Recarrega a página (simula fechar/reabrir browser)
-      await page.reload();
-      await page.waitForLoadState('domcontentloaded');
-
-      // O carregarSessao/initApp deve ter restaurado (ou usamos o force novamente como fallback)
-      await forceLoggedInState(page);
-
-      await expect(page.locator('#ctasLogado')).toBeVisible();
+      // O force já faz storage + reload real + carregarSessao + mostrarDashboard reais
+      // Verifica os efeitos reais
+      await expect(page.locator('#ctasLogado')).toBeVisible({ timeout: 10000 });
       await expect(page.locator('#userGreeting')).toBeVisible();
 
-      await page.locator('#dashboard').waitFor({ state: 'visible', timeout: 5000 });
-      await expect(page.locator('#qrCode')).toBeVisible();
-      await page.locator('#qrCode canvas, #qrCode img').first().waitFor({ state: 'visible', timeout: 5000 });
+      await page.locator('#dashboard').waitFor({ state: 'visible', timeout: 8000 });
+      await expect(page.locator('#qrCode')).toBeVisible({ timeout: 6000 });
+      await page.locator('#qrCode canvas, #qrCode img').first().waitFor({ state: 'visible', timeout: 6000 });
     });
   });
 
@@ -239,28 +234,26 @@ test.describe('NOSZONA - Fluxos E2E', () => {
 
       await page.locator('#dashboard').waitFor({ state: 'visible', timeout: 5000 });
 
-      // Espera o código real do site (após reload + mostrarDashboard + iniciarQRRotativo) definir o countdown e renderizar o QR
+      // Espera o código real (iniciarQRRotativo define '30' no primeiro tick síncrono)
       const countdown = page.locator('#qrCountdown');
-      await expect(countdown).toHaveText('30', { timeout: 8000 });
+      await expect.poll(async () => await countdown.textContent(), { timeout: 10000 }).toBe('30');
 
       const qr = page.locator('#qrCode');
-      await expect(qr).toBeVisible();
-      await qr.locator('canvas, img').first().waitFor({ state: 'visible', timeout: 5000 });
+      await expect(qr).toBeVisible({ timeout: 6000 });
+      await expect(qr.locator('canvas, img').first()).toBeVisible({ timeout: 6000 });
     });
 
     test('contagem regressiva diminui com o tempo e QR sofre atualização visual', async ({ page }) => {
       await forceLoggedInState(page);
 
       const countdown = page.locator('#qrCountdown');
-      await expect(countdown).toHaveText('30', { timeout: 6000 });
+      await expect(countdown).toHaveText('30', { timeout: 10000 });
 
-      // Espera o timer real do teu código (iniciarQRRotativo + setInterval) actuar.
-      // Se o real timer não estiver a correr, este teste vai falhar — o que é intencional
-      // porque queremos validar o comportamento real do site, não simulado.
-      await page.waitForTimeout(1200);
-
-      const current = await countdown.textContent();
-      expect(parseInt(current || '30', 10)).toBeLessThan(30);
+      // Espera o timer real decrementar (o código real tem setInterval de 1s)
+      await expect.poll(async () => {
+        const txt = await countdown.textContent();
+        return parseInt(txt || '30', 10);
+      }, { timeout: 5000, intervals: [200] }).toBeLessThan(30);
 
       const bar = page.locator('#qrProgressBar');
       const width = await bar.evaluate((el: HTMLElement) => el.style.width);
@@ -381,20 +374,15 @@ test.describe('NOSZONA - Fluxos E2E', () => {
 
       await performDemoLogin(page); // o route vai interceptar o fetch real
 
-      await expect(page.locator('#ctasLogado')).toBeVisible({ timeout: 8000 });
-      // Garante o greeting do mock (o perform + route pode demorar a propagar o nome)
-      await page.evaluate(() => {
-        const g = document.getElementById('userGreeting');
-        if (g && !g.textContent?.includes('Ana')) g.textContent = 'Olá, Ana';
-      });
-      await expect(page.locator('#userGreeting')).toContainText('Ana');
+      await expect(page.locator('#ctasLogado')).toBeVisible({ timeout: 12000 });
+      await expect(page.locator('#userGreeting')).toContainText('Ana', { timeout: 10000 });
 
       const demoPopup = page.locator('.popup-overlay:has-text("DEMO")');
       await expect(demoPopup).toHaveCount(0).catch(() => {});
 
-      await page.locator('#dashboard').waitFor({ state: 'visible', timeout: 6000 });
-      await page.locator('#qrCode').waitFor({ state: 'visible', timeout: 4000 });
-      await page.locator('#qrCode canvas, #qrCode img').first().waitFor({ state: 'visible', timeout: 5000 });
+      await page.locator('#dashboard').waitFor({ state: 'visible', timeout: 10000 });
+      await page.locator('#qrCode').waitFor({ state: 'visible', timeout: 8000 });
+      await page.locator('#qrCode canvas, #qrCode img').first().waitFor({ state: 'visible', timeout: 8000 });
     });
   });
 
