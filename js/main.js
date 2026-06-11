@@ -381,13 +381,12 @@ window.registar = async function(e) {
             return;
         }
 
-        // === 3. HASHEAR A PASSWORD (ANTES DE ENVIAR) ===
-        const hashedPassword = await hashPassword(userData.password);
-
+        // Envia a password em texto simples (plain) para o Node-RED,
+        // exatamente como o endpoint de login espera.
+        // O backend (Node-RED) é responsável por fazer o hash/armazenamento seguro.
         const dataToSend = {
-            ...userData,
-            password: hashedPassword.hash,   // ← Hash da password
-            salt: hashedPassword.salt        // ← Salt
+            ...userData
+            // password fica em plain (userData.password)
         };
 
         // === 4. ENVIAR PARA O NODE-RED ===

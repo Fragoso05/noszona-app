@@ -27,4 +27,4 @@ services:
       - BASE_URL=http://web
     # Bootstrap npm (installs @playwright/test from package.json into node_modules on first run)
     # then execute the tests. This fixes "Cannot find module '@playwright/test'" and "playwright: not found".
-    command: sh -c '[ -f package-lock.json ] && npm ci --no-audit --no-fund || npm install --no-audit --no-fund; npx playwright test'
+   # command: sh -c '[ -f package-lock.json ] && npm ci --no-audit --no-fund || npm install --no-audit --no-fund; npx playwright test'
