@@ -1,0 +1,272 @@
+/* =====================================================
+   FOTOS.CSS - NOSZONA Smart
+   Parte nova para foto de perfil e foto do BI
+   Não mexe no CSS antigo
+===================================================== */
+
+.fotos-registo-box {
+  grid-column: 1 / -1;
+  margin-top: 10px;
+  padding: 20px;
+  border: 1px solid #dbe4ef;
+  border-radius: 22px;
+  background: #f8fbff;
+}
+
+.fotos-registo-box h3 {
+  margin: 0 0 6px;
+  color: #062b4f;
+  font-size: 20px;
+}
+
+.fotos-registo-box p {
+  margin: 0 0 18px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.fotos-registo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.foto-registo-card {
+  background: #ffffff;
+  border: 1px solid #dbe4ef;
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.foto-registo-card label {
+  display: block;
+  font-weight: 800;
+  color: #122033;
+  margin-bottom: 10px;
+}
+
+.foto-preview-registo {
+  width: 100%;
+  height: 210px;
+  border-radius: 16px;
+  background: #eef2f7;
+  border: 1px dashed #b8c7d9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-weight: 700;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.foto-preview-registo.perfil {
+  width: 150px;
+  height: 150px;
+  border-radius: 999px;
+  margin: 0 auto 12px;
+}
+
+.foto-preview-registo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foto-registo-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.foto-registo-actions button {
+  padding: 10px 13px;
+  border-radius: 12px;
+  border: 1px solid #dbe4ef;
+  background: #ffffff;
+  color: #062b4f;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.foto-registo-actions button:hover {
+  background: #eef8fb;
+}
+
+.foto-registo-actions .btn-remover-foto {
+  color: #c62828;
+}
+
+.cliente-foto-area {
+  margin-top: 12px;
+  margin-bottom: 10px;
+}
+
+.cliente-foto-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.cliente-foto-btn {
+  width: 92px;
+  height: 92px;
+  border-radius: 999px;
+  border: 4px solid #ffffff;
+  background: linear-gradient(135deg, #0b4f88, #00a8c8);
+  color: #ffffff;
+  font-size: 34px;
+  font-weight: 900;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cliente-foto-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cliente-foto-btn.sem-foto {
+  background: linear-gradient(135deg, #062b4f, #00a8c8);
+}
+
+.menu-foto-cliente {
+  position: absolute;
+  top: 104px;
+  left: 0;
+  min-width: 230px;
+  background: #ffffff;
+  border: 1px solid #dbe4ef;
+  border-radius: 16px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+  display: none;
+  z-index: 999;
+  overflow: hidden;
+}
+
+.menu-foto-cliente.ativo {
+  display: block;
+}
+
+.menu-foto-cliente button {
+  width: 100%;
+  padding: 13px 15px;
+  text-align: left;
+  background: #ffffff;
+  border: none;
+  border-bottom: 1px solid #edf2f7;
+  color: #122033;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.menu-foto-cliente button:hover {
+  background: #f8fbff;
+}
+
+.menu-foto-cliente button:last-child {
+  border-bottom: none;
+  color: #6b7280;
+}
+
+/* =====================================================
+   MODAL DA CÂMERA
+   Faz a câmera aparecer por cima da página, centralizada
+===================================================== */
+
+.modal-camera-fotos {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(2, 6, 23, 0.78);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  padding: 24px;
+}
+
+.modal-camera-fotos.ativo {
+  display: flex;
+}
+
+.modal-camera-conteudo {
+  background: #ffffff;
+  width: min(620px, 95vw);
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+  text-align: center;
+  position: relative;
+}
+
+.modal-camera-conteudo h3 {
+  margin: 0 0 16px;
+  color: #062b4f;
+  font-size: 24px;
+}
+
+.modal-camera-conteudo video {
+  width: 100%;
+  height: auto;
+  max-height: 430px;
+  background: #000000;
+  border-radius: 20px;
+  object-fit: cover;
+  display: block;
+}
+
+.modal-camera-acoes {
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.modal-camera-acoes button {
+  padding: 12px 18px;
+  border-radius: 14px;
+  border: 1px solid #dbe4ef;
+  background: #ffffff;
+  color: #062b4f;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.modal-camera-acoes button:first-child {
+  background: #00a8c8;
+  color: #ffffff;
+  border-color: #00a8c8;
+}
+
+.modal-camera-acoes button:last-child {
+  background: #f3f4f6;
+  color: #122033;
+}
+
+@media (max-width: 750px) {
+  .fotos-registo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .menu-foto-cliente {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .modal-camera-conteudo {
+    width: 96vw;
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .modal-camera-conteudo video {
+    max-height: 60vh;
+  }
+}
