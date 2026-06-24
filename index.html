@@ -495,13 +495,18 @@
 <!-- DASHBOARD -->
 <section id="dashboard">
   <div class="dash-panel">
-    <div class="dash-header">
-      <div>
-        <h2>Minha Conta NOSZONA Smart</h2>
-        <p>Consulta o teu saldo, QR seguro e serviços</p>
-      </div>
-      <button class="btn-logout" onclick="logout()">Sair</button>
+   <div class="dash-header">
+  <div class="dash-header-left">
+    <div id="areaFotoPerfilCliente" class="dash-profile-photo-area"></div>
+
+    <div class="dash-header-text">
+      <h2>Minha Conta NOSZONA Smart</h2>
+      <p>Consulta o teu saldo, QR seguro e serviços</p>
     </div>
+  </div>
+
+  <button class="btn-logout" onclick="sair()">Sair</button>
+</div>
 
     <div class="alert-banner" id="bannerEmailNaoConfirmado" style="display:none;">
       ⚠️ O teu email ainda não foi confirmado.

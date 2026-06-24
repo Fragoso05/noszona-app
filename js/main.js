@@ -236,6 +236,11 @@ function renderizarDashboard() {
   const r = residenteLogado || window.residenteLogado;
   if (!r) return;
 
+  // Mostrar foto de perfil no topo do dashboard
+  if (typeof window.renderizarFotoPerfilCliente === "function") {
+    window.renderizarFotoPerfilCliente(r);
+  }
+
   let extra = "";
   if (r.email) extra += `<div class="stat-box"><span>Email</span><strong>${escapeHtml(r.email)}</strong></div>`;
   if (r.cartaoPedido) {
@@ -414,6 +419,25 @@ async function registar(e) {
       setTimeout(() => { if (typeof showWelcomeEmailPreview === "function") showWelcomeEmailPreview(demoUser); }, 700);
       setTimeout(() => { mostrarLogin(); }, 2200);
       return;
+    }
+
+    // Enviar fotos depois do registo real
+    try {
+      const residenteIdFotos =
+        serverResp.residenteId ||
+        serverResp.id ||
+        serverResp.residenteIdCriado ||
+        serverResp.residente?.id ||
+        serverResp.insertId;
+
+      if (typeof window.enviarFotosDepoisDoRegisto === "function" && residenteIdFotos) {
+        await window.enviarFotosDepoisDoRegisto(residenteIdFotos);
+        console.log("✅ Fotos enviadas para o residente:", residenteIdFotos);
+      } else {
+        console.warn("⚠️ Fotos não enviadas: residenteId não encontrado na resposta do registo.", serverResp);
+      }
+    } catch (erroFotos) {
+      console.warn("Conta criada, mas as fotos não foram enviadas:", erroFotos);
     }
 
     // Caminho real
