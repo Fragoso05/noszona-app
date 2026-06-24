@@ -299,9 +299,8 @@ async function enviarFotosDepoisDoRegisto(residenteId) {
     return;
   }
 
-  if (!fotoPerfilBase64 && !fotoBIBase64) {
-    console.log("Nenhuma foto enviada pelo residente.");
-    return;
+  if (!fotoBIBase64) {
+    throw new Error("A foto do Bilhete de Identidade é obrigatória para concluir o registo.");
   }
 
   const payload = {
@@ -309,7 +308,7 @@ async function enviarFotosDepoisDoRegisto(residenteId) {
     fotoPerfilBase64,
     fotoPerfilTipo: fotoPerfilBase64 ? "image/jpeg" : "",
     fotoBIBase64,
-    fotoBITipo: fotoBIBase64 ? "image/jpeg" : ""
+    fotoBITipo: "image/jpeg"
   };
 
   const resposta = await fetch("https://violet-beaver-178312.hostingersite.com/api/residentes/fotos", {
@@ -379,7 +378,7 @@ function renderizarFotoPerfilCliente(residente) {
   const nome = residente && residente.nome ? residente.nome : "Utilizador";
   const inicial = nome.trim().charAt(0).toUpperCase() || "N";
 
-  if (fotoSrc && (residente.fotosAprovadas == 1 || residente.fotos_aprovadas == 1)) {
+  if (fotoSrc) {
     area.innerHTML = `
       <div class="cliente-foto-wrapper">
         <button class="cliente-foto-btn" onclick="abrirMenuFotoPerfil()" title="Alterar foto de perfil">
@@ -517,7 +516,6 @@ async function enviarNovaFotoPerfilCliente(input) {
 
     user.fotoPerfilBase64 = novaFoto;
     user.fotoPerfilTipo = "image/jpeg";
-    user.fotosAprovadas = 0;
 
     window.residenteLogado = user;
 
@@ -527,7 +525,7 @@ async function enviarNovaFotoPerfilCliente(input) {
 
     renderizarFotoPerfilCliente(user);
 
-    alert("Foto enviada. Aguarda aprovação do administrador.");
+    alert("Foto de perfil atualizada com sucesso.");
 
   } catch (erro) {
     alert(erro.message || "Erro ao enviar foto.");
@@ -571,7 +569,6 @@ async function enviarNovaFotoPerfilClienteBase64(novaFoto) {
 
     user.fotoPerfilBase64 = novaFoto;
     user.fotoPerfilTipo = "image/jpeg";
-    user.fotosAprovadas = 0;
 
     window.residenteLogado = user;
 
@@ -581,7 +578,7 @@ async function enviarNovaFotoPerfilClienteBase64(novaFoto) {
 
     renderizarFotoPerfilCliente(user);
 
-    alert("Foto enviada. Aguarda aprovação do administrador.");
+    alert("Foto de perfil atualizada com sucesso.");
 
   } catch (erro) {
     alert(erro.message || "Erro ao enviar foto.");
@@ -627,7 +624,6 @@ async function removerFotoPerfilCliente() {
 
     user.fotoPerfilBase64 = "";
     user.fotoPerfilTipo = "";
-    user.fotosAprovadas = 0;
 
     window.residenteLogado = user;
 
