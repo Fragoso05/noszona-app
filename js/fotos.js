@@ -386,6 +386,7 @@ function renderizarFotoPerfilCliente(residente) {
         </button>
 
         <div id="menuFotoPerfilCliente" class="menu-foto-cliente">
+          <button onclick="verFotoPerfilCliente()">Ver foto</button>
           <button onclick="abrirSeletorTrocaPerfil()">Escolher dos ficheiros</button>
           <button onclick="abrirCameraTrocaPerfil()">Tirar foto agora</button>
           <button onclick="removerFotoPerfilCliente()">Remover foto</button>
@@ -640,6 +641,72 @@ async function removerFotoPerfilCliente() {
   }
 }
 
+function verFotoPerfilCliente() {
+  const user = typeof window.getResidenteLogado === "function"
+    ? window.getResidenteLogado()
+    : window.residenteLogado;
+
+  if (!user) {
+    alert("Faz login primeiro.");
+    return;
+  }
+
+  const fotoSrc = getFotoPerfilDoResidente(user);
+
+  if (!fotoSrc) {
+    alert("Este residente ainda não tem foto de perfil.");
+    return;
+  }
+
+  fecharMenuFotoPerfil();
+
+  let modal = document.getElementById("modalVerFotoPerfilCliente");
+
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "modalVerFotoPerfilCliente";
+    modal.className = "modal-foto-perfil-cliente";
+
+    modal.innerHTML = `
+      <div class="modal-foto-perfil-conteudo">
+        <img id="modalVerFotoPerfilImg" src="" alt="Foto de perfil">
+
+        <div class="modal-foto-perfil-acoes">
+          <button type="button" onclick="fecharVerFotoPerfilCliente()">Fechar</button>
+        </div>
+      </div>
+    `;
+
+    modal.onclick = function(e) {
+      if (e.target === modal) {
+        fecharVerFotoPerfilCliente();
+      }
+    };
+
+    document.body.appendChild(modal);
+  }
+
+  const img = document.getElementById("modalVerFotoPerfilImg");
+  if (img) {
+    img.src = fotoSrc;
+  }
+
+  modal.classList.add("ativo");
+}
+
+function fecharVerFotoPerfilCliente() {
+  const modal = document.getElementById("modalVerFotoPerfilCliente");
+  const img = document.getElementById("modalVerFotoPerfilImg");
+
+  if (img) {
+    img.src = "";
+  }
+
+  if (modal) {
+    modal.classList.remove("ativo");
+  }
+}
+
 // Expor funções para o HTML e para o main.js
 window.abrirSeletorFoto = abrirSeletorFoto;
 window.tirarFoto = tirarFoto;
@@ -659,3 +726,5 @@ window.abrirCameraTrocaPerfil = abrirCameraTrocaPerfil;
 window.removerFotoPerfilCliente = removerFotoPerfilCliente;
 window.capturarFotoCamera = capturarFotoCamera;
 window.fecharCameraFotos = fecharCameraFotos;
+window.verFotoPerfilCliente = verFotoPerfilCliente;
+window.fecharVerFotoPerfilCliente = fecharVerFotoPerfilCliente;
