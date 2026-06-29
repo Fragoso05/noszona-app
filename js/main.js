@@ -338,12 +338,13 @@ async function registar(e) {
       telefone: getVal("telefone"),
       email: getVal("email").toLowerCase(),
       morada: getVal("morada"),
+      pais: getVal("pais"),
       municipio: getVal("municipio"),
       username: getVal("username"),
       pacote: getVal("pacote") || "Pacote 2"
     };
 
-    const obrigatorios = ["nome","dataNascimento","nacionalidade","documento","telefone","email","morada","municipio","username"];
+    const obrigatorios = ["nome","dataNascimento","nacionalidade","documento","telefone","email","pais","morada","municipio","username"];
     for (const campo of obrigatorios) {
       if (!userData[campo]) {
         popup("erro", "Campos obrigatórios", `Por favor preenche o campo: ${campo}`);
