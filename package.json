@@ -4,6 +4,9 @@
   "description": "NOSZONA Smart City - E2E tests with Playwright (Docker DevOps)",
   "private": true,
   "scripts": {
+    "start": "docker compose up -d web",
+    "stop": "docker compose down",
+    "logs": "docker compose logs -f web",
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui"
