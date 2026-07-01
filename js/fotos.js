@@ -299,9 +299,8 @@ async function enviarFotosDepoisDoRegisto(residenteId) {
     return;
   }
 
-  if (!fotoPerfilBase64 && !fotoBIBase64) {
-    console.log("Nenhuma foto enviada pelo residente.");
-    return;
+  if (!fotoBIBase64) {
+    throw new Error("A foto do Bilhete de Identidade é obrigatória para concluir o registo.");
   }
 
   const payload = {
@@ -309,7 +308,7 @@ async function enviarFotosDepoisDoRegisto(residenteId) {
     fotoPerfilBase64,
     fotoPerfilTipo: fotoPerfilBase64 ? "image/jpeg" : "",
     fotoBIBase64,
-    fotoBITipo: fotoBIBase64 ? "image/jpeg" : ""
+    fotoBITipo: "image/jpeg"
   };
 
   const resposta = await fetch("https://violet-beaver-178312.hostingersite.com/api/residentes/fotos", {
@@ -379,7 +378,7 @@ function renderizarFotoPerfilCliente(residente) {
   const nome = residente && residente.nome ? residente.nome : "Utilizador";
   const inicial = nome.trim().charAt(0).toUpperCase() || "N";
 
-  if (fotoSrc && (residente.fotosAprovadas == 1 || residente.fotos_aprovadas == 1)) {
+  if (fotoSrc) {
     area.innerHTML = `
       <div class="cliente-foto-wrapper">
         <button class="cliente-foto-btn" onclick="abrirMenuFotoPerfil()" title="Alterar foto de perfil">
@@ -387,6 +386,7 @@ function renderizarFotoPerfilCliente(residente) {
         </button>
 
         <div id="menuFotoPerfilCliente" class="menu-foto-cliente">
+          <button onclick="verFotoPerfilCliente()">Ver foto</button>
           <button onclick="abrirSeletorTrocaPerfil()">Escolher dos ficheiros</button>
           <button onclick="abrirCameraTrocaPerfil()">Tirar foto agora</button>
           <button onclick="removerFotoPerfilCliente()">Remover foto</button>
@@ -517,7 +517,6 @@ async function enviarNovaFotoPerfilCliente(input) {
 
     user.fotoPerfilBase64 = novaFoto;
     user.fotoPerfilTipo = "image/jpeg";
-    user.fotosAprovadas = 0;
 
     window.residenteLogado = user;
 
@@ -527,7 +526,7 @@ async function enviarNovaFotoPerfilCliente(input) {
 
     renderizarFotoPerfilCliente(user);
 
-    alert("Foto enviada. Aguarda aprovação do administrador.");
+    alert("Foto de perfil atualizada com sucesso.");
 
   } catch (erro) {
     alert(erro.message || "Erro ao enviar foto.");
@@ -571,7 +570,6 @@ async function enviarNovaFotoPerfilClienteBase64(novaFoto) {
 
     user.fotoPerfilBase64 = novaFoto;
     user.fotoPerfilTipo = "image/jpeg";
-    user.fotosAprovadas = 0;
 
     window.residenteLogado = user;
 
@@ -581,7 +579,7 @@ async function enviarNovaFotoPerfilClienteBase64(novaFoto) {
 
     renderizarFotoPerfilCliente(user);
 
-    alert("Foto enviada. Aguarda aprovação do administrador.");
+    alert("Foto de perfil atualizada com sucesso.");
 
   } catch (erro) {
     alert(erro.message || "Erro ao enviar foto.");
@@ -627,7 +625,6 @@ async function removerFotoPerfilCliente() {
 
     user.fotoPerfilBase64 = "";
     user.fotoPerfilTipo = "";
-    user.fotosAprovadas = 0;
 
     window.residenteLogado = user;
 
@@ -641,6 +638,72 @@ async function removerFotoPerfilCliente() {
 
   } catch (erro) {
     alert("Erro ao remover foto.");
+  }
+}
+
+function verFotoPerfilCliente() {
+  const user = typeof window.getResidenteLogado === "function"
+    ? window.getResidenteLogado()
+    : window.residenteLogado;
+
+  if (!user) {
+    alert("Faz login primeiro.");
+    return;
+  }
+
+  const fotoSrc = getFotoPerfilDoResidente(user);
+
+  if (!fotoSrc) {
+    alert("Este residente ainda não tem foto de perfil.");
+    return;
+  }
+
+  fecharMenuFotoPerfil();
+
+  let modal = document.getElementById("modalVerFotoPerfilCliente");
+
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "modalVerFotoPerfilCliente";
+    modal.className = "modal-foto-perfil-cliente";
+
+    modal.innerHTML = `
+      <div class="modal-foto-perfil-conteudo">
+        <img id="modalVerFotoPerfilImg" src="" alt="Foto de perfil">
+
+        <div class="modal-foto-perfil-acoes">
+          <button type="button" onclick="fecharVerFotoPerfilCliente()">Fechar</button>
+        </div>
+      </div>
+    `;
+
+    modal.onclick = function(e) {
+      if (e.target === modal) {
+        fecharVerFotoPerfilCliente();
+      }
+    };
+
+    document.body.appendChild(modal);
+  }
+
+  const img = document.getElementById("modalVerFotoPerfilImg");
+  if (img) {
+    img.src = fotoSrc;
+  }
+
+  modal.classList.add("ativo");
+}
+
+function fecharVerFotoPerfilCliente() {
+  const modal = document.getElementById("modalVerFotoPerfilCliente");
+  const img = document.getElementById("modalVerFotoPerfilImg");
+
+  if (img) {
+    img.src = "";
+  }
+
+  if (modal) {
+    modal.classList.remove("ativo");
   }
 }
 
@@ -663,3 +726,5 @@ window.abrirCameraTrocaPerfil = abrirCameraTrocaPerfil;
 window.removerFotoPerfilCliente = removerFotoPerfilCliente;
 window.capturarFotoCamera = capturarFotoCamera;
 window.fecharCameraFotos = fecharCameraFotos;
+window.verFotoPerfilCliente = verFotoPerfilCliente;
+window.fecharVerFotoPerfilCliente = fecharVerFotoPerfilCliente;
