@@ -1,7 +1,10 @@
+<<<<<<< HEAD
+=======
 /* =====================================================
    NOSZONA Smart — style.css
    ===================================================== */
 
+>>>>>>> 151828415caab9bd93e45c923706d2497677a670
 :root {
   --navy: #061827;
   --navy-mid: #0b2e4a;
@@ -385,56 +388,72 @@ header {
 .bg-navy { background: var(--navy); }
 
 .steps {
-  max-width: 1100px; margin: auto;
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
 }
 .step-card {
   background: var(--card-bg);
   border: 1px solid var(--border-dark);
   border-radius: var(--rad-lg);
-  padding: 36px 30px;
-  position: relative; overflow: hidden;
-  transition: all 0.3s ease;
+  padding: 32px 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .step-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-8px);
   box-shadow: var(--shadow);
   border-color: rgba(0,195,227,0.3);
 }
 .step-card::after {
   content: '';
-  position: absolute; bottom: 0; left: 0; right: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   height: 3px;
   background: linear-gradient(90deg, var(--cyan), var(--blue));
-  opacity: 0; transition: opacity 0.3s;
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 .step-card:hover::after { opacity: 1; }
+.step-visual {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
 .step-number {
   font-family: 'Clash Display', sans-serif;
-  font-size: 72px; font-weight: 700;
-  color: var(--off); line-height: 1;
-  margin-bottom: 18px; letter-spacing: -3px;
-  background: linear-gradient(135deg, #e8f0f8, #d0dcea);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 72px;
+  font-weight: 800;
+  color: #e0e7ff;
+  line-height: 1;
+  flex-shrink: 0;
+  letter-spacing: -3px;
+}
+.step-illustration {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 16px;
 }
 .step-card h3 {
   font-family: 'Clash Display', sans-serif;
-  font-size: 20px; font-weight: 600;
-  color: var(--text); margin-bottom: 10px; letter-spacing: -0.3px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
 }
 .step-card p {
-  font-size: 15px; color: var(--muted);
-  line-height: 1.65; font-weight: 300;
-}
-.step-icon-wrap {
-  width: 50px; height: 50px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, rgba(0,195,227,0.12), rgba(10,111,168,0.10));
-  border: 1px solid rgba(0,195,227,0.20);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 22px; margin-bottom: 20px;
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.7;
+  font-weight: 300;
 }
 
 .step-visual {
