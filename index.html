@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -322,7 +321,7 @@
           </div>
           <div class="form-group">
             <label for="telefone">Telefone *</label>
-            <input id="telefone" name="telefone" type="tel" required pattern="^[+0-9 ]{7,20}$" autocomplete="tel" placeholder="+238 999 99 99">
+            <input id="telefone" name="telefone" type="tel" required pattern="^[+0-9 ]{7,20}$" autocomplete="tel" placeholder="+238 * *** ***">
             <span class="field-error" id="erro-telefone"></span>
           </div>
           <div class="form-group">
@@ -340,7 +339,7 @@
             <input id="municipio" name="municipio" required placeholder="Ex: Praia">
             <span class="field-error" id="erro-municipio"></span>
           </div>
-<div class="form-group">
+          <div class="form-group">
             <label for="pais">País *</label>
             <select id="pais" name="pais" required>
               <option value="">— Seleciona o país —</option>
@@ -544,7 +543,6 @@
             <span class="field-error" id="erro-pais"></span>
           </div>
           <div class="form-group">
-                      <div class="form-group">
             <label for="username">Username *</label>
             <input id="username" name="username" required minlength="3" pattern="^[a-zA-Z0-9_.]+$" autocomplete="username" placeholder="Letras, números, . e _">
             <span class="field-error" id="erro-username"></span>
@@ -555,18 +553,21 @@
             <span class="field-hint" id="hint-password">Usa pelo menos 6 caracteres, com letras e números</span>
             <span class="field-error" id="erro-password"></span>
           </div>
-          <div class="form-group full">
-            <label for="pacote">Pacote escolhido *</label>
+        
+          <div class="form-group full"> 
+            <label for="pacote">Selecionar Pacote </label>
             <select id="pacote" name="pacote" required>
+              <div class="select-button-wrapper">
               <option value="">— Seleciona um pacote —</option>
-              <option value="Pacote 1">Pacote 1 — 5.000 CVE (Acesso a eventos)</option>
-              <option value="Pacote 2">Pacote 2 — 30.000 CVE</option>
-              <option value="Pacote 3">Pacote 3 — 50.000 CVE (Premium)</option>
+              <option value="Pacote 1">Pacote 1 — 000 CVE (Acesso a eventos)</option>
+              <option value="Pacote 2">Pacote 2 — 10.000 CVE (Preferido)</option>
+              <option value="Pacote 3">Pacote 3 — 20.000 CVE (Premium)</option>
             </select>
+            </div>
             <span class="field-error" id="erro-pacote"></span>
           </div>
         </div>
-
+       
         <div class="fotos-registo-box">
           <h3>Fotos do residente</h3>
           <p>Podes tirar foto agora ou escolher dos ficheiros. A foto de perfil é opcional. A foto do BI será confirmada pelo administrador.</p>
@@ -579,7 +580,6 @@
               </div>
               <div class="foto-registo-actions">
                 <button type="button" onclick="tirarFoto('perfil')">Tirar foto</button>
-                <button type="button" onclick="abrirSeletorFoto('perfil')">Escolher ficheiro</button>
                 <button type="button" class="btn-remover-foto" onclick="removerFotoPerfil()">Remover</button>
               </div>
               <input id="inputFotoPerfil" type="file" accept="image/*" style="display:none" onchange="selecionarFotoPerfil(this)">
@@ -593,7 +593,6 @@
               </div>
               <div class="foto-registo-actions">
                 <button type="button" onclick="tirarFoto('bi')">Tirar foto</button>
-                <button type="button" onclick="abrirSeletorFoto('bi')">Escolher ficheiro</button>
                 <button type="button" class="btn-remover-foto" onclick="removerFotoBI()">Remover</button>
               </div>
               <input id="inputFotoBI" type="file" accept="image/*" style="display:none" onchange="selecionarFotoBI(this)">
@@ -620,7 +619,7 @@
           </p>
         </div>
 
-        <button type="submit" class="form-submit">Continuar para pagamento →</button>
+        <button type="submit" class="form-submit">Continuar Registro →</button>
 
         <p class="form-switch">
           Já tens conta? <a href="#" onclick="mostrarLogin(); return false;">Entrar</a>
@@ -776,7 +775,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="js/security.js"></script>
 <script src="js/main.js"></script>
-<script src="js/fotos.js"></script>
+<script src="js/fotos.js?v=3"></script>
 
 </body>
 </html>
