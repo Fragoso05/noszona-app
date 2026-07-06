@@ -1030,6 +1030,51 @@ input.field-invalid:focus, select.field-invalid:focus {
 
 .loading * { pointer-events: none; opacity: 0.7; }
 
+/* SELECT PACOTE - BOTÃO COM COR DIFERENTE */
+.select-button-wrapper {
+    position: relative;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.select-button-wrapper select {
+    width: 100%;
+    padding: 16px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    background: linear-gradient(135deg, #0a6fa8, #0288d1); /* Azul forte */
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(10, 111, 168, 0.35);
+    appearance: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.select-button-wrapper::after {
+    content: '▼';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    color: white;
+    pointer-events: none;
+    font-weight: bold;
+}
+
+.select-button-wrapper select:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(10, 111, 168, 0.45);
+}
+
+.select-button-wrapper select:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(2, 136, 209, 0.4);
+}
+
 /* ============ FOOTER ============ */
 footer {
   background: var(--navy);

@@ -166,29 +166,7 @@ async function login(e) {
       usedDemo = true;
     }
 
-    // DEMO: se API falhou, primeiro verifica utilizadores registados localmente (após registo demo)
-    if (usedDemo || !data || !data.sucesso) {
-      let registered = [];
-      try { registered = JSON.parse(localStorage.getItem("noszona_registered_users") || "[]"); } catch (_) {}
-      const found = registered.find(u => (u.username || "").toLowerCase() === username.toLowerCase());
-      if (found) {
-        data = { sucesso: true, residente: found, mensagem: "Login DEMO (conta criada localmente)" };
-      } else {
-        // Fallback genérico
-        data = {
-          sucesso: true,
-          residente: {
-            nome: username || "Usuário Demo",
-            pacote: "Pacote 2",
-            saldo: 8500,
-            swipes: 30,
-            uid: "demo-" + Math.random().toString(36).slice(2, 10),
-            email: (username || "demo") + "@exemplo.com",
-            emailConfirmado: false
-          }
-        };
-      }
-    }
+    
 
     if (data.sucesso) {
       residenteLogado = data.residente;
@@ -341,8 +319,8 @@ async function registar(e) {
       pais: getVal("pais"),
       municipio: getVal("municipio"),
       username: getVal("username"),
-      pacote: getVal("pacote") || "Pacote 2"
-    };
+      pacote: getVal("pacote"),
+        };
 
     const obrigatorios = ["nome","dataNascimento","nacionalidade","documento","telefone","email","pais","morada","municipio","username"];
     for (const campo of obrigatorios) {
