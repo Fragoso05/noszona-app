@@ -369,47 +369,47 @@ function fecharMenuFotoPerfil() {
   menu.classList.remove("ativo");
 }
 
-// =====================================================
-// RENDERIZAR FOTO DE PERFIL NO CARTÃO DO DASHBOARD
-// =====================================================
-
 function renderizarFotoPerfilCliente(residente) {
-  const container = document.getElementById("areaFotoPerfilCliente");
-  if (!container) return;
+  const area = document.getElementById("areaFotoPerfilCliente");
 
-  container.innerHTML = ""; // limpa anterior
+  if (!area) return;
 
-  const wrapper = document.createElement("div");
-  wrapper.className = "cliente-foto-wrapper";
-  wrapper.style.cssText = "width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 3px solid rgba(255,255,255,0.4); box-shadow: 0 4px 12px rgba(0,0,0,0.3);";
+  const fotoSrc = getFotoPerfilDoResidente(residente);
+  const nome = residente && residente.nome ? residente.nome : "Utilizador";
+  const inicial = nome.trim().charAt(0).toUpperCase() || "N";
 
-  if (residente && residente.fotoPerfil) {
-    // Se tiver foto guardada (base64 ou URL)
-    const img = document.createElement("img");
-    img.src = residente.fotoPerfil;
-    img.style.cssText = "width: 100%; height: 100%; object-fit: cover;";
-    img.alt = "Foto de Perfil";
-    wrapper.appendChild(img);
-  } else {
-    // Foto padrão (iniciais do nome)
-    const iniciais = document.createElement("div");
-    iniciais.style.cssText = `
-      width: 100%; height: 100%; 
-      background: linear-gradient(135deg, #0ea5e9, #3b82f6);
-      color: white; 
-      display: flex; align-items: center; justify-content: center;
-      font-size: 28px; font-weight: 700; 
+  if (fotoSrc) {
+    area.innerHTML = `
+      <div class="cliente-foto-wrapper">
+        <button class="cliente-foto-btn" onclick="abrirMenuFotoPerfil()" title="Alterar foto de perfil">
+          <img src="${fotoSrc}" alt="Foto de perfil">
+        </button>
+
+        <div id="menuFotoPerfilCliente" class="menu-foto-cliente">
+          <button onclick="verFotoPerfilCliente()">Ver foto</button>
+          <button onclick="abrirSeletorTrocaPerfil()">Escolher dos ficheiros</button>
+          <button onclick="abrirCameraTrocaPerfil()">Tirar foto agora</button>
+          <button onclick="removerFotoPerfilCliente()">Remover foto</button>
+          <button onclick="fecharMenuFotoPerfil()">Cancelar</button>
+        </div>
+      </div>
     `;
-    const nome = (residente && residente.nome) ? residente.nome : "U";
-    iniciais.textContent = nome.split(" ").map(p => p[0]).join("").slice(0,2).toUpperCase();
-    wrapper.appendChild(iniciais);
+  } else {
+    area.innerHTML = `
+      <div class="cliente-foto-wrapper">
+        <button class="cliente-foto-btn sem-foto" onclick="abrirMenuFotoPerfil()" title="Adicionar foto de perfil">
+          ${inicial}
+        </button>
+
+        <div id="menuFotoPerfilCliente" class="menu-foto-cliente">
+          <button onclick="abrirSeletorTrocaPerfil()">Escolher dos ficheiros</button>
+          <button onclick="abrirCameraTrocaPerfil()">Tirar foto agora</button>
+          <button onclick="fecharMenuFotoPerfil()">Cancelar</button>
+        </div>
+      </div>
+    `;
   }
-
-  container.appendChild(wrapper);
 }
-
-// Expor para o main.js conseguir chamar
-window.renderizarFotoPerfilCliente = renderizarFotoPerfilCliente;
 
 function criarInputsTrocaPerfilSeNaoExistir() {
   if (!document.getElementById("trocarFotoPerfilInput")) {
