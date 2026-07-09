@@ -700,33 +700,36 @@
 <section id="dashboard">
   <div class="dash-panel">
    <div class="dash-header">
-  <div class="dash-header-left">
-    <div id="areaFotoPerfilCliente" class="dash-profile-photo-area"></div>
+    <div class="dash-header-left">
+    
+     <div id="areaFotoPerfilCliente" class="dash-profile-photo-area"></div>
 
-    <div class="dash-header-text">
-      <h2>Minha Conta NOSZONA Smart</h2>
-      <p>Consulta o teu saldo, QR seguro e serviços</p>
+      <div class="dash-header-text">
+       <h2>Minha Conta NOSZONA Smart</h2>
+       <p>Consulta o teu saldo, QR seguro e serviços</p>
+      </div>
     </div>
-  </div>
 
-  <button class="btn-logout" onclick="sair()">Sair</button>
-</div>
+   </div>
 
-    <div class="alert-banner" id="bannerEmailNaoConfirmado" style="display:none;">
+     <div class="alert-banner" id="bannerEmailNaoConfirmado" style="display:none;">
       ⚠️ O teu email ainda não foi confirmado.
       <button class="link-btn" onclick="reenviarConfirmacao()">Reenviar email de confirmação</button>
-    </div>
+     </div>
 
-    <div class="dash-body">
+     <div class="dash-body">
       <div class="dash-grid">
         <div>
+          
           <div class="stats-grid" id="dadosConta"></div>
+          
 
           <div class="recharge-box">
             <h3>Recarregar conta</h3>
             <p class="recharge-note">A recarga é processada via Vinti4. Não guardamos dados do teu cartão.</p>
             <form id="formRecarga" novalidate onsubmit="recarregar(event)">
               <div class="form-grid">
+                
                 <div class="form-group">
                   <label for="tipoRecarga">Tipo de recarga</label>
                   <select id="tipoRecarga" name="tipo" required>
@@ -744,7 +747,7 @@
             </form>
           </div>
         </div>
-
+        
         <div>
           <div class="qr-card">
             <h3>QR Seguro</h3>
@@ -756,11 +759,45 @@
             <p class="qr-note">Apresenta este código em eventos e serviços Smart City. O código renova a cada 30 segundos para proteção contra fraude.</p>
           </div>
 
-          <div class="card-req-box">
-            <h3>Cartão Físico RFID</h3>
-            <p>Solicita o teu cartão físico NOSZONA Smart para integração com leitores.</p>
-            <button class="btn-card-req" onclick="solicitarCartao()">Solicitar cartão físico</button>
+          <div style="display: grid; grid-template-columns: 320px; gap: 12px;">
+
+        <!-- Cartão Virtual -->
+        <div style="background: linear-gradient(135deg, #0f172a, #1e2937); color: white; border-radius: 12px; padding: 5px; position: relative; overflow: hidden;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2px;">
+            <div>
+              <div style="font-size: 4px; opacity: 0.4;">CARTÃO DIGITAL DO RESIDENTE</div>
+              <h2 style="margin: 8px 0 0 0; font-size: 24px;">Virtual Resident Card</h2>
+            </div>
+            <div style="text-align: right;">
+              <div id="areaFotoPerfilCliente" style="width: 40px; height: 40px; border-radius: 40%; overflow: hidden; border: 1px solid rgba(255,255,255,0.3); background: #fff;"></div>
+              
+            </div>
           </div>
+
+          <div style="margin-bottom: 10px;">
+            <strong>Nome</strong><br>
+            <span id="dashNome" style="font-size: 17px;"></span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 15px;">
+            <div>
+              <strong>ID de Residente</strong><br>
+              <span id="dashID" style="font-family: monospace;"></span>
+            </div>
+            <div>
+              <strong>Pacote</strong><br>
+              <span id="dashPacote"></span>
+            </div>
+          </div>
+
+          <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.15); display: flex; gap: 32px; font-size: 15px;">
+            <div> Cabo Verde</div>
+
+        </div>
+            <div id="dashMunicipio"></div>
+          </div>
+
+          
         </div>
       </div>
     </div>

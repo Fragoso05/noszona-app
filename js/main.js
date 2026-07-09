@@ -214,18 +214,18 @@ function renderizarDashboard() {
   const r = residenteLogado || window.residenteLogado;
   if (!r) return;
 
-  // Mostrar foto de perfil no topo do dashboard
+  // Foto de perfil
   if (typeof window.renderizarFotoPerfilCliente === "function") {
     window.renderizarFotoPerfilCliente(r);
   }
 
-  let extra = "";
-  if (r.email) extra += `<div class="stat-box"><span>Email</span><strong>${escapeHtml(r.email)}</strong></div>`;
-  if (r.cartaoPedido) {
-    const data = r.cartaoPedidoEm ? new Date(r.cartaoPedidoEm).toLocaleDateString("pt-PT") : "hoje";
-    extra += `<div class="stat-box"><span>Cartão Físico</span><strong style="color:#0ea472">Pedido ${data}</strong></div>`;
-  }
+  // === PREENCHER O NOVO CARTÃO VIRTUAL ===
+  document.getElementById("dashNome").textContent = escapeHtml(r.nome || "Utilizador");
+  document.getElementById("dashID").textContent = escapeHtml(r.uid || r.id || "N/A");
+  document.getElementById("dashPacote").textContent = escapeHtml(r.pacote || "Sem pacote");
+  document.getElementById("dashMunicipio").textContent = escapeHtml(r.municipio || "Praia");
 
+  // Manter os cards antigos (stats-grid) também
   const dados = document.getElementById("dadosConta");
   if (dados) {
     dados.innerHTML = `
@@ -234,7 +234,6 @@ function renderizarDashboard() {
       <div class="stat-box"><span>Saldo</span><strong>${r.saldo ?? 0} CVE</strong></div>
       <div class="stat-box"><span>Swipes</span><strong>${r.swipes ?? 0}</strong></div>
       <div class="stat-box"><span>Estado</span><strong><span class="chip-active">Ativo</span></strong></div>
-      ${extra}
     `;
   }
 
@@ -472,25 +471,7 @@ function recarregar(e) {
 }
 window.recarregar = recarregar;
 
-// ==================== SOLICITAR CARTÃO ====================
-function solicitarCartao() {
-  const logged = residenteLogado || window.residenteLogado;
-  if (!logged) { popup("erro", "Login necessário", "Faz login primeiro."); return mostrarLogin(); }
 
-  logged.cartaoPedido = true;
-  logged.cartaoPedidoEm = new Date().toISOString();
-  residenteLogado = logged; window.residenteLogado = logged;
-
-  guardarSessaoLocal(logged, false);
-
-  const box = document.querySelector(".card-req-box");
-  if (box) {
-    const data = new Date(logged.cartaoPedidoEm).toLocaleDateString("pt-PT");
-    box.innerHTML = `<h3>Cartão Físico RFID</h3><p style="color:#0ea472">✅ Pedido enviado em ${data}. Entraremos em contacto em breve.</p>`;
-  }
-  popup("sucesso", "Pedido enviado", "O teu pedido de cartão físico RFID foi registado com sucesso.");
-}
-window.solicitarCartao = solicitarCartao;
 
 // ==================== LOGIN COM GOOGLE (popup estilo Google + só contas registadas) ====================
 function loginWithGoogle() {

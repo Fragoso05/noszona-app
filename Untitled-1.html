@@ -1,0 +1,75 @@
+<nav>
+        <a href="#" onclick="mostrarDashboard(); return false;" class="sidebar-item active" style="display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 12px; background: #0a6fa8; color: white; margin-bottom: 8px; text-decoration: none;">
+          <span>🏠</span> Dashboard
+        </a>
+        <a href="#" class="sidebar-item" style="display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 12px; color: #334155; text-decoration: none;">
+          <span>👤</span> Meu Perfil
+        </a>
+        <a href="#" class="sidebar-item" style="display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 12px; color: #334155; text-decoration: none;">
+          <span>📦</span> Pacotes
+        </a>
+        <a href="#" onclick="recarregar(event); return false;" class="sidebar-item" style="display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 12px; color: #334155; text-decoration: none;">
+          <span>💰</span> Recarga
+        </a>
+        <a href="#" class="sidebar-item" style="display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 12px; color: #334155; text-decoration: none;">
+          <span>🎟️</span> Meus Swipes
+        </a>
+        <a href="#" class="sidebar-item" style="display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 12px; color: #334155; text-decoration: none;">
+          <span>📅</span> Eventos
+        </a>
+        <a href="#" class="sidebar-item" style="display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 12px; color: #334155; text-decoration: none;">
+          <span>💳</span> Meu Cartão Físico
+        </a>
+      </nav>
+
+
+
+
+
+
+
+
+      <div style="display: grid; grid-template-columns: 380px; gap: 12px;">
+
+        <!-- Cartão Virtual -->
+        <div style="background: linear-gradient(135deg, #0f172a, #1e2937); color: white; border-radius: 12px; padding: 5px; position: relative; overflow: hidden;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2px;">
+            <div>
+              <div style="font-size: 4px; opacity: 0.4;">CARTÃO DIGITAL DO RESIDENTE</div>
+              <h2 style="margin: 8px 0 0 0; font-size: 24px;">Virtual Resident Card</h2>
+            </div>
+            <div style="text-align: right;">
+              <div id="areaFotoPerfilCliente" style="width: 30px; height: 30px; border-radius: 25%; overflow: hidden; border: 1px solid rgba(255,255,255,0.3); background: #fff;"></div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 10px;">
+            <strong>Nome</strong><br>
+            <span id="dashNome" style="font-size: 17px;"></span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 15px;">
+            <div>
+              <strong>ID de Residente</strong><br>
+              <span id="dashID" style="font-family: monospace;"></span>
+            </div>
+            <div>
+              <strong>Pacote</strong><br>
+              <span id="dashPacote"></span>
+            </div>
+          </div>
+
+          <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.15); display: flex; gap: 32px; font-size: 15px;">
+            <div> Cabo Verde</div>
+            <div id="dashMunicipio"></div>
+          </div>
+
+          <div style="position: absolute; bottom: 24px; right: 18px; background: rgba(255,255,255,0.1); padding: 6px 14px; border-radius: 999px; font-size: 13px;">Ativo</div>
+        </div>
+
+
+       <div class="card-req-box">
+            <h3>Cartão Físico RFID</h3>
+            <p>Solicita o teu cartão físico NOSZONA Smart para integração com leitores.</p>
+            <button class="btn-card-req" onclick="solicitarCartao()">Solicitar cartão físico</button>
+          </div>  
