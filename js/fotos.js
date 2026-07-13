@@ -72,7 +72,7 @@ function comprimirImagem(file, maxWidth = 900, qualidade = 0.75) {
 function abrirSeletorFoto(tipo) {
   const input = tipo === "perfil"
     ? document.getElementById("inputFotoPerfil")
-    : document.getElementById("inputFotoBI");
+    : document.getElementById("inputFotoCatao");
 
   if (input) {
     input.click();
@@ -97,26 +97,26 @@ async function selecionarFotoPerfil(input) {
   }
 }
 
-async function selecionarFotoBI(input) {
+async function selecionarFotoCartao(input) {
   try {
     const file = input.files && input.files[0];
 
     if (!file) return;
 
-    fotoBIBase64 = await comprimirImagem(file, 1000, 0.75);
+    fotoCartaoBase64 = await comprimirImagem(file, 1000, 0.75);
 
-    const preview = document.getElementById("previewFotoBI");
+    const preview = document.getElementById("previewFotoCartao");
     if (preview) {
-      preview.innerHTML = `<img src="${fotoBIBase64}" alt="Foto do BI">`;
+      preview.innerHTML = `<img src="${fotoCartaoBase64}" alt="Foto do cartão">`;
     }
 
   } catch (erro) {
-    alert(erro.message || "Erro ao selecionar foto do BI.");
+    alert(erro.message || "Erro ao selecionar foto do cartão.");
   }
 }
 
 // =====================================================
-// FUNÇÃO ATUALIZADA: AGORA ABRE A CÂMERA DIRETAMENTE
+// FUNÇÃO ABRE A CÂMERA 
 // =====================================================
 async function tirarFoto(tipo) {
   try {
@@ -279,6 +279,8 @@ function removerFotoBI() {
 async function selecionarFotoCameraPerfil(input) {
   await selecionarFotoPerfil(input);
 }
+
+
 
 async function selecionarFotoCameraBI(input) {
   await selecionarFotoBI(input);
@@ -444,6 +446,8 @@ function abrirSeletorTrocaPerfil() {
   const input = document.getElementById("trocarFotoPerfilInput");
   if (input) input.click();
 }
+
+
 
 // =====================================================
 // FUNÇÃO ATUALIZADA: TIRAR FOTO DO PERFIL NO DASHBOARD
@@ -694,6 +698,8 @@ function verFotoPerfilCliente() {
   modal.classList.add("ativo");
 }
 
+
+
 function fecharVerFotoPerfilCliente() {
   const modal = document.getElementById("modalVerFotoPerfilCliente");
   const img = document.getElementById("modalVerFotoPerfilImg");
@@ -711,7 +717,7 @@ function fecharVerFotoPerfilCliente() {
 window.abrirSeletorFoto = abrirSeletorFoto;
 window.tirarFoto = tirarFoto;
 window.selecionarFotoPerfil = selecionarFotoPerfil;
-window.selecionarFotoBI = selecionarFotoBI;
+window.selecionarFotoCartao = selecionarFotoCartao;
 window.selecionarFotoCameraPerfil = selecionarFotoCameraPerfil;
 window.selecionarFotoCameraBI = selecionarFotoCameraBI;
 window.removerFotoPerfil = removerFotoPerfil;

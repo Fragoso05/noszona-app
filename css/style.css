@@ -989,6 +989,17 @@ input.field-invalid:focus, select.field-invalid:focus {
 }
 .btn-card-req:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(244,185,66,0.45); }
 
+.addft-btn {
+  width: 100%; padding: 7px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 500;
+  background: linear-gradient(135deg, var(--cyan), #026ba3);
+  color: var(--navy); border: none; border-radius: 12px;
+  cursor: pointer; transition: all 0.2s;
+  margin-top: 14px;
+  box-shadow: 0 6px 16px rgba(13, 200, 228, 0.3);
+}
+
 /* ============ POPUP ============ */
 .popup-overlay {
   position: fixed; inset: 0;
@@ -1338,3 +1349,4 @@ footer p strong { color: rgba(255,255,255,0.60); font-weight: 500; }
 .select-button-wrapper select:not([value=""]) {
     font-weight: 700;
 }
+
