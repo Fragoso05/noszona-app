@@ -697,8 +697,37 @@
 
 <!-- DASHBOARD Ususrio -->
 <section id="dashboard">
+  <div class="dash-container">
+    <!-- SIDEBAR -->
+    <aside class="dash-sidebar">
+      <div class="sidebar-logo">
+        <img src="img/noszona-logo.jpg" alt="NOSZONA" style="height: 50px;">
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="#" onclick="mostrarDashboard(); return false;" class="nav-item active">
+          <span>👤</span> Meu Perfil
+        </a>
+      
+        <a href="#" onclick="mostrarPacotesPopup(); return false;" class="nav-item">
+          <span>📦</span> Pacotes
+        </a>
+        <a href="#" onclick="window.open('https://vinti4.cv', '_blank'); return false;" class="nav-item">  <!-- replace with your real recarga link -->
+          <span>💰</span> Recarga
+        </a>
+        <a href="#" onclick="alert('Eventos - Em breve (admin)'); return false;" class="nav-item">
+          <span>📅</span> Eventos
+        </a>
+        <a href="#" onclick="mostrarPacotesPopup(); return false;" class="nav-item">
+          <span>🚪</span> Ir para página inicial
+        </a>
+      </nav>
+    </aside>
+
   <div class="dash-panel">
+
    <div class="dash-header">
+    
     <div class="dash-header-left">
     
      <div id="areaFotoPerfilCliente" class="dash-profile-photo-area"></div>
@@ -766,16 +795,25 @@
           </div>
 
           <div style="margin-top: 24px; padding-top: 29px; border-top: 1px solid rgba(255,255,255,0.15); display: flex; gap: 32px; font-size: 15px;">
-            <div> Cabo Verde</div>
+            
+            <div>
+      <span id="dashMunicipio">Praia</span>
+    </div>
+    <div style="text-align: right;">
+      <span id="dashPais"></span>
+    </div>
+  </div></div>
+</div>
 
-        </div>
-            <div id="dashMunicipio"></div>
-          </div>
-          <div>
-            <button type="button" class="addft-btn" onclick="abrirSeletorFoto('cartao')">Escolher foto para cartão</button>
-            <div class="stats-grid" id="dadosConta"></div>
+<button type="button" class="addft-btn" onclick="abrirSeletorFotoCartao()" style="margin-top: 16px; width: 100%;">
+  Escolher foto para cartão
+</button>
 
-          </div>
+<div id="areaFotoCartao" style="width: 90px; 
+height: 90px; border-radius: 50%; overflow: hidden; 
+border: 4px solid rgba(255,255,255,0.4); 
+margin: 15px auto 0; background: #fff;">
+</div>
 
           </div>
           

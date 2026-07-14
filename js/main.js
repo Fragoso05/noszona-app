@@ -109,6 +109,7 @@ function setLoading(v) {
 window.popup = popup;
 window.setLoading = setLoading;
 
+
 // Helpers partilhados (reduz duplicação)
 function atualizarHeaderLocal(user) {
   const u = user || residenteLogado;
@@ -210,38 +211,74 @@ function mostrarDashboard() {
 }
 window.mostrarDashboard = mostrarDashboard;
 
-function renderizarDashboard() {
+  function renderizarDashboard() {
   const r = residenteLogado || window.residenteLogado;
   if (!r) return;
 
-  // Foto de perfil
+  // Foto de perfil (já existe)
   if (typeof window.renderizarFotoPerfilCliente === "function") {
     window.renderizarFotoPerfilCliente(r);
   }
 
-  // === PREENCHER O NOVO CARTÃO VIRTUAL ===
+  // ==================== PREENCHER CARTÃO VIRTUAL ====================
   document.getElementById("dashNome").textContent = escapeHtml(r.nome || "Utilizador");
-  document.getElementById("dashID").textContent = escapeHtml(r.uid || r.id || "N/A");
-  document.getElementById("dashPacote").textContent = escapeHtml(r.pacote || "Sem pacote");
-  document.getElementById("dashMunicipio").textContent = escapeHtml(r.municipio || "Praia");
+  document.getElementById("dashID").textContent = escapeHtml(r.uid || r.id);
+  document.getElementById("dashPacote").textContent = escapeHtml(r.pacote);
+  document.getElementById("dashMunicipio").textContent = escapeHtml(r.municipio);
+  document.getElementById("dashPais").textContent = escapeHtml(r.pais);
 
-  // Manter os cards antigos (stats-grid) também
-  const dados = document.getElementById("dadosConta");
-  if (dados) {
-    dados.innerHTML = `
-      <div class="stat-box"><span>Nome</span><strong>${escapeHtml(r.nome || "Utilizador")}</strong></div>
-      <div class="stat-box"><span>Pacote</span><strong>${escapeHtml(r.pacote || "—")}</strong></div>
-      <div class="stat-box"><span>Saldo</span><strong>${r.saldo ?? 0} CVE</strong></div>
-      <div class="stat-box"><span>Swipes</span><strong>${r.swipes ?? 0}</strong></div>
-      <div class="stat-box"><span>Estado</span><strong><span class="chip-active">Ativo</span></strong></div>
+
+  // ==================== STATS ABAIXO DO CARTÃO (como na imagem) ====================
+  const statsContainer = document.getElementById("dadosConta"); 
+  if (statsContainer) {
+    statsContainer.innerHTML = `
+      <div class="stat-box">
+        <span>Saldo Atual</span>
+        <strong>${Number(r.saldo || 0).toLocaleString('CV')} Escudos</strong>
+      </div>
+      <div class="stat-box">
+        <span>Swipes Disponíveis</span>
+        <strong>${r.swipes || 0}</strong>
+      </div>
+      <div class="stat-box">
+        <span>Estado</span>
+        <strong><span class="chip-active">ATIVO</span></strong>
+      </div>
+      <!-- Próximo Evento -->
+      <div class="stat-box">
+        <span>Próximo Evento</span>
+        <strong>${escapeHtml(r.proximoEvento || "Nenhum evento agendado")}</strong>
+      </div>
     `;
   }
 
-  const banner = document.getElementById("bannerEmailNaoConfirmado");
-  if (banner) banner.style.display = (r.emailConfirmado === false) ? "block" : "none";
-
   iniciarQRRotativo();
 }
+window.abrirSeletorFotoCartao = function() {
+  const input = document.getElementById("inputFotoCartao");
+  if (input) input.click();
+};
+
+async function selecionarFotoCartao(input) {
+  try {
+    const file = input.files[0];
+    if (!file) return;
+
+    const base64 = await comprimirImagem(file, 800, 0.8);
+    window.fotoCartaoBase64 = base64;
+
+    const area = document.getElementById("areaFotoCartao");
+    if (area) {
+      area.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;">`;
+    }
+
+    alert("✅ Foto do cartão atualizada!");
+  } catch(e) {
+    alert("Erro: " + e.message);
+  }
+}
+
+window.selecionarFotoCartao = selecionarFotoCartao;
 
 function iniciarQRRotativo() {
   if (qrTimerId) clearTimeout(qrTimerId);
@@ -717,4 +754,3 @@ if (document.readyState === "loading") {
 }
 
 
-dadosConta

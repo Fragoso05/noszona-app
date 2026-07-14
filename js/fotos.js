@@ -712,6 +712,14 @@ function fecharVerFotoPerfilCliente() {
     modal.classList.remove("ativo");
   }
 }
+// After filling name/ID etc.
+const fotoCartaoArea = document.getElementById("areaFotoCartao");
+if (fotoCartaoArea) {
+  const fotoSrc = getFotoPerfilDoResidente(r); // reuse existing function
+  if (fotoSrc) {
+    fotoCartaoArea.innerHTML = `<img src="${fotoSrc}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;" />`;
+  }
+}
 
 // Expor funções para o HTML e para o main.js
 window.abrirSeletorFoto = abrirSeletorFoto;
