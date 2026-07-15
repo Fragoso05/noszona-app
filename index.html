@@ -29,9 +29,9 @@
   <link rel="apple-touch-icon" href="img/favicon.png">
   <link rel="shortcut icon" href="img/favicon.png">
 
-  <!-- Fontes -->
+  <!-- Fontes 
   <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
-
+-->
   <!-- Estilos -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/fotos.css">
@@ -43,22 +43,21 @@
   <div class="noscript-banner">
     ⚠️ Este site precisa de JavaScript ativado para funcionar.
     Por favor ativa o JavaScript nas definições do teu browser.
+    Obrigado!
   </div>
 </noscript>
 
 <!-- HEADER -->
 <header>
-  <a href="#top" class="logo">
+  <a href="#top" onclick="voltarAoInicio()" class="logo" style="cursor: pointer;">
     <img src="img/noszona-logo.jpg" alt="NOSZONA Smart" class="logo-img">
   </a>
-  <ul class="nav-links">
-    <li><a href="#como-funciona">Como funciona</a></li>
-    <li><a href="#pacotes">Pacotes</a></li>
-  </ul>
+  
   <div class="nav-ctas" id="ctasDeslogado">
     <button class="btn btn-ghost" onclick="mostrarLogin()">Login</button>
     <button class="btn btn-primary" onclick="mostrarRegisto('Pacote 2')">Criar conta</button>
   </div>
+  
   <div class="nav-ctas" id="ctasLogado" style="display:none;">
     <span class="user-greeting" id="userGreeting"></span>
     <button class="btn btn-ghost" onclick="mostrarDashboard()">Minha conta</button>
@@ -157,7 +156,7 @@
 </section>
 
 <!-- TRUST STRIP -->
-<div class="trust-section">
+<!--<div class="trust-section">
   <div class="trust-inner">
     <div class="trust-item">
       <div class="trust-value">3<span>+</span></div>
@@ -176,7 +175,7 @@
       <div class="trust-label">QR rotativo contra fraude</div>
     </div>
   </div>
-</div>
+</div>-->
 
 <!-- HOW IT WORKS -->
 <section class="section bg-off" id="como-funciona">
@@ -629,82 +628,86 @@
 </section>
 
 <!-- LOGIN -->
-<section id="login" class="form-section">
-  <div class="form-panel form-panel-narrow">
-    <div class="form-panel-top">
-      <h2>Entrar na conta</h2>
-      <p>Acede ao teu QR, saldo e serviços NOSZONA Smart.</p>
-    </div>
-    <div class="form-body">
-      <form id="formLogin" novalidate onsubmit="login(event)">
-        <div class="form-grid">
-          <div class="form-group full">
-            <label for="loginUsername">Username</label>
-            <input id="loginUsername" name="username" required autocomplete="username" placeholder="Nome de utilizador">
-            <span class="field-error" id="erro-loginUsername"></span>
+<div id="popupLogin" class="modal-overlay" onclick="if(event.target === this) fecharPopupLogin()" style="display: none;">
+  <div class="modal-content" onclick="event.stopImmediatePropagation()">
+    <div class="form-panel form-panel-narrow" style="margin:0; box-shadow: 0 20px 60px rgba(0,0,0,0.4);">
+      <div class="form-panel-top">
+        <button onclick="fecharPopupLogin()" style="position:absolute; top:15px; right:20px; font-size:28px; background:none; border:none; cursor:pointer; color:#666;"></button>
+        <h2>Entrar na conta</h2>
+        <p>Acede ao teu Perfil</p>
+      </div>
+      <div class="form-body">
+        <form id="formLogin" novalidate onsubmit="login(event)">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label for="loginUsername">Username</label>
+              <input id="loginUsername" name="username" required autocomplete="username" placeholder="Nome de utilizador">
+              <span class="field-error" id="erro-loginUsername"></span>
+            </div>
+            <div class="form-group full">
+              <label for="loginPassword">Password</label>
+              <input id="loginPassword" name="password" type="password" required autocomplete="current-password" placeholder="Palavra-passe">
+              <span class="field-error" id="erro-loginPassword"></span>
+            </div>
+            <div class="form-group full form-checkbox">
+              <label class="checkbox-label" for="lembrar">
+                <input type="checkbox" id="lembrar" name="lembrar">
+                Manter sessão iniciada neste dispositivo
+              </label>
+            </div>
           </div>
-          <div class="form-group full">
-            <label for="loginPassword">Password</label>
-            <input id="loginPassword" name="password" type="password" required autocomplete="current-password" placeholder="Palavra-passe">
-            <span class="field-error" id="erro-loginPassword"></span>
-          </div>
-          <div class="form-group full form-checkbox">
-            <label class="checkbox-label" for="lembrar">
-              <input type="checkbox" id="lembrar" name="lembrar">
-              Manter sessão iniciada neste dispositivo
-            </label>
-          </div>
-        </div>
-        <button type="submit" class="form-submit" style="margin-top:24px;">Entrar →</button>
+          <button type="submit" class="form-submit" style="margin-top:24px; width:100%;">Entrar →</button>
 
-        <button type="button" onclick="loginWithGoogle()" class="btn-google">Entrar com Google</button>
+          <button type="button" onclick="loginWithGoogle()" class="btn-google" style="width:100%;">Entrar com Google</button>
 
-        <p class="form-switch">
-          <a href="#" onclick="mostrarRecuperar(); return false;">Esqueci-me da password</a>
-          &nbsp;·&nbsp;
-          <a href="#" onclick="mostrarRegisto('Pacote 2'); return false;">Criar conta nova</a>
-        </p>
-      </form>
-    </div>
-  </div>
-</section>
-
-<!-- RECUPERAR PASSWORD -->
-<section id="recuperar" class="form-section">
-  <div class="form-panel form-panel-narrow">
-    <div class="form-panel-top">
-      <h2>Recuperar password</h2>
-      <p>Introduz o teu email para receberes as instruções.</p>
-    </div>
-    <div class="form-body">
-      <form id="formRecuperar" novalidate onsubmit="recuperarPassword(event)">
-        <div class="form-grid">
-          <div class="form-group full">
-            <label for="recuperarEmail">Email da conta</label>
-            <input id="recuperarEmail" name="email" type="email" required placeholder="email@exemplo.com">
-            <span class="field-error" id="erro-recuperarEmail"></span>
-          </div>
-        </div>
-        <button type="submit" class="form-submit" style="margin-top:24px;">Enviar instruções →</button>
-
-        <p class="form-switch">
-          <a href="#" onclick="mostrarLogin(); return false;">← Voltar ao login</a>
-        </p>
-      </form>
+          <p class="form-switch">
+            <a href="#" onclick="mostrarRecuperar(); return false;">Esqueci-me da password</a>
+            &nbsp;·&nbsp;
+            <a href="#" onclick="mostrarRegisto('Pacote 2'); return false;">Criar conta nova</a>
+          </p>
+        </form>
+      </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- DASHBOARD Ususrio -->
-<section id="dashboard">
-  <div class="dash-container">
-    <!-- SIDEBAR -->
-    <aside class="dash-sidebar">
-      <div class="sidebar-logo">
-        <img src="img/noszona-logo.jpg" alt="NOSZONA" style="height: 50px;">
+<!-- RECUPERAR PASSWORD COMO POPUP -->
+<div id="popupRecuperar" class="modal-overlay" onclick="if(event.target === this) fecharPopupRecuperar()" style="display: none;">
+  <div class="modal-content" onclick="event.stopImmediatePropagation()">
+    <div class="form-panel form-panel-narrow" style="margin:0; box-shadow: 0 20px 60px rgba(0,0,0,0.4); max-width: 440px;">
+      
+      <div class="form-panel-top">
+        <button onclick="fecharPopupRecuperar()" style="position:absolute; top:15px; right:20px; font-size:28px; background:none; border:none;"></button>
+        <h2>Recuperar password</h2>
+        <p>Introduz o teu email para receberes as instruções de recuperação.</p>
       </div>
       
-      <nav class="sidebar-nav">
+      <div class="form-body">
+        <form id="formRecuperar" novalidate onsubmit="recuperarPassword(event)">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label for="recuperarEmail">Email da conta</label>
+              <input id="recuperarEmail" name="email" type="email" required placeholder="exemplo@email.com">
+              <span class="field-error" id="erro-recuperarEmail"></span>
+            </div>
+          </div>
+          
+          <button type="submit" class="form-submit" style="margin-top:24px; width:100%;">Enviar instruções →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- DASHBOARD -->
+<section id="dashboard">
+  <!--CONteiner dashboard -->
+  <div class="dash-container">
+    <!-- SIDEBAR -->
+    <aside class="dash-sidebar" style="background: linear-gradient(145deg, #28a558, #2d5c99);"> 
+
+      <nav class="sidebar-nav" >
         <a href="#" onclick="mostrarDashboard(); return false;" class="nav-item active">
           <span>👤</span> Meu Perfil
         </a>
@@ -718,7 +721,7 @@
         <a href="#" onclick="alert('Eventos - Em breve (admin)'); return false;" class="nav-item">
           <span>📅</span> Eventos
         </a>
-        <a href="#" onclick="mostrarPacotesPopup(); return false;" class="nav-item">
+        <a href="#" onclick="voltarAoInicio(); return false;" class="nav-item">
           <span>🚪</span> Ir para página inicial
         </a>
       </nav>
@@ -734,9 +737,16 @@
 
       <div class="dash-header-text">
        <h2>Minha Conta NOSZONA Smart</h2>
-       <p>Consulta o teu saldo, QR seguro e serviços</p>
+      
       </div>
     </div>
+    <div class="dash-header-right" style=" color: white; padding: 12px 16px; border-radius: 10px;">
+       <div>  
+              <strong >ID: <a id="dashID"></a>
+              </strong>
+               
+            </div>
+       </div>
 
    </div>
 
@@ -754,7 +764,7 @@
            <div style="display: grid; grid-template-columns: 400px; gap: 10px;">
 
         <!-- Cartão Virtual -->
-        <div style="background: linear-gradient(145deg, #0f172a, #1e2937);
+        <div style="background: linear-gradient(145deg, #0f172a, #34475f);
          
              color: rgb(255, 255, 255); border-radius: 12px; 
              padding: 4px; 
@@ -794,7 +804,7 @@
             </div>
           </div>
 
-          <div style="margin-top: 24px; padding-top: 29px; border-top: 1px solid rgba(255,255,255,0.15); display: flex; gap: 32px; font-size: 15px;">
+          <div style="margin-top: 24px; padding-top: 29px; border-top: 1px solid rgba(255,255,255,0.15); display: flex; gap: 32px; font-size: 15px;"></div>
             
             <div>
       <span id="dashMunicipio">Praia</span>
@@ -802,22 +812,30 @@
     <div style="text-align: right;">
       <span id="dashPais"></span>
     </div>
-  </div></div>
+  </div>
 </div>
 
 <button type="button" class="addft-btn" onclick="abrirSeletorFotoCartao()" style="margin-top: 16px; width: 100%;">
   Escolher foto para cartão
 </button>
+<input id="inputFotoCartao" type="file" accept="image/*" style="display:none" onchange="selecionarFotoCartao(this)">
 
-<div id="areaFotoCartao" style="width: 90px; 
-height: 90px; border-radius: 50%; overflow: hidden; 
-border: 4px solid rgba(255,255,255,0.4); 
-margin: 15px auto 0; background: #fff;">
+<div id="dadosConta" class="stats-grid" style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
+  <!-- Os stats vão ser inseridos aqui via JavaScript -->
 </div>
 
-          </div>
-          
-
+     </div>
+        <div>
+          <div class="qr-card">
+            <h3>QR Seguro</h3>
+            <div id="qrCode"></div>
+            <div class="qr-countdown">
+              <span>Renova em <strong id="qrCountdown">30</strong>s</span>
+              <div class="qr-progress"><div class="qr-progress-bar" id="qrProgressBar"></div></div>
+            </div>
+            <p class="qr-note">Apresenta este código em eventos e serviços Smart City. O código renova a cada 30 segundos para proteção contra fraude.</p>
+          </div>              
+      
           <div class="recharge-box">
             <h3>Recarregar conta</h3>
             <p class="recharge-note">A recarga é processada via Vinti4. Não guardamos dados do teu cartão.</p>
@@ -839,24 +857,10 @@ margin: 15px auto 0; background: #fff;">
               </div>
               <button type="submit" class="recharge-btn">Continuar para pagamento →</button>
             </form>
-          </div>
-        </div>
-        
-        <div>
-          <div class="qr-card">
-            <h3>QR Seguro</h3>
-            <div id="qrCode"></div>
-            <div class="qr-countdown">
-              <span>Renova em <strong id="qrCountdown">30</strong>s</span>
-              <div class="qr-progress"><div class="qr-progress-bar" id="qrProgressBar"></div></div>
-            </div>
-            <p class="qr-note">Apresenta este código em eventos e serviços Smart City. O código renova a cada 30 segundos para proteção contra fraude.</p>
-          </div>
-
           
-
-          
-        </div>
+         </div>
+        </div>        
+       </div> 
       </div>
     </div>
   </div>

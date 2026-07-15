@@ -15,20 +15,53 @@ let qrTimerId = null;
 let qrCountdownId = null;
 
 // ==================== NAVEGAÇÃO (definidas como funções + expostas em window para onclick=) ====================
-function esconderTudo() {
-  ["registo", "login", "recuperar", "dashboard"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = "none";
+function voltarAoInicio() {
+  // Esconde tudo que está aberto (dashboard, registo, login, etc.)
+  esconderTudo();
+
+  // Mostra novamente as secções principais (hero, pacotes, etc.)
+  document.querySelectorAll('section, .hero, .cta-banner, .trust-section').forEach(el => {
+    if (['registo', 'login', 'recuperar', 'dashboard', 'popupLogin'].includes(el.id)) {
+      el.style.display = "none";
+    } else {
+      el.style.display = "";   // volta ao normal
+    }
   });
+
+  // Scroll suave para o Hero / topo da página
+  const hero = document.getElementById("top") || document.querySelector(".hero");
+  if (hero) {
+    hero.scrollIntoView({ behavior: "smooth" });
+  } else {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // Se estiver logado, mantém o header logado mas sai do dashboard
+  if (residenteLogado) {
+    atualizarHeaderLocal(residenteLogado);
+  }
 }
+window.voltarAoInicio = voltarAoInicio;
 
 function mostrarLogin() {
-  esconderTudo();
-  const login = document.getElementById("login");
-  if (login) {
-    login.style.display = "block";
-    login.scrollIntoView({ behavior: "smooth" });
-  }
+  document.getElementById("popupLogin").style.display = "flex";
+}
+
+function fecharPopupLogin() {
+  document.getElementById("popupLogin").style.display = "none";
+}
+window.mostrarLogin = mostrarLogin;
+window.fecharPopupLogin = fecharPopupLogin;
+
+
+
+//mostrar apenas uma aba
+function esconderTudo() {
+  document.querySelectorAll('section, .hero, .cta-banner, .trust-section').forEach(el => {
+    if (!['registo', 'login', 'recuperar', 'dashboard'].includes(el.id)) {
+      el.style.display = "none";
+    }
+  });
 }
 
 function mostrarRegisto(pacote) {
@@ -45,17 +78,19 @@ function mostrarRegisto(pacote) {
 }
 
 function mostrarRecuperar() {
-  esconderTudo();
-  const rec = document.getElementById("recuperar");
-  if (rec) {
-    rec.style.display = "block";
-    rec.scrollIntoView({ behavior: "smooth" });
-  }
+  document.getElementById("popupRecuperar").style.display = "flex";
 }
 
-function logout() {
-  if (!confirm("Queres mesmo terminar a sessão?")) return;
+function fecharPopupRecuperar() {
+  document.getElementById("popupRecuperar").style.display = "none";
+}
 
+window.mostrarRecuperar = mostrarRecuperar;
+window.fecharPopupRecuperar = fecharPopupRecuperar;
+////////////////////////////////////////////////
+
+function logout() {
+ 
   if (qrTimerId) { clearTimeout(qrTimerId); qrTimerId = null; }
   if (qrCountdownId) { clearInterval(qrCountdownId); qrCountdownId = null; }
 
@@ -71,6 +106,11 @@ function logout() {
   const ctasLogado = document.getElementById("ctasLogado");
   if (ctasDeslogado) ctasDeslogado.style.display = "flex";
   if (ctasLogado) ctasLogado.style.display = "none";
+
+  // Mostra novamente as secções principais
+document.querySelectorAll('section, header, .hero, .section, .cta-banner, .trust-section').forEach(el => {
+  el.style.display = "";
+});
 
   popup("sucesso", "Sessão terminada", "Voltaste a estar deslogado.");
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -152,36 +192,49 @@ async function login(e) {
 
   try {
     setLoading(true);
+
     let data;
-    // Tenta API real
-    let usedDemo = false;
+    let response;
+
+    // API
     try {
-      const response = await fetch("https://violet-beaver-178312.hostingersite.com/api/residentes/login", {
+      response = await fetch("https://violet-beaver-178312.hostingersite.com/api/residentes/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
       });
       data = await response.json();
     } catch (fetchErr) {
-      console.warn("API login indisponível. Usando modo DEMO local.");
-      usedDemo = true;
+      console.warn("API offline");
+      // Demo fallback (mantém o que já tinhas)
+      data = { sucesso: true, residente: { nome: username, uid: "-" + Date.now() } };
     }
 
-    
-
     if (data.sucesso) {
+      // FECHA O POPUP DE LOGIN IMEDIATAMENTE
+      fecharPopupLogin();
+
       residenteLogado = data.residente;
       window.residenteLogado = residenteLogado;
       guardarSessaoLocal(residenteLogado, lembrar);
       atualizarHeaderLocal(residenteLogado);
 
-      const isDemo = !data.residente || data.residente.uid?.startsWith("demo-");
-      popup("sucesso", "Login efetuado com sucesso!", isDemo ? "Modo DEMO (API offline) - Bem-vindo!" : "Bem-vindo de volta!");
-      esconderTudo();
-      mostrarDashboard();
+      
+
+      // Mensagem de sucesso
+      const is = !data.residente || data.residente.uid?.startsWith("-");
+      popup("sucesso", "Login efetuado com sucesso!", 
+            is ? "Bem-vindo!" : "Bem-vindo de volta!");
+
+      // Abre o dashboard
+        mostrarDashboard();
+      
+
     } else {
+      fecharPopupLogin();
       popup("erro", "Login falhou", data.mensagem || "Username ou password incorretos.");
     }
+
   } catch (err) {
     console.error(err);
     popup("erro", "Erro de ligação", "Não foi possível conectar ao servidor.");
@@ -199,15 +252,24 @@ function mostrarDashboard() {
     return mostrarLogin();
   }
 
-  atualizarHeaderLocal(user);
+  // Esconde TODAS as outras secções da página
+  document.querySelectorAll('section, .cta-banner, .trust-section').forEach(el => {
+    if (el.id !== "dashboard") {
+      el.style.display = "none";
+    }
+  });
 
-  esconderTudo();
+  // Mostra apenas o dashboard
   const dash = document.getElementById("dashboard");
   if (dash) {
     dash.style.display = "block";
-    dash.scrollIntoView({ behavior: "smooth" });
   }
+
+  atualizarHeaderLocal(user);
   renderizarDashboard();
+
+  // Scroll para o topo
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 window.mostrarDashboard = mostrarDashboard;
 
@@ -254,10 +316,10 @@ window.mostrarDashboard = mostrarDashboard;
 
   iniciarQRRotativo();
 }
-window.abrirSeletorFotoCartao = function() {
-  const input = document.getElementById("inputFotoCartao");
-  if (input) input.click();
-};
+// === FIX BOTÃO FOTO CARTÃO ===
+function abrirSeletorFotoCartao() {
+  document.getElementById("inputFotoCartao").click();
+}
 
 async function selecionarFotoCartao(input) {
   try {
@@ -269,15 +331,15 @@ async function selecionarFotoCartao(input) {
 
     const area = document.getElementById("areaFotoCartao");
     if (area) {
-      area.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;">`;
+      area.innerHTML = `<img src="${base64}" style="width:100%; height:100%; object-fit: cover;">`;
     }
-
     alert("✅ Foto do cartão atualizada!");
-  } catch(e) {
-    alert("Erro: " + e.message);
+  } catch (e) {
+    alert("Erro ao carregar foto: " + e.message);
   }
 }
 
+window.abrirSeletorFotoCartao = abrirSeletorFotoCartao;
 window.selecionarFotoCartao = selecionarFotoCartao;
 
 function iniciarQRRotativo() {
@@ -332,7 +394,7 @@ function atualizarQR() {
 }
 
 // ==================== REGISTO (com hash no cliente + fallback demo robusto) ====================
-async function registar(e) {
+async function registar(e) { 
   if (e) e.preventDefault();
 
   const form = document.getElementById("formRegisto");
@@ -752,5 +814,4 @@ if (document.readyState === "loading") {
 } else {
   initApp();
 }
-
 

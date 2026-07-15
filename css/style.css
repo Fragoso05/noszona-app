@@ -56,10 +56,10 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgb(16 89 150 / 55%);
-  backdrop-filter: blur(20px);
+  background: rgba(9, 80, 173, 0.69);
+  backdrop-filter: blur(50px);
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 2px 20px rgb(23 94 255 / 47%);
+  box-shadow: 0 2px 20px rgb(23 94 255 / 57%);
   transition: all 0.3s cubic-bezier(0.71, 0.18, 0.25, 1); 
 }
 
@@ -80,31 +80,9 @@ header {
 }
 .logo-text span { color: var(--cyan); }
 
-.nav-links { display: flex; gap: 32px; list-style: none; }
-.nav-links a {
-  color: var(--gold);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  transition: color 0.2s cubic-bezier(0.42, 0, 0, 0.39);
-}
-.nav-links a:hover {
-  color: var(--white);
-}
 
-/* Diferenciação clara para "Pacotes" (preços) sem parecer botão */
-.nav-links li:last-child a {
-  color: var(--gold);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  transition: color 0.2s cubic-bezier(0.42, 0, 0, 0.39);
-}
-.nav-links li:last-child a:hover {
-  color: #fff;
-}
+
+
 
 .nav-ctas { display: flex; gap: 10px; align-items: center; }
 
@@ -824,6 +802,34 @@ input.field-invalid:focus, select.field-invalid:focus {
   text-decoration: underline;
   margin-left: 28px;
 }
+/* ============ login popup============ */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);           /* ← Efeito blur */
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  width: 90%;
+  max-width: 440px;
+}
+
+/* GARANTIR QUE POPUPS DE ALERTA FICAM POR CIMA */
+.popup {
+  z-index: 11000 !important;
+}
+
+.modal-overlay {
+  z-index: 10000 !important;
+}
+
+
+
 
 /* ============ DASHBOARD ============ */
 #dashboard {
@@ -841,7 +847,7 @@ input.field-invalid:focus, select.field-invalid:focus {
 }
 .dash-header {
   padding: 28px 36px;
-  background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+  background: rgb(10, 19, 90);
   display: flex; justify-content: space-between; align-items: center;
 }
 .dash-header h2 {
@@ -1229,20 +1235,14 @@ footer p strong { color: rgba(255,255,255,0.60); font-weight: 500; }
     gap: 12px;
   }
 
-  .dash-header-left {
-    gap: 12px;
+  .dash-header-left,
+  .dash-header-right {
+    color: white !important;
   }
 
-  .dash-profile-photo-area,
-  .dash-profile-photo-area .cliente-foto-wrapper,
-  .dash-profile-photo-area .cliente-foto-btn {
-    width: 48px;
-    height: 48px;
-    flex-basis: 48px;
-  }
-
-  .dash-profile-photo-area .cliente-foto-btn {
-    font-size: 18px;
+  .dash-header-right strong,
+  .dash-header-right span {
+    color: white !important;
   }
 }
 /* ============ MODAL VER FOTO PERFIL CLIENTE ============ */
@@ -1352,12 +1352,47 @@ footer p strong { color: rgba(255,255,255,0.60); font-weight: 500; }
 
 .dash-container { display: flex; min-height: 100vh; background: #f8fafc; }
 .dash-sidebar { width: 260px; background: white; border-right: 1px solid #e2e8f0; padding: 20px 0; }
-.sidebar-nav .nav-item { 
-  display: flex; align-items: center; gap: 12px; padding: 14px 24px; color: #334155; text-decoration: none; font-weight: 500;
+/* SIDEBAR NAV - MELHORADO */
+.sidebar-nav .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 24px;
+  color: #334155;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15.5px;
+  border-radius: 12px;
+  margin: 4px 12px;
+  transition: all 0.3s ease;
+  position: relative;
+  background: rgba(255,255,255,0.09);
 }
-.sidebar-nav .nav-item:hover, .sidebar-nav .nav-item.active { background: #f1f5f9; color: #0ea5e9; }
+
+.sidebar-nav .nav-item:hover {
+  background: #f1f5f9;
+  color: #0ea5e9;
+  transform: translateX(6px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
+}
+
+.sidebar-nav .nav-item.active {
+  background: #0ea5e9;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+}
+
+/* Icones maiores e mais bonitos */
+.sidebar-nav .nav-item span {
+  font-size: 20px;
+  width: 24px;
+  text-align: center;
+}
+
 
 .dash-main { flex: 1; padding: 20px; }
 .dash-top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
 .virtual-card { background: linear-gradient(145deg, #0f172a, #1e2937); color: white; border-radius: 16px; padding: 24px; position: relative; }
 .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin: 30px 0; }
+
