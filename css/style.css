@@ -844,8 +844,11 @@ input.field-invalid:focus, select.field-invalid:focus {
   box-shadow: var(--shadow);
   border: 1px solid var(--border-dark);
   overflow: hidden;
+  width: 100%;
+  max-width: none;
 }
 .dash-header {
+  width: 100%;
   padding: 28px 36px;
   background: rgb(10, 19, 90);
   display: flex; justify-content: space-between; align-items: center;
@@ -886,10 +889,50 @@ input.field-invalid:focus, select.field-invalid:focus {
   font-family: inherit;
 }
 
-.dash-body { padding: 32px 36px; }
+.dash-body {
+  display: flex;
+  gap: 24px;
+}
+
+.dash-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: linear-gradient(145deg, #28a558, #2d5c99);
+  padding: 20px 12px;
+  height: 100%;           /* ocupa toda a altura do dash-body */
+  margin: 0;
+  border-radius: 0;       /* bordas retas */
+}
+
+.dash-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 24px;
+}
+
+/* Responsivo */
+@media (max-width: 1150px) {
+  .dash-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .dash-body {
+    flex-direction: column;
+  }
+  .dash-sidebar {
+    width: 100%;
+    height: auto;
+  }
+}
+
+
 .dash-grid {
   display: grid; grid-template-columns: 1fr 340px; gap: 28px;
 }
+
 
 .stats-grid {
   display: grid; grid-template-columns: repeat(2, 1fr);
@@ -940,9 +983,10 @@ input.field-invalid:focus, select.field-invalid:focus {
 .recharge-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,195,227,0.40); }
 
 .qr-card {
-  background: var(--navy);
-  border-radius: 20px; padding: 28px;
+  background:  rgba(3, 10, 47, 0.985);
+  border-radius: 16px; padding: 16px;
   text-align: center; margin-bottom: 16px;
+  
 }
 .qr-card h3 {
   font-family: 'Clash Display', sans-serif;

@@ -662,7 +662,7 @@
 
           <p class="form-switch">
             <a href="#" onclick="mostrarRecuperar(); return false;">Esqueci-me da password</a>
-            &nbsp;·&nbsp;
+          
             <a href="#" onclick="mostrarRegisto('Pacote 2'); return false;">Criar conta nova</a>
           </p>
         </form>
@@ -705,27 +705,7 @@
   <!--CONteiner dashboard -->
   <div class="dash-container">
     <!-- SIDEBAR -->
-    <aside class="dash-sidebar" style="background: linear-gradient(145deg, #28a558, #2d5c99);"> 
-
-      <nav class="sidebar-nav" >
-        <a href="#" onclick="mostrarDashboard(); return false;" class="nav-item active">
-          <span>👤</span> Meu Perfil
-        </a>
-      
-        <a href="#" onclick="mostrarPacotesPopup(); return false;" class="nav-item">
-          <span>📦</span> Pacotes
-        </a>
-        <a href="#" onclick="window.open('https://vinti4.cv', '_blank'); return false;" class="nav-item">  <!-- replace with your real recarga link -->
-          <span>💰</span> Recarga
-        </a>
-        <a href="#" onclick="alert('Eventos - Em breve (admin)'); return false;" class="nav-item">
-          <span>📅</span> Eventos
-        </a>
-        <a href="#" onclick="voltarAoInicio(); return false;" class="nav-item">
-          <span>🚪</span> Ir para página inicial
-        </a>
-      </nav>
-    </aside>
+    
 
   <div class="dash-panel">
 
@@ -756,12 +736,32 @@
      </div>
 
      <div class="dash-body">
+      <div class="dash-layout">
+      <aside class="dash-sidebar" style="background: linear-gradient(145deg, #28a558, #2d5c99);"> 
+
+      <nav class="sidebar-nav" >
+        <a href="#" onclick="mostrarDashboard(); return false;" class="nav-item active">
+          <span>👤</span> Meu Perfil
+        </a>
+      
+        <a href="#" onclick="mostrarPacotesPopup(); return false;" class="nav-item">
+          <span>📦</span> Pacotes
+        </a>
+        <a href="#" onclick="window.open('https://vinti4.cv', '_blank'); return false;" class="nav-item">  <!-- replace with your real recarga link -->
+          <span>💰</span> Recarga
+        </a>
+        <a href="#" onclick="alert('Eventos - Em breve (admin)'); return false;" class="nav-item">
+          <span>📅</span> Eventos
+        </a>
+        <a href="#" onclick="voltarAoInicio(); return false;" class="nav-item">
+          <span>🚪</span> Ir para página inicial
+        </a>
+      </nav>
+      </aside>   
+      </div>   
       <div class="dash-grid">
         <div>
-          
-          
-
-           <div style="display: grid; grid-template-columns: 400px; gap: 10px;">
+          <div style="display: grid; grid-template-columns: 400px; gap: 10px;">
 
         <!-- Cartão Virtual -->
         <div style="background: linear-gradient(145deg, #0f172a, #34475f);
