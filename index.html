@@ -753,6 +753,9 @@
         <a href="#" onclick="alert('Eventos - Em breve (admin)'); return false;" class="nav-item">
           <span>📅</span> Eventos
         </a>
+        <a href="#" onclick="window.open('https://kriolis.com/'); return false;" class="nav-item">  <!-- replace with your real recarga link -->
+          <span>🗣️</span> Aprender Kriolo
+        </a>
         <a href="#" onclick="voltarAoInicio(); return false;" class="nav-item">
           <span>🚪</span> Ir para página inicial
         </a>
@@ -764,7 +767,8 @@
           <div style="display: grid; grid-template-columns: 400px; gap: 10px;">
 
         <!-- Cartão Virtual -->
-        <div style="background: linear-gradient(145deg, #0f172a, #34475f);
+         <div style="margin-top: 16px;">
+        <div style="background: linear-gradient(145deg, #0f172a, #34475f); 
          
              color: rgb(255, 255, 255); border-radius: 12px; 
              padding: 4px; 
@@ -790,13 +794,13 @@
 
           <div style="margin-bottom: 10px;">
             <strong>Nome</strong><br>
-            <span id="dashNome" style="font-size: 17px;"></span>
+            <h1 id="dashNome" style="font-size: 17px;"></h1>
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 15px;">
             <div>
               <strong>ID de Residente</strong><br>
-              <span id="dashID" style="font-family: monospace;"></span>
+              <a id="dashID" ></a>
             </div>
             <div>
               <strong>Pacote</strong><br>
@@ -804,18 +808,18 @@
             </div>
           </div>
 
-          <div style="margin-top: 24px; padding-top: 29px; border-top: 1px solid rgba(255,255,255,0.15); display: flex; gap: 32px; font-size: 15px;"></div>
+          <div style="margin-top: 2px; padding-top: 2px; border-top: 2px solid rgba(255,255,255,0.15); display: flex; gap: 28px; font-size: 15px;"></div>
             
-            <div>
-      <span id="dashMunicipio">Praia</span>
-    </div>
-    <div style="text-align: right;">
-      <span id="dashPais"></span>
+            <div style="margin-top: 2px; padding-top: 2px;">
+            
+             <span id="dashMunicipio"></span>
+             <span id="dashPais"></span>
+            </div>
     </div>
   </div>
 </div>
 
-<button type="button" class="addft-btn" onclick="abrirSeletorFotoCartao()" style="margin-top: 16px; width: 100%;">
+<button type="button" class="addft-btn" onclick="abrirSeletorFotoCartao()" style="margin-top: 16px; width: 30%;">
   Escolher foto para cartão
 </button>
 <input id="inputFotoCartao" type="file" accept="image/*" style="display:none" onchange="selecionarFotoCartao(this)">
@@ -826,6 +830,7 @@
 
      </div>
         <div>
+          <div style="margin-top: 10px; margin-right: 20px;">
           <div class="qr-card">
             <h3>QR Seguro</h3>
             <div id="qrCode"></div>
@@ -857,7 +862,7 @@
               </div>
               <button type="submit" class="recharge-btn">Continuar para pagamento →</button>
             </form>
-          
+          </div>
          </div>
         </div>        
        </div> 
