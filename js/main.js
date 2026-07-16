@@ -283,11 +283,11 @@ window.mostrarDashboard = mostrarDashboard;
   }
 
   // ==================== PREENCHER CARTÃO VIRTUAL ====================
-  document.getElementById("dashNome").textContent = escapeHtml(r.nome || "Utilizador");
-  document.getElementById("dashID").textContent = escapeHtml(r.uid || r.id);
-  document.getElementById("dashPacote").textContent = escapeHtml(r.pacote);
-  document.getElementById("dashMunicipio").textContent = escapeHtml(r.municipio);
-  document.getElementById("dashPais").textContent = escapeHtml(r.pais);
+ document.getElementById("dashNome").textContent = escapeHtml(r.nome || "");
+ document.getElementById("dashID").textContent = escapeHtml(r.uid || r.id || "");
+ document.getElementById("dashPacote").textContent = escapeHtml(r.pacote || "");
+ document.getElementById("dashMunicipio").textContent = escapeHtml(r.municipio || "");
+ document.getElementById("dashPais").textContent = escapeHtml(r.pais || "");
 
 
   // ==================== STATS ABAIXO DO CARTÃO (como na imagem) ====================
@@ -321,22 +321,44 @@ function abrirSeletorFotoCartao() {
   document.getElementById("inputFotoCartao").click();
 }
 
-async function selecionarFotoCartao(input) {
-  try {
+// ==================== FOTO PARA O CARTÃO VIRTUAL ====================
+function selecionarFotoCartao(input) {
     const file = input.files[0];
     if (!file) return;
 
-    const base64 = await comprimirImagem(file, 800, 0.8);
-    window.fotoCartaoBase64 = base64;
+    // Usa o mesmo padrão que já existe no teu fotos.js
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        const base64 = e.target.result;
 
-    const area = document.getElementById("areaFotoCartao");
-    if (area) {
-      area.innerHTML = `<img src="${base64}" style="width:100%; height:100%; object-fit: cover;">`;
-    }
-    alert("✅ Foto do cartão atualizada!");
-  } catch (e) {
-    alert("Erro ao carregar foto: " + e.message);
-  }
+        // Guarda globalmente (como fazes noutras partes)
+        window.fotoCartaoBase64 = base64;
+
+        // Substitui a imagem no cartão
+        const imgCartao = document.getElementById("imgFotoCartao");
+        if (imgCartao) {
+            imgCartao.src = base64;
+            // Garante que fica circular
+            imgCartao.style.borderRadius = "50%";
+        }
+
+        // Feedback (usa o teu sistema de popup)
+        if (typeof popup === "function") {
+            popup("sucesso", "Foto atualizada!", "A foto do cartão foi substituída com sucesso.");
+        } else {
+            alert("Foto do cartão atualizada com sucesso!");
+        }
+    };
+
+    reader.onerror = function() {
+        alert("Erro ao ler a imagem.");
+    };
+
+    reader.readAsDataURL(file);
+
+    // Limpa o input para poder selecionar a mesma foto novamente
+    input.value = '';
 }
 
 window.abrirSeletorFotoCartao = abrirSeletorFotoCartao;
