@@ -273,7 +273,7 @@ function mostrarDashboard() {
 }
 window.mostrarDashboard = mostrarDashboard;
 
-  function renderizarDashboard() {
+function renderizarDashboard() {
   const r = residenteLogado || window.residenteLogado;
   if (!r) return;
 
@@ -282,15 +282,31 @@ window.mostrarDashboard = mostrarDashboard;
     window.renderizarFotoPerfilCliente(r);
   }
 
-  // ==================== PREENCHER CARTÃO VIRTUAL ====================
- document.getElementById("dashNome").textContent = escapeHtml(r.nome || "");
- document.getElementById("dashID").textContent = escapeHtml(r.uid || r.id || "");
- document.getElementById("dashPacote").textContent = escapeHtml(r.pacote || "");
- document.getElementById("dashMunicipio").textContent = escapeHtml(r.municipio || "");
- document.getElementById("dashPais").textContent = escapeHtml(r.pais || "");
+  // ==================== PREENCHER DADOS ====================
 
+  // Nome (usado no cartão)
+  const dashNome = document.getElementById("dashNome");
+  if (dashNome) dashNome.textContent = escapeHtml(r.nome || "Utilizador");
 
-  // ==================== STATS ABAIXO DO CARTÃO (como na imagem) ====================
+  // ID - Agora atualiza EM DOIS LUGARES
+  const dashIDCard = document.getElementById("dashID");           // no cartão virtual
+  const dashIDHeader = document.getElementById("dashIDHeader");   // no header
+
+  const userId = escapeHtml(r.uid || r.id || "N/A");
+
+  if (dashIDCard) dashIDCard.textContent = userId;
+  if (dashIDHeader) dashIDHeader.textContent = userId;
+
+  // Outros campos
+  const dashPacote = document.getElementById("dashPacote");
+  const dashMunicipio = document.getElementById("dashMunicipio");
+  const dashPais = document.getElementById("dashPais");
+
+  if (dashPacote) dashPacote.textContent = escapeHtml(r.pacote || "");
+  if (dashMunicipio) dashMunicipio.textContent = escapeHtml(r.municipio || "");
+  if (dashPais) dashPais.textContent = escapeHtml(r.pais || "");
+
+  // ==================== STATS ABAIXO DO CARTÃO ====================
   const statsContainer = document.getElementById("dadosConta"); 
   if (statsContainer) {
     statsContainer.innerHTML = `
@@ -321,45 +337,24 @@ function abrirSeletorFotoCartao() {
   document.getElementById("inputFotoCartao").click();
 }
 
-// ==================== FOTO PARA O CARTÃO VIRTUAL ====================
-function selecionarFotoCartao(input) {
+async function selecionarFotoCartao(input) {
+  try {
     const file = input.files[0];
     if (!file) return;
 
-    // Usa o mesmo padrão que já existe no teu fotos.js
-    const reader = new FileReader();
-    
-    reader.onload = function(e) {
-        const base64 = e.target.result;
+    const base64 = await comprimirImagem(file, 800, 0.8);
+    window.fotoCartaoBase64 = base64;
 
-        // Guarda globalmente (como fazes noutras partes)
-        window.fotoCartaoBase64 = base64;
-
-        // Substitui a imagem no cartão
-        const imgCartao = document.getElementById("imgFotoCartao");
-        if (imgCartao) {
-            imgCartao.src = base64;
-            // Garante que fica circular
-            imgCartao.style.borderRadius = "50%";
-        }
-
-        // Feedback (usa o teu sistema de popup)
-        if (typeof popup === "function") {
-            popup("sucesso", "Foto atualizada!", "A foto do cartão foi substituída com sucesso.");
-        } else {
-            alert("Foto do cartão atualizada com sucesso!");
-        }
-    };
-
-    reader.onerror = function() {
-        alert("Erro ao ler a imagem.");
-    };
-
-    reader.readAsDataURL(file);
-
-    // Limpa o input para poder selecionar a mesma foto novamente
-    input.value = '';
+    const area = document.getElementById("areaFotoCartao");
+    if (area) {
+      area.innerHTML = `<img src="${base64}" style="width:100%; height:100%; object-fit: cover;">`;
+    }
+    alert("✅ Foto do cartão atualizada!");
+  } catch (e) {
+    alert("Erro ao carregar foto: " + e.message);
+  }
 }
+
 
 window.abrirSeletorFotoCartao = abrirSeletorFotoCartao;
 window.selecionarFotoCartao = selecionarFotoCartao;

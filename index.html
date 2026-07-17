@@ -699,7 +699,6 @@
   </div>
 </div>
 
-
 <!-- DASHBOARD -->
 <section id="dashboard">
   <!--CONteiner dashboard -->
@@ -722,7 +721,7 @@
     </div>
     <div class="dash-header-right" style=" color: white; padding: 12px 16px; border-radius: 10px;">
        <div>  
-              <strong >ID: <a id="dashID"></a>
+             <strong >ID: <span id="dashIDHeader"></span></strong>
               </strong>
                
             </div>
@@ -781,11 +780,11 @@
                margin-bottom: 2px;">
 
             <div>
-               <img src="img/noszona-logo.jpg" alt="NOSZONA Smart" class="logo-img">
+               <img src="img/noszona-logo.jpg"  class="logo-img margin-left: 5px;margin-top: 5px;">
               <h2 style="margin: 8px 0 0 0; font-size: 24px;
               color: rgb(35, 156, 211); border-radius: 12px;">Virtual Resident Card</h2>
             </div>
-            <div style="text-align: right;">
+            <div style="text-align: right; margin-top: 20px; margin-right: 10px;">
               <div id="selecianarFotoCartao" 
               style="width: 60px; height: 67px; 
               border-radius:35%; overflow: hidden; 
@@ -824,22 +823,22 @@
              <span id="dashMunicipio"></span>
              <span id="dashPais"></span>
             </div>
-    </div>
+    </div>  
   </div>
 </div>
 
-<button type="button" class="addft-btn" onclick="abrirSeletorFotoCartao()" style="margin-top: 16px; width: 30%;">
+<button type="button" class="addft-btn" onclick="abrirSeletorFotoCartao()" style="margin-top: 10px; margin-bottom: 0px; width: 30%;">
   Escolher foto para cartão
 </button>
 <input id="inputFotoCartao" type="file" accept="image/*" style="display:none" onchange="selecionarFotoCartao(this)">
 
-<div id="dadosConta" class="stats-grid" style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
+<div id="dadosConta" class="stats-grid" style="margin-top: 1px; margin-bottom: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
   <!-- Os stats vão ser inseridos aqui via JavaScript -->
 </div>
 
      </div>
         <div>
-          <div style="margin-top: 10px; margin-right: 20px;">
+          <div style="margin-top: 10px; margin-right: 20px; margin-bottom: 10px;">
           <div class="qr-card">
             <h3>QR Seguro</h3>
             <div id="qrCode"></div>
@@ -879,8 +878,6 @@
     </div>
   </div>
 </section>
-
-
 
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
