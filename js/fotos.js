@@ -8,7 +8,7 @@ console.log("✅ fotos.js carregado");
 
 let fotoPerfilBase64 = "";
 let fotoBIBase64 = "";
-
+let fotoCartaoBase64 = "";
 // =====================================================
 // CÂMERA DIRETA DO COMPUTADOR
 // =====================================================
@@ -221,7 +221,21 @@ async function capturarFotoCamera() {
       preview.innerHTML = `<img src="${fotoBIBase64}" alt="Foto do BI">`;
     }
   }
+  if (tipoFotoCameraAtual === "cartao") {
+   fotoCartaoBase64 = fotoBase64;
 
+   mostrarFotoNaCaixaCartao(fotoCartaoBase64);
+
+  try {
+    await enviarFotoCartaoNodeRed(fotoCartaoBase64);
+  } catch (erro) {
+    console.error("Erro ao guardar foto do cartão:", erro);
+    alert(
+      erro.message ||
+      "A foto apareceu no cartão, mas não foi guardada."
+    );
+  }
+}
   fecharCameraFotos();
 }
 
@@ -713,11 +727,202 @@ function fecharVerFotoPerfilCliente() {
   }
 }
 // After filling name/ID etc.
-const fotoCartaoArea = document.getElementById("areaFotoCartao");
-if (fotoCartaoArea) {
-  const fotoSrc = getFotoPerfilDoResidente(r); // reuse existing function
-  if (fotoSrc) {
-    fotoCartaoArea.innerHTML = `<img src="${fotoSrc}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;" />`;
+
+// =====================================================
+// FOTO DO CARTÃO
+// =====================================================
+
+function obterResidenteAtual() {
+  if (typeof window.getResidenteLogado === "function") {
+    return window.getResidenteLogado();
+  }
+
+  return window.residenteLogado || null;
+}
+
+function abrirSeletorFotoCartao() {
+  const input = document.getElementById("inputFotoCartao");
+
+  if (!input) {
+    console.error("O inputFotoCartao não foi encontrado.");
+    alert("Não foi possível abrir o seletor de fotografias.");
+    return;
+  }
+
+  input.value = "";
+  input.click();
+}
+
+async function selecionarFotoCartao(input) {
+  try {
+    const file = input.files && input.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      throw new Error("Seleciona apenas um ficheiro de imagem.");
+    }
+
+    const tamanhoMaximo = 8 * 1024 * 1024;
+
+    if (file.size > tamanhoMaximo) {
+      throw new Error("A fotografia não pode ultrapassar 8 MB.");
+    }
+
+    fotoCartaoBase64 = await comprimirImagem(file, 700, 0.78);
+
+    mostrarFotoNaCaixaCartao(fotoCartaoBase64);
+
+    await enviarFotoCartaoNodeRed(fotoCartaoBase64);
+  } catch (erro) {
+    console.error("Erro ao selecionar foto do cartão:", erro);
+    alert(
+      erro.message ||
+      "Não foi possível selecionar a fotografia do cartão."
+    );
+  } finally {
+    if (input) {
+      input.value = "";
+    }
+  }
+}
+
+function mostrarFotoNaCaixaCartao(fotoBase64) {
+  const imagem = document.getElementById("imgFotoCartao");
+
+  if (!imagem) {
+    console.error("imgFotoCartao não foi encontrado.");
+    return;
+  }
+
+  imagem.src = fotoBase64 || "img/usercard.png";
+  imagem.style.display = "block";
+}
+
+async function enviarFotoCartaoNodeRed(fotoBase64) {
+  const residente = obterResidenteAtual();
+
+  if (!residente || !residente.id) {
+    throw new Error("Faz login antes de escolher a foto do cartão.");
+  }
+
+  const resposta = await fetch(
+    "https://violet-beaver-178312.hostingersite.com/api/residentes/foto-cartao",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        residenteId: residente.id,
+        fotoCartaoBase64: fotoBase64,
+        fotoCartaoTipo: "image/jpeg"
+      })
+    }
+  );
+
+  let dados = {};
+
+  try {
+    dados = await resposta.json();
+  } catch (erro) {
+    throw new Error("O servidor devolveu uma resposta inválida.");
+  }
+
+  if (!resposta.ok || dados.sucesso === false) {
+    throw new Error(
+      dados.mensagem ||
+      "Não foi possível guardar a foto do cartão."
+    );
+  }
+
+  residente.fotoCartaoBase64 = fotoBase64;
+  residente.fotoCartaoTipo = "image/jpeg";
+
+  window.residenteLogado = residente;
+
+  if (typeof window.guardarSessao === "function") {
+    window.guardarSessao(residente, null, false);
+  }
+
+  console.log("Foto do cartão guardada com sucesso.");
+}
+
+function tirarFotoCartao() {
+  tirarFoto("cartao");
+}
+
+function carregarFotoCartaoDoResidente(residente) {
+  if (!residente) {
+    mostrarFotoNaCaixaCartao("");
+    return;
+  }
+
+  const foto =
+    residente.fotoCartaoBase64 ||
+    residente.fotoCartao ||
+    residente.foto_cartao ||
+    "";
+
+  const tipo =
+    residente.fotoCartaoTipo ||
+    residente.foto_cartao_tipo ||
+    "image/jpeg";
+
+  const fotoMontada = montarImagemBase64(foto, tipo);
+
+  mostrarFotoNaCaixaCartao(fotoMontada);
+}
+
+async function removerFotoCartao() {
+  try {
+    const residente = obterResidenteAtual();
+
+    if (!residente || !residente.id) {
+      alert("Faz login primeiro.");
+      return;
+    }
+
+    const resposta = await fetch(
+      "https://violet-beaver-178312.hostingersite.com/api/residentes/foto-cartao",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          residenteId: residente.id,
+          removerFotoCartao: true
+        })
+      }
+    );
+
+    const dados = await resposta.json();
+
+    if (!resposta.ok || dados.sucesso === false) {
+      throw new Error(
+        dados.mensagem ||
+        "Não foi possível remover a foto."
+      );
+    }
+
+    fotoCartaoBase64 = "";
+
+    residente.fotoCartaoBase64 = "";
+    residente.fotoCartaoTipo = "";
+
+    window.residenteLogado = residente;
+
+    mostrarFotoNaCaixaCartao("");
+
+    if (typeof window.guardarSessao === "function") {
+      window.guardarSessao(residente, null, false);
+    }
+  } catch (erro) {
+    console.error("Erro ao remover foto do cartão:", erro);
+    alert(erro.message || "Erro ao remover a fotografia.");
   }
 }
 
@@ -742,3 +947,9 @@ window.capturarFotoCamera = capturarFotoCamera;
 window.fecharCameraFotos = fecharCameraFotos;
 window.verFotoPerfilCliente = verFotoPerfilCliente;
 window.fecharVerFotoPerfilCliente = fecharVerFotoPerfilCliente;
+window.abrirSeletorFotoCartao = abrirSeletorFotoCartao;
+window.selecionarFotoCartao = selecionarFotoCartao;
+window.tirarFotoCartao = tirarFotoCartao;
+window.carregarFotoCartaoDoResidente = carregarFotoCartaoDoResidente;
+window.mostrarFotoNaCaixaCartao = mostrarFotoNaCaixaCartao;
+window.removerFotoCartao = removerFotoCartao;

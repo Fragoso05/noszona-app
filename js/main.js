@@ -87,7 +87,7 @@ function fecharPopupRecuperar() {
 
 window.mostrarRecuperar = mostrarRecuperar;
 window.fecharPopupRecuperar = fecharPopupRecuperar;
-////////////////////////////////////////////////
+
 
 function logout() {
  
@@ -306,6 +306,10 @@ function renderizarDashboard() {
   if (dashMunicipio) dashMunicipio.textContent = escapeHtml(r.municipio || "");
   if (dashPais) dashPais.textContent = escapeHtml(r.pais || "");
 
+
+  if (typeof window.carregarFotoCartaoDoResidente === "function") {
+    window.carregarFotoCartaoDoResidente(r);
+
   // ==================== STATS ABAIXO DO CARTÃO ====================
   const statsContainer = document.getElementById("dadosConta"); 
   if (statsContainer) {
@@ -353,11 +357,11 @@ async function selecionarFotoCartao(input) {
   } catch (e) {
     alert("Erro ao carregar foto: " + e.message);
   }
-}
-
-
+}}
 window.abrirSeletorFotoCartao = abrirSeletorFotoCartao;
 window.selecionarFotoCartao = selecionarFotoCartao;
+
+
 
 function iniciarQRRotativo() {
   if (qrTimerId) clearTimeout(qrTimerId);
